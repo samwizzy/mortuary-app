@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     flexGrow: 1,
     borderRadius: theme.shape.borderRadius * 4,
-    backgroundImage: `url(/assets/images/backgrounds/widget-blue-bg.svg)`,
+    backgroundImage: `url(/assets/images/backgrounds/widget-purple.png)`,
     backgroundRepeat: `no-repeat`,
     backgroundPosition: `center bottom`,
     backgroundSize: 'cover',
@@ -38,14 +38,17 @@ const Widget2 = () => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography variant='h2'>20</Typography>
+        <div className='flex flex-col items-center space-y-4'>
+          <Typography variant='h3'>100</Typography>
+          <Typography variant='h6'>Invoices</Typography>
+        </div>
       </CardContent>
 
       <Divider />
 
       <CardActions>
         <Button size='small' onClick={() => {}}>
-          Invoices
+          View all
         </Button>
       </CardActions>
     </Card>

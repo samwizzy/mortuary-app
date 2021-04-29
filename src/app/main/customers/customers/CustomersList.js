@@ -10,7 +10,7 @@ import {
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
-import ProductsTableHead from './CustomerTableHead';
+import CustomerTableHead from './CustomerTableHead';
 // import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
 
@@ -21,25 +21,22 @@ function CustomersList(props) {
       id: '5725a680b3249760ea21de52',
       firstName: 'Abbott',
       lastName: 'Keitch',
-      avatar: 'assets/images/avatars/Abbott.jpg',
       email: 'abbott@withinpixels.com',
-      phone: '+1-202-555-0175',
+      phone: '+234-806-555-0175',
     },
     {
       id: '5725a680606588342058356d',
       firstName: 'Arnold',
       lastName: 'Matlock',
-      avatar: 'assets/images/avatars/Arnold.jpg',
       email: 'arnold@withinpixels.com',
-      phone: '+1-202-555-0141',
+      phone: '+234-806-555-0175',
     },
     {
       id: '5725a68009e20d0a9e9acf2a',
       firstName: 'Barrera',
       lastName: 'Bradbury',
-      avatar: 'assets/images/avatars/Barrera.jpg',
       email: 'barrera@withinpixels.com',
-      phone: '+1-202-555-0196',
+      phone: '+234-806-555-0175',
     },
   ];
   const searchText = '';
@@ -119,7 +116,7 @@ function CustomersList(props) {
     <div className='w-full flex flex-col'>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
         <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <ProductsTableHead
+          <CustomerTableHead
             numSelected={selected.length}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -167,27 +164,6 @@ function CustomersList(props) {
                         onClick={(event) => event.stopPropagation()}
                         onChange={(event) => handleCheck(event, n.id)}
                       />
-                    </TableCell>
-
-                    <TableCell
-                      className='w-52'
-                      component='th'
-                      scope='row'
-                      padding='none'
-                    >
-                      {n.avatar ? (
-                        <img
-                          className='w-full block rounded'
-                          src={n.avatar}
-                          alt={n.name}
-                        />
-                      ) : (
-                        <img
-                          className='w-full block rounded'
-                          src='assets/images/ecommerce/product-image-placeholder.png'
-                          alt={n.name}
-                        />
-                      )}
                     </TableCell>
 
                     <TableCell component='th' scope='row'>

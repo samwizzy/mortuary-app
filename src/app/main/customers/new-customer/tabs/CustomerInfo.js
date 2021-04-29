@@ -104,7 +104,9 @@ function CustomerInfo(props) {
         />
       </div>
 
-      <Button startIcon={AddIcon}>Add Relatives</Button>
+      <Button color='primary'>
+        <AddIcon /> Add Relatives
+      </Button>
     </Fragment>
   );
 }
