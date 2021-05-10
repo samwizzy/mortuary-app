@@ -23,7 +23,7 @@ function InvoicesToolbar(props) {
   };
 
   const handleRecordPayment = () => {
-    dispatch(Actions.openNewInvoiceDialog());
+    dispatch(Actions.openNewRecordPaymentDialog());
     handleClose();
   };
 
@@ -63,7 +63,7 @@ function InvoicesToolbar(props) {
               disableElevation
               onClick={handleClick}
             >
-              Send invoice
+              Options <Icon>expand_more</Icon>
             </Button>
             <Popover
               id={id}

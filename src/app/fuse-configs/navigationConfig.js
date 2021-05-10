@@ -56,15 +56,8 @@ const navigationConfig = [
         url: '/deceased',
       },
       {
-        id: 'profomer-component',
-        title: 'Profomer',
-        type: 'item',
-        icon: 'description',
-        url: '/profomer',
-      },
-      {
         id: 'invoice-component',
-        title: 'Invoices',
+        title: 'Profomer Invoices',
         type: 'item',
         icon: 'receipt',
         url: '/invoices',

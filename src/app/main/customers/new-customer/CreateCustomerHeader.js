@@ -32,29 +32,14 @@ function CustomersHeader(props) {
         </FuseAnimate>
 
         <div className='flex items-center max-w-full'>
-          {/* <FuseAnimate animation='transition.expandIn' delay={300}>
-            {form.images ? (
-              <img
-                className='w-32 sm:w-48 mr-8 sm:mr-16 rounded'
-                src={form.avatar}
-                alt={form.name}
-              />
-            ) : (
-              <img
-                className='w-32 sm:w-48 mr-8 sm:mr-16 rounded'
-                src='assets/images/ecommerce/product-image-placeholder.png'
-                alt={form.name}
-              />
-            )}
-          </FuseAnimate> */}
           <div className='flex flex-col min-w-0'>
             <FuseAnimate animation='transition.slideLeftIn' delay={300}>
               <Typography className='text-16 sm:text-20 truncate'>
-                {form.firstName ? form.firstName : 'New Customer'}
+                New Customer
               </Typography>
             </FuseAnimate>
             <FuseAnimate animation='transition.slideLeftIn' delay={300}>
-              <Typography variant='caption'>Customer Detail</Typography>
+              <Typography variant='caption'>Create a new Customer</Typography>
             </FuseAnimate>
           </div>
         </div>

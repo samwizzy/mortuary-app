@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, IconButton, Popover, Typography } from '@material-ui/core';
+import { Button, Icon, IconButton, MenuItem, Popover } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 
@@ -28,11 +28,6 @@ function DeceasedToolbar(props) {
       <div className='flex items-center justify-start' aria-label='Toggle star'>
         <FuseAnimate animation='transition.expandIn' delay={100}>
           <IconButton onClick={() => {}}>
-            <Icon>assignment</Icon>
-          </IconButton>
-        </FuseAnimate>
-        <FuseAnimate animation='transition.expandIn' delay={100}>
-          <IconButton onClick={() => {}}>
             <Icon>print</Icon>
           </IconButton>
         </FuseAnimate>
@@ -43,18 +38,19 @@ function DeceasedToolbar(props) {
         </FuseAnimate>
         <FuseAnimate animation='transition.expandIn' delay={100}>
           <IconButton onClick={() => {}}>
-            <Icon>refresh</Icon>
-          </IconButton>
-        </FuseAnimate>
-        <FuseAnimate animation='transition.expandIn' delay={100}>
-          <IconButton onClick={() => {}}>
             <Icon>mail</Icon>
           </IconButton>
         </FuseAnimate>
         <FuseAnimate animation='transition.expandIn' delay={100}>
-          <div className="ml-16">
-            <Button aria-describedby={id} variant="contained" size="small" disableElevation onClick={handleClick}>
-              Send invoice <Icon>expand_more</Icon>
+          <div className='ml-16'>
+            <Button
+              aria-describedby={id}
+              variant='contained'
+              size='small'
+              disableElevation
+              onClick={handleClick}
+            >
+              Options <Icon>expand_more</Icon>
             </Button>
             <Popover
               id={id}
@@ -70,7 +66,7 @@ function DeceasedToolbar(props) {
                 horizontal: 'center',
               }}
             >
-              <Typography>The content of the Popover.</Typography>
+              <MenuItem>Send Receipt</MenuItem>
             </Popover>
           </div>
         </FuseAnimate>

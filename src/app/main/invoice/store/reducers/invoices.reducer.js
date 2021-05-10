@@ -13,6 +13,13 @@ const initialState = {
     },
     data: null,
   },
+  recordPaymentDialog: {
+    type: 'new',
+    props: {
+      open: false,
+    },
+    data: null,
+  },
 };
 
 const invoicesReducer = function (state = initialState, action) {
@@ -87,6 +94,30 @@ const invoicesReducer = function (state = initialState, action) {
         ...state,
         invoiceDialog: {
           type: 'edit',
+          props: {
+            open: false,
+          },
+          data: null,
+        },
+      };
+    }
+    case Actions.OPEN_NEW_RECORD_PAYMENT_DIALOG: {
+      return {
+        ...state,
+        recordPaymentDialog: {
+          type: 'new',
+          props: {
+            open: true,
+          },
+          data: null,
+        },
+      };
+    }
+    case Actions.CLOSE_NEW_RECORD_PAYMENT_DIALOG: {
+      return {
+        ...state,
+        recordPaymentDialog: {
+          type: 'new',
           props: {
             open: false,
           },

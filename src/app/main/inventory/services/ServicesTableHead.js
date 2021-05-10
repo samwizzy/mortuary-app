@@ -19,13 +19,6 @@ import { makeStyles } from '@material-ui/styles';
 
 const rows = [
   {
-    id: 'avatar',
-    align: 'left',
-    disablePadding: true,
-    label: '',
-    sort: false,
-  },
-  {
     id: 'serviceName',
     align: 'left',
     disablePadding: false,

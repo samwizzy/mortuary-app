@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { FusePageCarded } from '@fuse';
 import ReceiptHeader from './receipt/ReceiptHeader';
 import ReceiptsList from './receipts/ReceiptsList';
-import ReceiptDetails from './receipt/ReceiptDetails';
+import ReceiptList from './receipt/ReceiptList';
 import ReceiptToolbar from './receipt/ReceiptToolbar';
 
 const styles = (theme) => ({
@@ -27,7 +27,7 @@ class ReceiptApp extends Component {
         }
         content={
           <div className='w-full p-24'>
-            {this.props.match.params.id ? <ReceiptDetails /> : <ReceiptsList />}
+            {this.props.match.params.id ? <ReceiptList /> : <ReceiptsList />}
           </div>
         }
         innerScroll

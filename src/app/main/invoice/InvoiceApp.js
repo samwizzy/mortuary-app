@@ -5,11 +5,12 @@ import reducers from './store/reducers';
 import { FusePageCarded } from '@fuse';
 import InvoicesHeader from './invoices/InvoicesHeader';
 import InvoiceHeader from './invoice/InvoiceHeader';
-import InvoiceList from './invoices/InvoicesList';
-import InvoiceDetails from './invoice/InvoiceDetails';
+import InvoiceList from './invoice/InvoiceList';
+import InvoicesList from './invoices/InvoicesList';
 import InvoicesToolbar from './invoices/InvoicesToolbar';
 import InvoiceToolbar from './invoice/InvoiceToolbar';
 import InvoiceDialog from './dialog/InvoiceDialog';
+import RecordPaymentDialog from './dialog/RecordPaymentDialog';
 
 const styles = (theme) => ({
   layoutRoot: {},
@@ -38,16 +39,13 @@ class InvoiceApp extends Component {
           }
           content={
             <div className='w-full p-24'>
-              {this.props.match.params.id ? (
-                <InvoiceDetails />
-              ) : (
-                <InvoiceList />
-              )}
+              {this.props.match.params.id ? <InvoiceList /> : <InvoicesList />}
             </div>
           }
           innerScroll
         />
         <InvoiceDialog />
+        <RecordPaymentDialog />
       </React.Fragment>
     );
   }

@@ -21,7 +21,6 @@ function ServicesList(props) {
       id: '5725a680b3249760ea21de52',
       serviceName: 'Embalming',
       type: 'Fixed',
-      avatar: 'assets/images/avatars/Abbott.jpg',
       amount: '3200',
       createdBy: 'Samuel Okeke',
       dateCreated: '2021-04-22',
@@ -30,7 +29,6 @@ function ServicesList(props) {
       id: '5725a680606588342058356d',
       serviceName: 'Dressing ',
       type: 'Fixed',
-      avatar: 'assets/images/avatars/Arnold.jpg',
       amount: '3200',
       createdBy: 'John David',
       dateCreated: '2021-04-22',
@@ -39,7 +37,6 @@ function ServicesList(props) {
       id: '5725a68009e20d0a9e9acf2a',
       serviceName: 'Recovery and Pick up',
       type: 'Recurrent',
-      avatar: 'assets/images/avatars/Barrera.jpg',
       amount: '3200',
       createdBy: 'Joy Essien',
       dateCreated: '2021-04-22',
@@ -170,27 +167,6 @@ function ServicesList(props) {
                         onClick={(event) => event.stopPropagation()}
                         onChange={(event) => handleCheck(event, n.id)}
                       />
-                    </TableCell>
-
-                    <TableCell
-                      className='w-52'
-                      component='th'
-                      scope='row'
-                      padding='none'
-                    >
-                      {n.avatar ? (
-                        <img
-                          className='w-full block rounded'
-                          src={n.avatar}
-                          alt={n.serviceName}
-                        />
-                      ) : (
-                        <img
-                          className='w-full block rounded'
-                          src='assets/images/ecommerce/product-image-placeholder.png'
-                          alt={n.serviceName}
-                        />
-                      )}
                     </TableCell>
 
                     <TableCell component='th' scope='row'>

@@ -20,7 +20,7 @@ function InvoicesHeader(props) {
         </FuseAnimate>
         <FuseAnimate animation='transition.slideLeftIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
-            {match.params.id ? 'Invoice Details' : 'Invoices'}
+            {match.params.id ? 'Profomer Invoice Details' : 'Profomer Invoices'}
           </Typography>
         </FuseAnimate>
       </div>

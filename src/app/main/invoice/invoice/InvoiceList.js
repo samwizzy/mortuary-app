@@ -125,7 +125,7 @@ function InvoiceList(props) {
               <h1>
                 <img
                   className='h-72'
-                  src='/assets/images/profile/omega-home.svg'
+                  src='/assets/images/profile/omega-homes.svg'
                   alt=''
                 />
               </h1>

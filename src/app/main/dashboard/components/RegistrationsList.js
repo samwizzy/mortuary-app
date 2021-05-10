@@ -56,12 +56,12 @@ function RegistrationsList(props) {
                     </div>
                   </div>
                 </td>
-                <td className='px-16 py-8 whitespace-nowrap'>
+                <td className='px-20 py-8 whitespace-nowrap'>
                   <div className='text-sm text-gray-900'>
                     {emp.dateRegistered}
                   </div>
                 </td>
-                <td className='px-16 py-8 whitespace-nowrap text-sm text-gray-500'>
+                <td className='px-20 py-8 whitespace-nowrap text-sm text-gray-500'>
                   {emp.email}
                 </td>
               </tr>

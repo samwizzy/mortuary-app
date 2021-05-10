@@ -1,0 +1,91 @@
+import React, { useMemo } from 'react';
+import { useDropzone } from 'react-dropzone';
+
+const baseStyle = {
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '16px',
+  borderWidth: 2,
+  borderRadius: 2,
+  borderColor: '#9ac876',
+  borderStyle: 'dashed',
+  backgroundColor: '#fafafa',
+  outline: 'none',
+  transition: 'border .24s ease-in-out',
+};
+
+const activeStyle = {
+  borderColor: '#2196f3',
+};
+
+const acceptStyle = {
+  borderColor: '#0BA6CF',
+};
+
+const rejectStyle = {
+  borderColor: '#ff1744',
+};
+
+function ImageDropzone(props) {
+  const { name, icon, form, handleImageUpload } = props;
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({
+    accept: 'image/jpeg, image/png',
+    multiple: false,
+    onDrop: (acceptedFiles) => {
+      const files = acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      );
+      handleImageUpload(name, files);
+    },
+  });
+
+  const files =
+    form.images.length > 0 &&
+    form.images.map((img) => (
+      <li>
+        <img src={`data:image/jpg;base64,${img}`} alt='' className='h-40' />
+      </li>
+    ));
+
+  const style = useMemo(
+    () => ({
+      ...baseStyle,
+      ...(isDragActive ? activeStyle : {}),
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {}),
+    }),
+    [isDragActive, isDragReject, isDragAccept]
+  );
+
+  return (
+    <div className='flex flex-col space-y-4'>
+      <section className='container'>
+        <div {...getRootProps({ style })} className='space-y-2'>
+          <input {...getInputProps()} />
+          <img className='h-10' src={icon} alt='upload-icon' />
+          <p>
+            <span className='text-green'>Click here or Drop</span> Your Image
+          </p>
+          <span className='text-xs text-gray-600'>JPG Format Only</span>
+        </div>
+
+        <aside>
+          <ul className='flex py-4'>{files}</ul>
+        </aside>
+      </section>
+    </div>
+  );
+}
+
+export default ImageDropzone;

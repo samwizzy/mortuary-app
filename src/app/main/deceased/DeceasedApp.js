@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { FusePageCarded } from '@fuse';
 import DeceasedHeader from './deceased/DeceasedHeader';
 import DeceasedList from './deceased/DeceasedList';
-import DeceasedDetails from './deceased/DeceasedDetails';
+import DeceasedDetails from './details/DeceasedDetails';
 import DeceasedToolbar from './deceased/DeceasedToolbar';
 
 const styles = (theme) => ({

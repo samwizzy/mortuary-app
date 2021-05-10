@@ -3,8 +3,8 @@ import { FusePageSimple } from '@fuse';
 import { withStyles } from '@material-ui/core/styles';
 // import withReducer from 'app/store/withReducer';
 // import reducer from '../store/reducers';
-import DeceasedList from './DeceasedList';
-import DeceasedHeader from './DeceasedHeader';
+import DeceasedList from './InvoiceList';
+import DeceasedHeader from './InvoiceHeader';
 
 const styles = (theme) => ({
   layoutRoot: {},

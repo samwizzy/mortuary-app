@@ -20,21 +20,18 @@ function ItemsList(props) {
     {
       id: '5725a680b3249760ea21de52',
       itemName: "Ivy's Soap",
-      avatar: 'assets/images/avatars/Abbott.jpg',
       unitPrice: '3200',
       stock: 300,
     },
     {
       id: '5725a680606588342058356d',
       itemName: 'Lotion',
-      avatar: 'assets/images/avatars/Arnold.jpg',
       unitPrice: '3200',
       stock: 300,
     },
     {
       id: '5725a68009e20d0a9e9acf2a',
       itemName: 'Hamper',
-      avatar: 'assets/images/avatars/Barrera.jpg',
       unitPrice: '3200',
       stock: 300,
     },
@@ -164,27 +161,6 @@ function ItemsList(props) {
                         onClick={(event) => event.stopPropagation()}
                         onChange={(event) => handleCheck(event, n.id)}
                       />
-                    </TableCell>
-
-                    <TableCell
-                      className='w-52'
-                      component='th'
-                      scope='row'
-                      padding='none'
-                    >
-                      {n.avatar ? (
-                        <img
-                          className='w-full block rounded'
-                          src={n.avatar}
-                          alt={n.itemName}
-                        />
-                      ) : (
-                        <img
-                          className='w-full block rounded'
-                          src='assets/images/ecommerce/product-image-placeholder.png'
-                          alt={n.itemName}
-                        />
-                      )}
                     </TableCell>
 
                     <TableCell component='th' scope='row'>

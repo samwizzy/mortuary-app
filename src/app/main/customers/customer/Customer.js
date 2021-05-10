@@ -5,8 +5,13 @@ import { FusePageCarded } from '@fuse';
 import CustomerHeader from './CustomerHeader';
 import CustomerToolbar from './CustomerToolbar';
 import CustomerDetails from './CustomerDetails';
+import CreateCustomer from './../new-customer/CreateCustomer';
 
 function Customer(props) {
+  if (props.match.params.id === 'new') {
+    return <CreateCustomer />;
+  }
+
   return (
     <FusePageCarded
       classes={{

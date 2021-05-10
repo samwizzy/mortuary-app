@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Widget1 = () => {
+const Widget1 = (props) => {
   const classes = useStyles();
 
   return (

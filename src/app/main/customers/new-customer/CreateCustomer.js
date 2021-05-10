@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { FusePageCarded } from '@fuse';
 import { Tab, Tabs } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
-import CustomerHeader from '../customer/CustomerHeader';
 // import withReducer from 'app/store/withReducer';
 // import reducer from '../store/reducers';
+import CreateCustomerHeader from './CreateCustomerHeader';
 import CustomerInfo from './tabs/CustomerInfo';
 import SelectServices from './tabs/SelectServices';
 import CustomerImages from './tabs/CustomerImages';
@@ -76,7 +76,7 @@ function CreateCustomer() {
         content: 'flex',
         header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
       }}
-      header={<CustomerHeader form={form} />}
+      header={<CreateCustomerHeader form={form} />}
       contentToolbar={
         <Tabs
           value={tabValue}

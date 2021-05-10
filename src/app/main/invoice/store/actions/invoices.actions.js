@@ -12,6 +12,15 @@ export const OPEN_EDIT_INVOICE_DIALOG =
   '[INVOICES APP] OPEN EDIT INVOICE DIALOG';
 export const CLOSE_EDIT_INVOICE_DIALOG =
   '[INVOICES APP] CLOSE EDIT INVOICE DIALOG';
+
+export const OPEN_NEW_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] OPEN NEW RECORD PAYMENT DIALOG';
+export const CLOSE_NEW_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] CLOSE NEW RECORD PAYMENT DIALOG';
+export const OPEN_EDIT_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] OPEN EDIT RECORD PAYMENT DIALOG';
+export const CLOSE_EDIT_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] CLOSE EDIT RECORD PAYMENT DIALOG';
 export const ADD_INVOICE = '[INVOICES APP] ADD INVOICE';
 export const UPDATE_INVOICE = '[INVOICES APP] UPDATE INVOICE';
 export const REMOVE_INVOICE = '[INVOICES APP] REMOVE INVOICE';
@@ -73,6 +82,18 @@ export function openEditInvoiceDialog(data) {
 export function closeEditInvoiceDialog() {
   return {
     type: CLOSE_EDIT_INVOICE_DIALOG,
+  };
+}
+
+export function openNewRecordPaymentDialog() {
+  return {
+    type: OPEN_NEW_RECORD_PAYMENT_DIALOG,
+  };
+}
+
+export function closeNewRecordPaymentDialog() {
+  return {
+    type: CLOSE_NEW_RECORD_PAYMENT_DIALOG,
   };
 }
 

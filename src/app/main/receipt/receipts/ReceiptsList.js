@@ -84,7 +84,7 @@ function ReceiptsList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/invoices/' + item.id + '/' + item.handle);
+    props.history.push('/receipts/' + item.id + '/' + item.handle);
   }
 
   function handleCheck(event, id) {

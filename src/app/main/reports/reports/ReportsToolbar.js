@@ -5,8 +5,9 @@ import {
   Button,
   Grid,
   Popover,
-  Typography,
+  MenuItem,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
@@ -19,8 +20,18 @@ import moment from 'moment';
 // import { useDispatch } from 'react-redux';
 // import * as Actions from '../store/actions/index';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: 'fit-content',
+    // border: `1px solid ${theme.palette.divider}`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(0.2, 1),
+  },
+}));
+
 function ReportsToolbar(props) {
   //   const dispatch = useDispatch();
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [form, setForm] = useState({
     startDate: moment().format('YYYY-MM-DDTHH:mm:ss'),
@@ -49,9 +60,9 @@ function ReportsToolbar(props) {
   const id = open ? 'simple-popover' : null;
 
   return (
-    <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16'>
+    <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16 py-2'>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid container justify='justify-start' className='border border-solid'>
+        <Grid container justify='justify-start' className={classes.root}>
           <KeyboardDatePicker
             disableToolbar
             variant='inline'
@@ -63,7 +74,11 @@ function ReportsToolbar(props) {
             InputProps={{
               disableUnderline: true,
             }}
-            keyboardIcon={<ExpandMoreIcon />}
+            InputLabelProps={{
+              shrink: true,
+              disabled: true,
+            }}
+            keyboardIcon={<ExpandMoreIcon fontSize='small' />}
             KeyboardButtonProps={{
               'aria-label': 'change date',
             }}
@@ -79,7 +94,11 @@ function ReportsToolbar(props) {
             InputProps={{
               disableUnderline: true,
             }}
-            keyboardIcon={<ExpandMoreIcon />}
+            InputLabelProps={{
+              shrink: true,
+              disabled: true,
+            }}
+            keyboardIcon={<ExpandMoreIcon fontSize='small' />}
             KeyboardButtonProps={{
               'aria-label': 'change date',
             }}
@@ -124,7 +143,7 @@ function ReportsToolbar(props) {
                 horizontal: 'center',
               }}
             >
-              <Typography>The content of the Popover.</Typography>
+              <MenuItem>PDF</MenuItem>
             </Popover>
           </div>
         </FuseAnimate>
