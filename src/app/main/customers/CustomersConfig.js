@@ -19,7 +19,12 @@ export const CustomersConfig = {
     },
     {
       path: '/customers/:id/relatives',
+      exact: true,
       component: React.lazy(() => import('./relatives/Relatives')),
+    },
+    {
+      path: '/customers/:id/relatives/:relativeId',
+      component: React.lazy(() => import('./relative/Relative')),
     },
   ],
 };
