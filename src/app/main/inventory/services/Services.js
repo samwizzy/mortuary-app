@@ -1,19 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { withRouter } from "react-router-dom"
+import { useDispatch } from "react-redux"
 import { FusePageCarded } from '@fuse';
 import { withStyles } from '@material-ui/core/styles';
-// import withReducer from 'app/store/withReducer';
-// import reducer from '../store/reducers';
+import withReducer from 'app/store/withReducer';
+import reducer from '../store/reducers';
+import * as Actions from '../store/actions';
 import ServicesList from './ServicesList';
 import ServiceDetails from './ServiceDetails';
 import ServicesHeader from './ServicesHeader';
 import ServicesToolbar from './ServicesToolbar';
+import AddService from './AddService';
 
 const styles = (theme) => ({
   layoutRoot: {},
 });
 
 function Services(props) {
-  const { classes } = props;
+  const { classes, match } = props;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(Actions.getServices())
+  }, [dispatch])
+
+  if(match.params.id === "new"){
+    return <AddService />
+  }
 
   return (
     <FusePageCarded
@@ -27,7 +40,7 @@ function Services(props) {
         props.match.params.id ? <ServicesToolbar /> : <ServicesToolbar />
       }
       content={
-        <div className='p-24'>
+        <div className='p-24 w-full'>
           {props.match.params.id ? <ServiceDetails /> : <ServicesList />}
         </div>
       }
@@ -36,5 +49,4 @@ function Services(props) {
   );
 }
 
-// export default withReducer('eCommerceApp', reducer)(Deceased);
-export default withStyles(styles, { withTheme: true })(Services);
+export default withReducer('inventoryApp', reducer)(withStyles(styles, { withTheme: true })(withRouter(Services)));

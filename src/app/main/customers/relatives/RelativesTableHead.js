@@ -22,7 +22,14 @@ const rows = [
     id: 'name',
     align: 'left',
     disablePadding: false,
-    label: 'Name',
+    label: 'Full Name',
+    sort: true,
+  },
+  {
+    id: 'other-name',
+    align: 'left',
+    disablePadding: false,
+    label: 'Other Name',
     sort: true,
   },
   {
@@ -54,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CustomersTableHead(props) {
+function RelativesTableHead(props) {
   const classes = useStyles(props);
   const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);
 
@@ -152,4 +159,4 @@ function CustomersTableHead(props) {
   );
 }
 
-export default CustomersTableHead;
+export default RelativesTableHead;

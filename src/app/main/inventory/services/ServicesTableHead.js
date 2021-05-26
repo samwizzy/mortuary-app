@@ -48,10 +48,24 @@ const rows = [
     sort: true,
   },
   {
-    id: 'date-created',
+    id: 'is-admission',
     align: 'left',
     disablePadding: false,
-    label: 'Date Created',
+    label: 'Admission',
+    sort: true,
+  },
+  {
+    id: 'is_customer_image',
+    align: 'left',
+    disablePadding: false,
+    label: 'Cust. Image',
+    sort: true,
+  },
+  {
+    id: 'request_customer_signature',
+    align: 'left',
+    disablePadding: false,
+    label: 'Cust. Signature',
     sort: true,
   },
 ];

@@ -6,25 +6,19 @@ export const SET_SEARCH_TEXT = '[INVOICES APP] SET SEARCH TEXT';
 export const SELECT_ALL_INVOICES = '[INVOICES APP] SELECT ALL INVOICES';
 export const DESELECT_ALL_INVOICES = '[INVOICES APP] DESELECT ALL INVOICES';
 export const OPEN_NEW_INVOICE_DIALOG = '[INVOICES APP] OPEN NEW INVOICE DIALOG';
-export const CLOSE_NEW_INVOICE_DIALOG =
-  '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
-export const OPEN_EDIT_INVOICE_DIALOG =
-  '[INVOICES APP] OPEN EDIT INVOICE DIALOG';
-export const CLOSE_EDIT_INVOICE_DIALOG =
-  '[INVOICES APP] CLOSE EDIT INVOICE DIALOG';
+export const CLOSE_NEW_INVOICE_DIALOG = '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
+export const OPEN_EDIT_INVOICE_DIALOG = '[INVOICES APP] OPEN EDIT INVOICE DIALOG';
+export const CLOSE_EDIT_INVOICE_DIALOG = '[INVOICES APP] CLOSE EDIT INVOICE DIALOG';
 
-export const OPEN_NEW_RECORD_PAYMENT_DIALOG =
-  '[INVOICES APP] OPEN NEW RECORD PAYMENT DIALOG';
-export const CLOSE_NEW_RECORD_PAYMENT_DIALOG =
-  '[INVOICES APP] CLOSE NEW RECORD PAYMENT DIALOG';
-export const OPEN_EDIT_RECORD_PAYMENT_DIALOG =
-  '[INVOICES APP] OPEN EDIT RECORD PAYMENT DIALOG';
-export const CLOSE_EDIT_RECORD_PAYMENT_DIALOG =
-  '[INVOICES APP] CLOSE EDIT RECORD PAYMENT DIALOG';
+export const OPEN_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] OPEN NEW RECORD PAYMENT DIALOG';
+export const CLOSE_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] CLOSE NEW RECORD PAYMENT DIALOG';
+export const OPEN_EDIT_RECORD_PAYMENT_DIALOG = '[INVOICES APP] OPEN EDIT RECORD PAYMENT DIALOG';
+export const CLOSE_EDIT_RECORD_PAYMENT_DIALOG = '[INVOICES APP] CLOSE EDIT RECORD PAYMENT DIALOG';
 export const ADD_INVOICE = '[INVOICES APP] ADD INVOICE';
 export const UPDATE_INVOICE = '[INVOICES APP] UPDATE INVOICE';
 export const REMOVE_INVOICE = '[INVOICES APP] REMOVE INVOICE';
 export const REMOVE_INVOICES = '[INVOICES APP] REMOVE INVOICES';
+export const GET_PAYMENT_ADVICE = '[INVOICES APP] GET PAYMENT ADVICE';
 
 export function getInvoices(routeParams) {
   const request = axios.get('/api/invoices', {
@@ -37,6 +31,19 @@ export function getInvoices(routeParams) {
         type: GET_INVOICES,
         payload: response.data,
         routeParams,
+      })
+    );
+}
+
+export function getPaymentAdvice(id) {
+  const request = axios.get(`/api/v1/payments/customer_id/${id}/payment_advice`);
+
+  return (dispatch) =>
+    request.then((response) =>
+      dispatch({
+        type: GET_PAYMENT_ADVICE,
+        payload: response.data,
+        routeParams: { id },
       })
     );
 }

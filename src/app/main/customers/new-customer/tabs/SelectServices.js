@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from "react-redux"
 import {
   Table,
   TableHead,
@@ -7,17 +8,20 @@ import {
   TableRow,
   TextField,
   IconButton,
+  MenuItem,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FuseScrollbars, FuseChipSelect } from '@fuse';
+import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 
-// const services = [];
-// const discountTypes = [];
-
 function SelectServices(props) {
-  const { form, handleChange, handleChipChange } = props;
+  const { form, handleMultiChange, addServiceRow, removeServiceRow } = props;
+  const serviceReducer = useSelector(({customerApp}) => customerApp.services);
+  const discountsReducer = useSelector(({customerApp}) => customerApp.discounts);
+
+  const services = serviceReducer.services;
+  const discounts = discountsReducer.discounts;
 
   return (
     <div className='w-full flex flex-col'>
@@ -30,7 +34,7 @@ function SelectServices(props) {
               <TableCell>Discount Type</TableCell>
               <TableCell>Discount Amount</TableCell>
               <TableCell align='left'>
-                <IconButton>
+                <IconButton onClick={addServiceRow}>
                   <AddIcon />
                 </IconButton>
               </TableCell>
@@ -38,8 +42,8 @@ function SelectServices(props) {
           </TableHead>
 
           <TableBody>
-            {form.services.map((n, i) => {
-              const isSelected = form.services.indexOf(n.id) !== -1;
+            {form.service.map((n, i) => {
+              const isSelected = form.service.indexOf(n.id) !== -1;
               return (
                 <TableRow
                   className='h-64 cursor-pointer'
@@ -52,54 +56,60 @@ function SelectServices(props) {
                   onClick={() => {}}
                 >
                   <TableCell component='th' scope='row'>
-                    <FuseChipSelect
+                    <TextField
                       className='mt-8 mb-16'
-                      value={[]}
-                      onChange={(value) => handleChipChange(value, 'services')}
-                      placeholder=''
-                      textFieldProps={{
-                        label: 'Services',
-                        InputLabelProps: {
-                          shrink: true,
-                        },
-                        variant: 'outlined',
-                      }}
-                      isMulti
-                    />
+                      select
+                      required
+                      label='Services'
+                      autoFocus
+                      id={`service_id-${i}`}
+                      name='service_id'
+                      value={n.service_id}
+                      onChange={handleMultiChange(i)}
+                      variant='outlined'
+                      fullWidth
+                    >
+                      <MenuItem value="">Select Services</MenuItem>
+                      {services.map(s => 
+                        <MenuItem key={s.id} value={s.id}>{s.service_name}</MenuItem>
+                      )}
+                    </TextField>  
                   </TableCell>
 
                   <TableCell className='truncate' component='th' scope='row'>
                     <TextField
                       className='mt-8 mb-16'
                       required
-                      label='Billing Amount'
+                      label='Rate'
                       autoFocus
-                      id='name'
-                      name='name'
-                      value={form.firstName}
-                      onChange={handleChange}
+                      id={`rate-${i}`}
+                      name='rate'
+                      value={n.rate}
+                      onChange={handleMultiChange(i)}
                       variant='outlined'
                       fullWidth
                     />
                   </TableCell>
 
                   <TableCell component='th' scope='row' align='left'>
-                    <FuseChipSelect
+                    <TextField
                       className='mt-8 mb-16'
-                      value={[]}
-                      onChange={(value) =>
-                        handleChipChange(value, 'discountType')
-                      }
-                      placeholder=''
-                      textFieldProps={{
-                        label: 'Discount types',
-                        InputLabelProps: {
-                          shrink: true,
-                        },
-                        variant: 'outlined',
-                      }}
-                      isMulti
-                    />
+                      select
+                      required
+                      label='Discount Types'
+                      autoFocus
+                      id={`discount_type_id-${i}`}
+                      name='discount_type_id'
+                      value={n.discount_type_id}
+                      onChange={handleMultiChange(i)}
+                      variant='outlined'
+                      fullWidth
+                    >
+                      <MenuItem value="">Select discount type</MenuItem>
+                      {discounts.map(d => 
+                        <MenuItem key={d.id} value={d.id}>{d.discount_name}</MenuItem>
+                      )}
+                    </TextField>  
                   </TableCell>
 
                   <TableCell component='th' scope='row' align='right'>
@@ -108,16 +118,16 @@ function SelectServices(props) {
                       required
                       label='Discount Amount'
                       autoFocus
-                      id='name'
-                      name='name'
-                      value={form.firstName}
-                      onChange={handleChange}
+                      id={`discount_amount-${i}`}
+                      name='discount_amount'
+                      value={n.discount_amount}
+                      // onChange={handleChange}
                       variant='outlined'
                       fullWidth
                     />
                   </TableCell>
                   <TableCell className='' padding='checkbox'>
-                    <IconButton>
+                    <IconButton onClick={removeServiceRow(i)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>

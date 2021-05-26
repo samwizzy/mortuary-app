@@ -1,11 +1,21 @@
 import React, { Fragment } from 'react';
-import { Button, TextField } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/AddCircle';
+import { Button, TextField, Accordion, AccordionSummary, AccordionDetails, MenuItem } from '@material-ui/core';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 // import { makeStyles } from '@material-ui/styles';
-import { FuseChipSelect } from '@fuse';
+
+const relationships = ["Brother", "Sister"].map(r => ({
+  label: r,
+  value: r,
+}))
 
 function CustomerInfo(props) {
-  const { form, handleChange, handleChipChange } = props;
+  const { form, handleChange } = props;
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handlePanelChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
 
   return (
     <Fragment>
@@ -15,9 +25,9 @@ function CustomerInfo(props) {
           required
           label='First Name'
           autoFocus
-          id='name'
-          name='name'
-          value={form.firstName}
+          id='first-name'
+          name='first_name'
+          value={form.first_name}
           onChange={handleChange}
           variant='outlined'
           fullWidth
@@ -28,9 +38,9 @@ function CustomerInfo(props) {
           required
           label='Last Name'
           autoFocus
-          id='name'
-          name='name'
-          value={form.lastName}
+          id='last-name'
+          name='last_name'
+          value={form.last_name}
           onChange={handleChange}
           variant='outlined'
           fullWidth
@@ -42,8 +52,8 @@ function CustomerInfo(props) {
           label='Other Name'
           autoFocus
           id='other-name'
-          name='otherName'
-          value={form.otherName}
+          name='other_name'
+          value={form.other_name}
           onChange={handleChange}
           variant='outlined'
           fullWidth
@@ -62,20 +72,24 @@ function CustomerInfo(props) {
           fullWidth
         />
 
-        <FuseChipSelect
-          className='mt-8 mb-24'
-          value={[]}
-          onChange={(value) => handleChipChange(value, 'categories')}
-          placeholder='Select multiple categories'
-          textFieldProps={{
-            label: 'Relationship with Deceased',
-            InputLabelProps: {
-              shrink: true,
-            },
-            variant: 'outlined',
-          }}
-          isMulti
-        />
+        <TextField
+          className='mt-8 mb-16'
+          required
+          select
+          label='Relationship with deceased'
+          autoFocus
+          id='relationship_with_deceased'
+          name='relationship_with_deceased'
+          value={form.relationship_with_deceased}
+          onChange={handleChange}
+          variant='outlined'
+          fullWidth
+        >
+          <MenuItem value="">Select relation with deceased</MenuItem>
+          {relationships.map(r => 
+            <MenuItem key={r.value} value={r.value}>{r.value}</MenuItem>
+          )}
+        </TextField> 
 
         <TextField
           className='mt-8 mb-16'
@@ -96,17 +110,152 @@ function CustomerInfo(props) {
           label='Phone'
           autoFocus
           id='phone'
-          name='phone'
-          value={form.phone}
+          name='phone_number'
+          value={form.phone_number}
+          onChange={handleChange}
+          variant='outlined'
+          fullWidth
+        />
+
+        <TextField
+          className='mt-8 mb-16'
+          required
+          label='Age'
+          autoFocus
+          id='age'
+          name='age'
+          value={form.age}
           onChange={handleChange}
           variant='outlined'
           fullWidth
         />
       </div>
 
-      <Button color='primary'>
-        <AddIcon /> Add Relatives
-      </Button>
+      <div>
+        <Accordion expanded={expanded === 'relatives'} onChange={handlePanelChange("relatives")}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="relatives-content"
+            id="relatives-header"
+          >
+            <Button className="" color="primary">Add Relatives</Button>
+          </AccordionSummary>
+          <AccordionDetails>
+
+            <div className='w-full grid grid-cols-2 gap-x-24'>
+              <TextField
+                className='mt-8 mb-16'
+                required
+                label='First Name'
+                autoFocus
+                id='relative-first-name'
+                name='relative.first_name'
+                value={form.relative.first_name}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              />
+
+              <TextField
+                className='mt-8 mb-16'
+                required
+                label='Last Name'
+                autoFocus
+                id='relative-last-name'
+                name='relative.last_name'
+                value={form.relative.last_name}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              />
+
+              <TextField
+                className='mt-8 mb-16'
+                required
+                label='Other Name'
+                autoFocus
+                id='relative-other-name'
+                name='relative.other_name'
+                value={form.relative.other_name}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              />
+
+              <TextField
+                className='mt-8 mb-16'
+                required
+                label='Email'
+                autoFocus
+                id='relative-email'
+                name='relative.email'
+                value={form.relative.email}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              />
+
+              <TextField
+                className='mt-8 mb-16'
+                required
+                select
+                label='Relationship with deceased'
+                autoFocus
+                id='relative.relationship_with_deceased'
+                name='relative.relationship_with_deceased'
+                value={form.relative.relationship_with_deceased}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              >
+                <MenuItem value="">Select relation with deceased</MenuItem>
+                {relationships.map(r => 
+                  <MenuItem key={r.value} value={r.value}>{r.value}</MenuItem>
+                )}
+              </TextField>  
+
+              <TextField
+                className='mt-8 mb-16'
+                required
+                label='Address'
+                autoFocus
+                id='relative-address'
+                name='relative.address'
+                value={form.relative.address}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              />
+
+              <TextField
+                className='mt-8 mb-16'
+                required
+                label='Phone'
+                autoFocus
+                id='relative-phone'
+                name='relative.phone_number'
+                value={form.relative.phone_number}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              />
+
+              <TextField
+                className='mt-8 mb-16'
+                required
+                label='Age'
+                autoFocus
+                id='relative-age'
+                name='relative.age'
+                value={form.relative.age}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              />
+            </div>
+          </AccordionDetails>
+        </Accordion>
+      </div>
     </Fragment>
   );
 }

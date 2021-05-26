@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from "react-redux"
 import {
   Table,
   TableBody,
@@ -10,35 +11,15 @@ import {
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
-import CustomerTableHead from './CustomerTableHead';
+import CustomersTableHead from './CustomersTableHead';
 // import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
 
 function CustomersList(props) {
   const dispatch = useDispatch();
-  const customers = [
-    {
-      id: '5725a680b3249760ea21de52',
-      firstName: 'Abbott',
-      lastName: 'Keitch',
-      email: 'abbott@withinpixels.com',
-      phone: '+234-806-555-0175',
-    },
-    {
-      id: '5725a680606588342058356d',
-      firstName: 'Arnold',
-      lastName: 'Matlock',
-      email: 'arnold@withinpixels.com',
-      phone: '+234-806-555-0175',
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      firstName: 'Barrera',
-      lastName: 'Bradbury',
-      email: 'barrera@withinpixels.com',
-      phone: '+234-806-555-0175',
-    },
-  ];
+  const customerReducer = useSelector(({customerApp}) => customerApp.customer);
+  const customers = customerReducer.customers
+  console.log(customers, "customers")
   const searchText = '';
 
   const [selected, setSelected] = useState([]);
@@ -81,7 +62,7 @@ function CustomersList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/customers/' + item.id + '/' + item.handle);
+    props.history.push('/customers/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -116,7 +97,7 @@ function CustomersList(props) {
     <div className='w-full flex flex-col'>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
         <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <CustomerTableHead
+          <CustomersTableHead
             numSelected={selected.length}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -167,7 +148,11 @@ function CustomersList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.firstName}
+                      {n.first_name} {n.last_name}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row'>
+                      {n.other_name}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
@@ -179,7 +164,7 @@ function CustomersList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='right'>
-                      {n.phone}
+                      {n.phone_number}
                     </TableCell>
                   </TableRow>
                 );

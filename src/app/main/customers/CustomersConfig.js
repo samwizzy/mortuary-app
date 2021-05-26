@@ -10,16 +10,16 @@ export const CustomersConfig = {
     {
       path: '/customers',
       exact: true,
-      component: React.lazy(() => import('./customers/Customers')),
+      component: React.lazy(() => import('./CustomersApp')),
     },
     {
       path: '/customers/:id',
-      component: React.lazy(() => import('./customer/Customer')),
+      exact: true,
+      component: React.lazy(() => import('./CustomersApp')),
     },
     {
-      path: '/customers/new',
-      exact: true,
-      component: React.lazy(() => import('./new-customer/CreateCustomer')),
+      path: '/customers/:id/relatives',
+      component: React.lazy(() => import('./relatives/Relatives')),
     },
   ],
 };

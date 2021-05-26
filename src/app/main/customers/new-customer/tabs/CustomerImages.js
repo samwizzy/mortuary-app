@@ -4,22 +4,24 @@ import { withRouter } from 'react-router-dom';
 import Dropzone from './Dropzone';
 
 function CustomerImages(props) {
-  const { form, handleChange } = props;
+  const { form, handleImageUpload } = props;
 
   return (
     <div className=' md:w-4/12 max-w-4xl mx-auto'>
       <div className='flex flex-col'>
         <FuseScrollbars className='flex-grow overflow-x-auto'>
           <Dropzone
-            name='images'
+            name='customer_image'
+            title='customer_image'
             form={form}
-            handleChange={handleChange}
+            handleImageUpload={handleImageUpload}
             icon='/assets/images/icons/picture.svg'
           />
           <Dropzone
             name='signature'
+            title='signature'
             form={form}
-            handleChange={handleChange}
+            handleImageUpload={handleImageUpload}
             icon='/assets/images/icons/upload.svg'
           />
         </FuseScrollbars>

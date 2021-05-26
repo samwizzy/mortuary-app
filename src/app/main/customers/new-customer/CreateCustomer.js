@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { connect, useDispatch } from "react-redux"
 import _ from 'lodash';
-import { FusePageCarded } from '@fuse';
+import moment from 'moment';
+import { FusePageCarded, FuseUtils } from '@fuse';
 import { Tab, Tabs } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
-// import withReducer from 'app/store/withReducer';
-// import reducer from '../store/reducers';
+import withReducer from 'app/store/withReducer';
+import reducer from '../store/reducers';
+import * as Actions from '../store/actions';
 import CreateCustomerHeader from './CreateCustomerHeader';
 import CustomerInfo from './tabs/CustomerInfo';
 import SelectServices from './tabs/SelectServices';
@@ -12,63 +15,105 @@ import CustomerImages from './tabs/CustomerImages';
 import DeceasedImages from './tabs/DeceasedImages';
 import DeceasedInfo from './tabs/DeceasedInfo';
 
-function CreateCustomer() {
+function CreateCustomer(props) {
+  const { discounts } = props
   const [tabValue, setTabValue] = useState(0);
+  const dispatch = useDispatch();
   const { form, handleChange, setForm } = useForm({
-    firstName: '',
-    lastName: '',
-    otherName: '',
-    email: '',
-    relationship: '',
-    phone: '',
+    first_name: '',
+    last_name: '',
+    other_name: '',
     address: '',
-    services: [
-      { title: '', billingAmount: '', discountType: '', discountAmount: '' },
-    ],
-    images: [],
+    email: '',
+    phone_number: '',
+    relationship_with_deceased: '',
+    customer_image: '',
     signature: '',
+    age: '',
+    service: [
+      { service_id: '', rate: '', discount_type_id: '', discount_amount: '' },
+    ],
+    relative: {
+      first_name: "",
+      last_name: "",
+      other_name: "",
+      address: "", 
+      email: "",
+      phone_number: "", 
+      age: "",
+      relationship_with_deceased: "" 
+    },
     deceased: {
-      firstName: '',
-      lastName: '',
-      otherName: '',
-      age: '',
+      first_name: '',
+      last_name: '',
+      other_name: '',
       gender: '',
-      image: null,
+      age: '',
       address: '',
-      placeOfDeath: '',
-      dateOfDeath: '',
-      timeOfDeath: '',
-      casualty: '',
-      death: '',
-      supportingDoc: '',
-      hospitalName: '',
-      hospitalRecord: '',
-      hospitalAttendant: '',
-      hospitalAddress: '',
+      place_of_death: '',
+      dateof_assertion: moment().format("YYYY-MM-DDTHH:mm:ss"),
+      time_of_Death: '',
+      cause_of_death: '',
+      how_was_death_assertained: "",
+      name_of_hospital: '',
+      medical_attendant_name: '',
+      hospital_address: '',
+      status: 'DEFAULT',
+      deceased_image: null,
+      record_of_death_from_hospital: '',
+      supporting_document: '',
     },
   });
 
   function handleChipChange(value, name) {
-    setForm(
-      _.set(
-        { ...form },
-        name,
-        value.map((item) => item.value)
-      )
-    );
+    setForm(_.set({ ...form }, name, value.value));
+  }
+
+  function addServiceRow() {
+    const newRole = { service_id: '', rate: '', discount_type_id: '', discount_amount: '' }
+    setForm({...form, service: [ ...form.service, newRole ]});
+  }
+
+  const removeServiceRow = (i) => () => {
+    setForm({ ...form, service: form.service.filter((s, k) => k !== i)});
+  }
+
+  const handleImageUpload = (name, files) => {
+    FuseUtils.toBase64(files[0]).then(data => {
+      // setForm({ ...form, [name]: data});
+      setForm(_.set({ ...form }, name, data));
+    })
+  }
+
+  const handleMultiChange = i => event => {
+    const { name, value } = event.target
+    const { service } = form
+    if(name === "discount_type_id"){
+      const discount = discounts.find(d => d.id === value)
+      service[i][name] =  discount.id
+      service[i].discount_amount = discount.amount
+    }else{
+      service[i][name] = value
+    }
+    setForm({ ...form, service });
   }
 
   useEffect(() => {
+    dispatch(Actions.getServices())
+    dispatch(Actions.getDiscounts())
     // setForm();
-  }, [setForm]);
+  }, [setForm, dispatch]);
 
   const handleDateChange = (name) => (date) => {
-    setForm({ ...form, [name]: date });
+    setForm(_.set({ ...form }, name, moment(date).format("YYYY-MM-DDTHH:mm:ss")));
   };
 
   function handleChangeTab(event, tabValue) {
     setTabValue(tabValue);
   }
+
+  console.log(form, "form create customer")
+  console.log(discounts, "discounts")
 
   return (
     <FusePageCarded
@@ -109,11 +154,13 @@ function CreateCustomer() {
             <SelectServices
               form={form}
               handleChange={handleChange}
-              handleChipChange={handleChipChange}
+              handleMultiChange={handleMultiChange}
+              addServiceRow={addServiceRow}
+              removeServiceRow={removeServiceRow}
             />
           )}
           {tabValue === 2 && (
-            <CustomerImages form={form} handleChange={handleChange} />
+            <CustomerImages form={form} handleImageUpload={handleImageUpload} />
           )}
           {tabValue === 3 && (
             <DeceasedInfo
@@ -123,7 +170,7 @@ function CreateCustomer() {
             />
           )}
           {tabValue === 4 && (
-            <DeceasedImages form={form} handleChange={handleChange} />
+            <DeceasedImages form={form} handleImageUpload={handleImageUpload} />
           )}
         </div>
       }
@@ -132,5 +179,10 @@ function CreateCustomer() {
   );
 }
 
-// export default withReducer('customerApp', reducer)(Customer);
-export default CreateCustomer;
+const mapStateToProps = ({customerApp}) => {
+  return {
+    discounts: customerApp.discounts.discounts
+  }
+}
+
+export default withReducer('customerApp', reducer)(connect(mapStateToProps)(CreateCustomer));

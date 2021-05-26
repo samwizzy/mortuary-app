@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Table,
   TableBody,
@@ -8,6 +8,8 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
+import DoneIcon from "@material-ui/icons/Done"
+import ClearIcon from "@material-ui/icons/Clear"
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
@@ -16,53 +18,29 @@ import ServicesTableHead from './ServicesTableHead';
 
 function ServicesList(props) {
   const dispatch = useDispatch();
-  const deceased = [
-    {
-      id: '5725a680b3249760ea21de52',
-      serviceName: 'Embalming',
-      type: 'Fixed',
-      amount: '3200',
-      createdBy: 'Samuel Okeke',
-      dateCreated: '2021-04-22',
-    },
-    {
-      id: '5725a680606588342058356d',
-      serviceName: 'Dressing ',
-      type: 'Fixed',
-      amount: '3200',
-      createdBy: 'John David',
-      dateCreated: '2021-04-22',
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      serviceName: 'Recovery and Pick up',
-      type: 'Recurrent',
-      amount: '3200',
-      createdBy: 'Joy Essien',
-      dateCreated: '2021-04-22',
-    },
-  ];
+  const serviceReducer = useSelector(({inventoryApp}) => inventoryApp.services)
+  const services = serviceReducer.services;
+  
   const searchText = '';
 
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(deceased);
+  const [data, setData] = useState(services);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
   }, [dispatch]);
 
   useEffect(() => {
     setData(
       searchText.length === 0
-        ? deceased
-        : _.filter(deceased, (item) =>
+        ? services
+        : _.filter(services, (item) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
-  }, [deceased, searchText]);
+  }, [services, searchText]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -84,7 +62,7 @@ function ServicesList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/inventory/services/' + item.id + '/' + item.handle);
+    props.history.push('/inventory/services/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -170,11 +148,11 @@ function ServicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.serviceName}
+                      {n.service_name}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.type}
+                      {n.service_type}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
@@ -182,11 +160,19 @@ function ServicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.createdBy}
+                      {n.created_by}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.dateCreated}
+                      {n.is_admisson ? <DoneIcon /> : <ClearIcon />}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {n.is_customer_image ? <DoneIcon /> : <ClearIcon />}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {n.request_customer_signature ? <DoneIcon /> : <ClearIcon />}
                     </TableCell>
                   </TableRow>
                 );

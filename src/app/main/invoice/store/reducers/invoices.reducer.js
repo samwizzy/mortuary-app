@@ -6,6 +6,7 @@ const initialState = {
   searchText: '',
   selectedInvoiceIds: [],
   routeParams: {},
+  paymentAdvice: null,
   invoiceDialog: {
     type: 'new',
     props: {
@@ -28,6 +29,13 @@ const invoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         entities: _.keyBy(action.payload, 'id'),
+        routeParams: action.routeParams,
+      };
+    }
+    case Actions.GET_PAYMENT_ADVICE: {
+      return {
+        ...state,
+        paymentAdvice: action.payload,
         routeParams: action.routeParams,
       };
     }

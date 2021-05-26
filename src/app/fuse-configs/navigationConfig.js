@@ -46,6 +46,12 @@ const navigationConfig = [
             type: 'item',
             url: '/inventory/services',
           },
+          {
+            id: 'inventory-discounts',
+            title: 'Discounts',
+            type: 'item',
+            url: '/inventory/discounts',
+          },
         ],
       },
       {

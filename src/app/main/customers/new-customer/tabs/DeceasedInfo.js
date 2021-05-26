@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { FuseChipSelect } from '@fuse';
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  MenuItem,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -15,8 +15,13 @@ import {
 } from '@material-ui/pickers';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+const genders = ['Male', 'Female'].map((sex) => ({
+  value: sex,
+  label: sex,
+}))
+
 function DeceasedInfo(props) {
-  const { form, handleChange, handleChipChange, handleDateChange } = props;
+  const { form, handleChange, handleDateChange } = props;
   const [map, setMap] = useState('details');
 
   return (
@@ -37,9 +42,9 @@ function DeceasedInfo(props) {
                 required
                 label='First Name'
                 autoFocus
-                id='name'
-                name='name'
-                value={form.firstName}
+                id='deceased-first-name'
+                name='deceased.first_name'
+                value={form.deceased.first_name}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -50,9 +55,9 @@ function DeceasedInfo(props) {
                 required
                 label='Other Name'
                 autoFocus
-                id='other-name'
-                name='otherName'
-                value={form.otherName}
+                id='deceased-other-name'
+                name='deceased.other_name'
+                value={form.deceased.other_name}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -62,10 +67,9 @@ function DeceasedInfo(props) {
                 className='mt-8 mb-16'
                 required
                 label='Last Name'
-                autoFocus
-                id='name'
-                name='name'
-                value={form.lastName}
+                id='last_name'
+                name='deceased.last_name'
+                value={form.deceased.last_name}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -75,10 +79,9 @@ function DeceasedInfo(props) {
                 className='mt-8 mb-16'
                 required
                 label='Address'
-                autoFocus
                 id='address'
-                name='address'
-                value={form.address}
+                name='deceased.address'
+                value={form.deceased.address}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -88,33 +91,31 @@ function DeceasedInfo(props) {
                 className='mt-8 mb-16'
                 required
                 label='Age'
-                autoFocus
                 id='age'
-                name='age'
-                value={form.age}
+                name='deceased.age'
+                value={form.deceased.age}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
               />
 
-              <FuseChipSelect
-                className='mt-8 mb-24'
-                value={form.gender}
-                onChange={(value) => handleChipChange(value, 'gender')}
-                placeholder='Select gender'
-                textFieldProps={{
-                  label: 'Gender',
-                  InputLabelProps: {
-                    shrink: true,
-                  },
-                  variant: 'outlined',
-                }}
-                options={['Male', 'Female'].map((sex) => ({
-                  value: sex,
-                  label: sex,
-                }))}
-                isMulti
-              />
+              <TextField
+                className='mt-8 mb-16'
+                required
+                select
+                label='Gender'
+                id='deceased-gender'
+                name='deceased.gender'
+                value={form.deceased.gender}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              >
+                <MenuItem value="">Select gender</MenuItem>
+                {genders.map(g => 
+                  <MenuItem key={g.value} value={g.value}>{g.value}</MenuItem>
+                )}
+              </TextField> 
             </div>
           </div>
         </AccordionDetails>
@@ -135,9 +136,9 @@ function DeceasedInfo(props) {
                 required
                 label='Place of Death'
                 autoFocus
-                id='name'
-                name='name'
-                value={form.placeOfDeath}
+                id='deceased_place_of_death'
+                name='deceased.place_of_death'
+                value={form.deceased.place_of_death}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -148,9 +149,9 @@ function DeceasedInfo(props) {
                   margin='normal'
                   inputVariant='outlined'
                   id='date-of-death'
-                  label='Date of death'
-                  value={form.dateOfDeath}
-                  onChange={handleDateChange}
+                  label='Date of assertion'
+                  value={form.deceased.dateof_assertion}
+                  onChange={handleDateChange("deceased.dateof_assertion")}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
                   }}
@@ -163,8 +164,8 @@ function DeceasedInfo(props) {
                   inputVariant='outlined'
                   id='time-of-death'
                   label='Time of death'
-                  value={form.timeOfDeath}
-                  onChange={handleDateChange}
+                  value={form.deceased.time_of_death}
+                  onChange={handleDateChange("deceased.time_of_death")}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
                   }}
@@ -176,9 +177,9 @@ function DeceasedInfo(props) {
                 required
                 label='Cause of death'
                 autoFocus
-                id='casualty'
-                name='casualty'
-                value={form.casualty}
+                id='cause_of_death'
+                name='deceased.cause_of_death'
+                value={form.deceased.cause_of_death}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -189,9 +190,9 @@ function DeceasedInfo(props) {
                 required
                 label='How was death ascertained?'
                 autoFocus
-                id='death'
-                name='death'
-                value={form.death}
+                id='how_was_death_assertained'
+                name='deceased.how_was_death_assertained'
+                value={form.deceased.how_was_death_assertained}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -216,9 +217,9 @@ function DeceasedInfo(props) {
                 required
                 label='Name of Hospital'
                 autoFocus
-                id='hospital-name'
-                name='hospitalName'
-                value={form.hospitalName}
+                id='deceased-hospital-name'
+                name='deceased.name_of_hospital'
+                value={form.deceased.name_of_hospital}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -229,9 +230,9 @@ function DeceasedInfo(props) {
                 required
                 label='Medical attendant Name'
                 autoFocus
-                id='hospital-attendant'
-                name='hospitalAttendant'
-                value={form.hospitalAttendant}
+                id='deceased-hospital-attendant'
+                name='deceased.medical_attendant_name'
+                value={form.deceased.medical_attendant_name}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth
@@ -242,9 +243,9 @@ function DeceasedInfo(props) {
                 required
                 label='Hospital Address'
                 autoFocus
-                id='hospital-address'
-                name='hospitalAddress'
-                value={form.hospitalAddress}
+                id='deceased-hospital-address'
+                name='deceased.hospital_address'
+                value={form.deceased.hospital_address}
                 onChange={handleChange}
                 variant='outlined'
                 fullWidth

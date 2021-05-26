@@ -1,4 +1,5 @@
 import React from 'react';
+import "./fuse-configs/axiosConfig";
 import {FuseAuthorization, FuseLayout, FuseTheme} from '@fuse';
 import Provider from 'react-redux/es/components/Provider';
 import {Router} from 'react-router-dom';

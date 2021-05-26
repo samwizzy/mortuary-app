@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Table,
   TableBody,
@@ -12,34 +12,16 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import ItemsTableHead from './ItemsTableHead';
-// import * as Actions from '../store/actions';
 
 function ItemsList(props) {
   const dispatch = useDispatch();
-  const deceased = [
-    {
-      id: '5725a680b3249760ea21de52',
-      itemName: "Ivy's Soap",
-      unitPrice: '3200',
-      stock: 300,
-    },
-    {
-      id: '5725a680606588342058356d',
-      itemName: 'Lotion',
-      unitPrice: '3200',
-      stock: 300,
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      itemName: 'Hamper',
-      unitPrice: '3200',
-      stock: 300,
-    },
-  ];
+  const itemReducer = useSelector(({inventoryApp}) => inventoryApp.items)
+  console.log(itemReducer, "itemReducer")
+  const items = itemReducer.items;
   const searchText = '';
 
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(deceased);
+  const [data, setData] = useState(items);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
@@ -51,12 +33,12 @@ function ItemsList(props) {
   useEffect(() => {
     setData(
       searchText.length === 0
-        ? deceased
-        : _.filter(deceased, (item) =>
+        ? items
+        : _.filter(items, (item) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
-  }, [deceased, searchText]);
+  }, [items, searchText]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -78,7 +60,7 @@ function ItemsList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/inventory/items/' + item.id + '/' + item.handle);
+    props.history.push('/inventory/items/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -164,19 +146,19 @@ function ItemsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.itemName}
+                      {n.item_name}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.id}
+                      {n.item_id}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.unitPrice}
+                      {n.unit_price}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.stock}
+                      {n.stock_at_hand}
                     </TableCell>
                   </TableRow>
                 );
