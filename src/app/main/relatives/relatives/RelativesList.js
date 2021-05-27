@@ -17,7 +17,7 @@ import { useDispatch } from 'react-redux';
 
 function RelativesList(props) {
   const dispatch = useDispatch();
-  const relativesReducer = useSelector(({customerApp}) => customerApp.relatives);
+  const relativesReducer = useSelector(({relativesApp}) => relativesApp.relatives);
   const relatives = relativesReducer.relatives
   const match = useRouteMatch();
   const searchText = '';
@@ -64,7 +64,7 @@ function RelativesList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/customers/' + match.params.id + '/relatives/' + item.id);
+    props.history.push('/relatives/' + item.id);
   }
 
   function handleCheck(event, id) {
