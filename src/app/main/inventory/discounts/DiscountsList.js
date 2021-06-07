@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Icon,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -12,7 +14,8 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import DiscountsTableHead from './DiscountsTableHead';
-// import * as Actions from '../store/actions';
+import * as Actions from '../store/actions';
+import DiscountDialog from "./DiscountDialog"
 
 function DiscountsList(props) {
   const dispatch = useDispatch();
@@ -60,7 +63,7 @@ function DiscountsList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/inventory/discounts/' + item.id);
+    // props.history.push('/inventory/discounts/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -149,16 +152,16 @@ function DiscountsList(props) {
                       {n.discount_name}
                     </TableCell>
 
-                    <TableCell className='truncate' component='th' scope='row'>
-                      {n.discount_type}
-                    </TableCell>
-
                     <TableCell component='th' scope='row' align='left'>
                       {n.amount}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
                       {n.created_by}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      <IconButton onClick={() => dispatch(Actions.openEditDiscountDialog(n))}><Icon>edit</Icon></IconButton>
                     </TableCell>
                   </TableRow>
                 );
@@ -181,6 +184,8 @@ function DiscountsList(props) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+
+      <DiscountDialog />
     </div>
   );
 }

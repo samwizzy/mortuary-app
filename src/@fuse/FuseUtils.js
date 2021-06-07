@@ -461,6 +461,11 @@ class FuseUtils {
         });
     }
 
+    static formatCurrency = (value, code = 'NGN', locale = 'en-NG') => {
+        if (!code) code = 'NGN';
+        return new Intl.NumberFormat(locale, { style: 'currency', currency: code }).format(Number(value))
+    }
+
 }
 
 export default FuseUtils;

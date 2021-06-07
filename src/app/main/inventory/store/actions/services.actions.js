@@ -17,6 +17,14 @@ export const GET_ITEM_BY_ID = '[INVENTORY APP] GET ITEM BY ID';
 export const OPEN_SERVICE_DIALOG = '[INVENTORY APP] OPEN_SERVICE_DIALOG';
 export const CLOSE_SERVICE_DIALOG = '[INVENTORY APP] CLOSE_SERVICE_DIALOG';
 
+export const OPEN_EDIT_SERVICE_DIALOG = '[INVENTORY APP] OPEN EDIT SERVICE DIALOG';
+export const CLOSE_EDIT_SERVICE_DIALOG = '[INVENTORY APP] CLOSE EDIT SERVICE DIALOG';
+
+export const OPEN_DELETE_CONFIRM_SERVICE_DIALOG = '[INVENTORY APP] OPEN DELETE CONFIRM SERVICE DIALOG';
+export const CLOSE_DELETE_CONFIRM_SERVICE_DIALOG = '[INVENTORY APP] CLOSE DELETE CONFIRM SERVICE DIALOG';
+
+export const SET_SEARCH_TEXT = '[INVENTORY APP] SET SEARCH TEXT';
+
 export function createService(data) {
   const request = axios.post('/api/v1/services', data);
 
@@ -90,7 +98,7 @@ export function updateService(data) {
 }
 
 export function deleteService(id) {
-  const request = axios.put('/api/v1/services/' + id);
+  const request = axios.delete('/api/v1/services/' + id);
 
   return (dispatch) => {
     request.then((response) => {
@@ -102,6 +110,7 @@ export function deleteService(id) {
             type: DELETE_SERVICE,
             payload: response.data,
           }),
+          dispatch(Actions.closeConfirmDeleteDialog())
         ]).then(() => {
           dispatch(Actions.getServices());
           history.push("/inventory/services")
@@ -124,4 +133,37 @@ export function closeServiceDialog() {
   return {
     type: CLOSE_SERVICE_DIALOG,
   }
+}
+
+export function openEditServiceDialog(payload) {
+  return {
+    type: OPEN_EDIT_SERVICE_DIALOG,
+    payload
+  }
+}
+
+export function closeEditServiceDialog() {
+  return {
+    type: CLOSE_EDIT_SERVICE_DIALOG,
+  }
+}
+
+export function openConfirmDeleteDialog(payload) {
+  return {
+    type: OPEN_DELETE_CONFIRM_SERVICE_DIALOG,
+    payload
+  }
+}
+
+export function closeConfirmDeleteDialog() {
+  return {
+    type: CLOSE_DELETE_CONFIRM_SERVICE_DIALOG,
+  }
+}
+
+export function setSearchText(event) {
+  return {
+    type: SET_SEARCH_TEXT,
+    searchText: event.target.value,
+  };
 }

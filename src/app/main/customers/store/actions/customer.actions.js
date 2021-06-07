@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { showMessage } from '../../../../../app/store/actions/fuse';
 import * as Actions from './';
+import history from "../../../../../@history"
 
 export const CREATE_CUSTOMER = '[CUSTOMER APP] CREATE CUSTOMER';
 export const UPDATE_CUSTOMER = '[CUSTOMER APP] UPDATE CUSTOMER';
 export const GET_CUSTOMERS = '[CUSTOMER APP] GET CUSTOMERS';
 export const GET_CUSTOMER_BY_ID = '[CUSTOMER APP] GET CUSTOMER BY ID';
+
+export const SET_SEARCH_TEXT = '[CUSTOMER APP] SET SEARCH TEXT';
 
 export function createCustomer(data) {
   const request = axios.post('/api/v1/customers', data);
@@ -21,7 +24,10 @@ export function createCustomer(data) {
             type: CREATE_CUSTOMER,
             payload: response.data,
           }),
-        ]).then(() => dispatch(Actions.getCustomers()));
+        ]).then(() => {
+          dispatch(Actions.getCustomers());
+          history.push("/customers")
+        });
       } else {
         dispatch(showMessage({ message: 'Customer creation failed' }));
       }
@@ -29,8 +35,8 @@ export function createCustomer(data) {
   };
 }
 
-export function getCustomers() {
-  const request = axios.get('/api/v1/customers');
+export function getCustomers(page=0, size=10) {
+  const request = axios.get('/api/v1/customers', { params: {page, size} });
 
   return (dispatch) =>
     request.then((response) => {
@@ -72,5 +78,12 @@ export function updateCustomer(data) {
         dispatch(showMessage({ message: 'Customer update failed' }));
       }
     });
+  };
+}
+
+export function setSearchText(event) {
+  return {
+    type: SET_SEARCH_TEXT,
+    searchText: event.target.value,
   };
 }

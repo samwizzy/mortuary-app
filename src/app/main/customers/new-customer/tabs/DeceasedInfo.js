@@ -21,7 +21,7 @@ const genders = ['Male', 'Female'].map((sex) => ({
 }))
 
 function DeceasedInfo(props) {
-  const { form, handleChange, handleDateChange } = props;
+  const { form, handleChange, handleDateChange, handleTimeChange } = props;
   const [map, setMap] = useState('details');
 
   return (
@@ -165,7 +165,7 @@ function DeceasedInfo(props) {
                   id='time-of-death'
                   label='Time of death'
                   value={form.deceased.time_of_death}
-                  onChange={handleDateChange("deceased.time_of_death")}
+                  onChange={handleTimeChange("deceased.time_of_death")}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
                   }}

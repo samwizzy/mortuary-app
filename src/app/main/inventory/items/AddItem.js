@@ -57,9 +57,6 @@ function AddItems(props) {
 
             <div className='flex items-center max-w-full'>
               <div className='flex min-w-0'>
-                <FuseAnimate animation='transition.expandIn' delay={300}>
-                  <Icon className='text-32 mr-0 sm:mr-12'>person</Icon>
-                </FuseAnimate>
                 <FuseAnimate animation='transition.slideLeftIn' delay={300}>
                   <Typography className='hidden sm:flex' variant='h6'>
                     Add Item

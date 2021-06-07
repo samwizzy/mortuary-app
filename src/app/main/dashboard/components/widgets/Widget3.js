@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom"
 import {
   makeStyles,
   Button,
@@ -32,14 +33,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Widget3 = () => {
+const Widget3 = (props) => {
   const classes = useStyles();
+  const { count } = props
 
   return (
     <Card className={classes.card}>
       <CardContent>
         <div className='flex flex-col items-center space-y-4'>
-          <Typography variant='h3'>100</Typography>
+          <Typography variant='h3'>{count}</Typography>
           <Typography variant='h6'>Services</Typography>
         </div>
       </CardContent>
@@ -47,7 +49,7 @@ const Widget3 = () => {
       <Divider />
 
       <CardActions>
-        <Button size='small' onClick={() => {}}>
+        <Button size='small' component={Link} to="/inventory/services">
           View all
         </Button>
       </CardActions>

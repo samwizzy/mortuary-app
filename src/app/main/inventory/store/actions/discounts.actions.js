@@ -9,12 +9,16 @@ export const DELETE_DISCOUNT = '[INVENTORY APP] DELETE DISCOUNT';
 export const GET_DISCOUNTS = '[INVENTORY APP] GET DISCOUNTS';
 export const GET_DISCOUNT_BY_ID = '[INVENTORY APP] GET DISCOUNT BY ID';
 
-export const OPEN_DISCOUNT_DIALOG = '[INVENTORY APP] OPEN_DISCOUNT_DIALOG';
-export const CLOSE_DISCOUNT_DIALOG = '[INVENTORY APP] CLOSE_DISCOUNT_DIALOG';
+export const OPEN_DISCOUNT_DIALOG = '[INVENTORY APP] OPEN DISCOUNT DIALOG';
+export const CLOSE_DISCOUNT_DIALOG = '[INVENTORY APP] CLOSE DISCOUNT DIALOG';
+
+export const OPEN_EDIT_DISCOUNT_DIALOG = '[INVENTORY APP] OPEN EDIT DISCOUNT DIALOG';
+export const CLOSE_EDIT_DISCOUNT_DIALOG = '[INVENTORY APP] CLOSE EDIT DISCOUNT DIALOG';
+
+export const SET_SEARCH_TEXT = '[INVENTORY DISCOUNT APP] SET SEARCH TEXT';
 
 export function createDiscount(data) {
   const request = axios.post('/api/v1/discounts', data);
-  console.log(request, 'creating discount request');
 
   return (dispatch) => {
     request.then((response) => {
@@ -42,7 +46,6 @@ export function getDiscounts() {
 
   return (dispatch) =>
     request.then((response) => {
-      console.log(response, "response")
       dispatch({
         type: GET_DISCOUNTS,
         payload: response.data.data,
@@ -123,4 +126,24 @@ export function closeDiscountDialog() {
   return {
     type: CLOSE_DISCOUNT_DIALOG,
   }
+}
+
+export function openEditDiscountDialog(payload) {
+  return {
+    type: OPEN_EDIT_DISCOUNT_DIALOG,
+    payload
+  }
+}
+
+export function closeEditDiscountDialog() {
+  return {
+    type: CLOSE_EDIT_DISCOUNT_DIALOG,
+  }
+}
+
+export function setSearchText(event) {
+  return {
+    type: SET_SEARCH_TEXT,
+    searchText: event.target.value,
+  };
 }

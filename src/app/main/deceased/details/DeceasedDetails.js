@@ -1,7 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { bindActionCreators } from "redux";
+import { connect, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import { FuseAnimate } from '@fuse';
+import * as Actions from "./../store/actions"
 
-function DeceasedDetails() {
+function DeceasedDetails(props) {
+  const { getDeceasedById } = props
+  const match = useRouteMatch();
+  const deceasedReducer = useSelector(({deceasedApp}) => deceasedApp.deceased);
+  const deceased = deceasedReducer.deceased
+  console.log(deceased, "deceasedDetail")
+
+  useEffect(() => {
+    getDeceasedById(match.params.id)
+  }, [getDeceasedById, match.params.id]);
+
+  if(!deceased){
+    return null
+  }
+
   return (
     <div>
       <div className='flex items-center justify-between overflow-hidden'>
@@ -14,7 +32,7 @@ function DeceasedDetails() {
                     Basic Information
                   </h3>
                   <p className='mt-1 max-w-2xl text-sm text-gray-500'>
-                    Personal details and application.
+                    Deceased details
                   </p>
                 </div>
                 <div className='border-t border-gray-200'>
@@ -24,23 +42,23 @@ function DeceasedDetails() {
                         First name
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Margot
+                        {deceased.first_name}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>
-                        Sarah
+                        Last Name
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Margot Foster
+                      {deceased.last_name}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>
-                        Last name
+                        Other name
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Foster
+                        {deceased.other_name}
                       </dd>
                     </div>
                     <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
@@ -48,13 +66,13 @@ function DeceasedDetails() {
                         Gender
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Male
+                        {deceased.gender}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>Age</dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        60
+                        {deceased.age}
                       </dd>
                     </div>
 
@@ -63,7 +81,7 @@ function DeceasedDetails() {
                         Address
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Marina, Lagos.
+                        {deceased.address}
                       </dd>
                     </div>
                   </dl>
@@ -83,15 +101,15 @@ function DeceasedDetails() {
                         Place of death
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Lagos
+                        {deceased.place_of_death}
                       </dd>
                     </div>
                     <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>
-                        Date
+                        Date of Assertion
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        2021-04-23
+                        {deceased.dateof_assertion}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
@@ -99,7 +117,7 @@ function DeceasedDetails() {
                         Cause of death
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Car Accident
+                        {deceased.cause_of_death}
                       </dd>
                     </div>
                     <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
@@ -107,7 +125,7 @@ function DeceasedDetails() {
                         Time
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        23:45
+                        {deceased.time_of_death}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
@@ -115,7 +133,7 @@ function DeceasedDetails() {
                         How was death ascertained?
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        How death was ascertained...
+                        {deceased.how_was_death_assertained}
                       </dd>
                     </div>
                   </dl>
@@ -135,7 +153,7 @@ function DeceasedDetails() {
                         Name of Hosipital
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Doren Specialist
+                        {deceased.name_of_hospital}
                       </dd>
                     </div>
                     <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
@@ -143,7 +161,7 @@ function DeceasedDetails() {
                         Medical Attendant
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Margot Foster
+                        {deceased.medical_attendant_name}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
@@ -151,7 +169,7 @@ function DeceasedDetails() {
                         Address
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Thomas Estate, Ajah, Lagos
+                        {deceased.hospital_address}
                       </dd>
                     </div>
                   </dl>
@@ -165,4 +183,10 @@ function DeceasedDetails() {
   );
 }
 
-export default DeceasedDetails;
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getDeceasedById: Actions.getDeceasedById
+  }, dispatch)
+}
+
+export default connect(null, mapDispatchToProps)(DeceasedDetails);

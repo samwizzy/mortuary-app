@@ -3,14 +3,16 @@ import { showMessage } from '../../../../../app/store/actions/fuse';
 import * as Actions from './';
 import history from "../../../../../@history"
 
-export const CREATE_ITEM = '[INVENTORY APP] CREATE ITEM';
-export const UPDATE_ITEM = '[INVENTORY APP] UPDATE ITEM';
-export const DELETE_ITEM = '[INVENTORY APP] DELETE ITEM';
-export const GET_ITEMS = '[INVENTORY APP] GET ITEMS';
-export const GET_ITEM_BY_ID = '[INVENTORY APP] GET ITEM BY ID';
+export const CREATE_ITEM = '[INVENTORY ITEM APP] CREATE ITEM';
+export const UPDATE_ITEM = '[INVENTORY ITEM APP] UPDATE ITEM';
+export const DELETE_ITEM = '[INVENTORY ITEM APP] DELETE ITEM';
+export const GET_ITEMS = '[INVENTORY ITEM APP] GET ITEMS';
+export const GET_ITEM_BY_ID = '[INVENTORY ITEM APP] GET ITEM BY ID';
 
-export const OPEN_ITEM_DIALOG = '[INVENTORY APP] OPEN_ITEM_DIALOG';
-export const CLOSE_ITEM_DIALOG = '[INVENTORY APP] CLOSE_ITEM_DIALOG';
+export const OPEN_ITEM_DIALOG = '[INVENTORY ITEM APP] OPEN_ITEM_DIALOG';
+export const CLOSE_ITEM_DIALOG = '[INVENTORY ITEM APP] CLOSE_ITEM_DIALOG';
+
+export const SET_SEARCH_TEXT = '[INVENTORY ITEM APP] SET SEARCH TEXT';
 
 export function createItem(data) {
   const request = axios.post('/api/v1/items', data);
@@ -123,4 +125,11 @@ export function closeItemDialog() {
   return {
     type: CLOSE_ITEM_DIALOG,
   }
+}
+
+export function setSearchText(event) {
+  return {
+    type: SET_SEARCH_TEXT,
+    searchText: event.target.value,
+  };
 }

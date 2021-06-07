@@ -1,7 +1,7 @@
 import React from 'react';
 import { FuseAnimate } from '@fuse';
 
-function InvoiceDetails() {
+function InvoiceDetails(props) {
   return (
     <div>
       <div className='flex items-center justify-between overflow-hidden'>

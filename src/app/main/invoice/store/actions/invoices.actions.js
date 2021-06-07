@@ -1,6 +1,10 @@
 import axios from 'axios';
+import * as Actions from "./"
+import { showMessage } from '../../../../../app/store/actions/fuse';
+import history from "../../../../../@history"
 
 export const GET_INVOICES = '[INVOICES APP] GET INVOICES';
+export const GET_INVOICE_BY_ID = '[INVOICES APP] GET INVOICE BY ID';
 export const SET_SEARCH_TEXT = '[INVOICES APP] SET SEARCH TEXT';
 
 export const SELECT_ALL_INVOICES = '[INVOICES APP] SELECT ALL INVOICES';
@@ -20,17 +24,56 @@ export const REMOVE_INVOICE = '[INVOICES APP] REMOVE INVOICE';
 export const REMOVE_INVOICES = '[INVOICES APP] REMOVE INVOICES';
 export const GET_PAYMENT_ADVICE = '[INVOICES APP] GET PAYMENT ADVICE';
 
-export function getInvoices(routeParams) {
-  const request = axios.get('/api/invoices', {
-    params: routeParams,
-  });
+export function addInvoice(data) {
+  const { customer_id: id } = data
+  const request = axios.post(`/api/v1/invoices/customer_id/${id}/add_invoice`, data);
+  console.log(request, 'creating Invoice request');
+
+  return (dispatch) => {
+    request.then((response) => {
+      if (response.status === 200) {
+        dispatch(showMessage({ message: 'Invoice created successfully' }));
+
+        Promise.all([
+          dispatch({
+            type: ADD_INVOICE,
+            payload: response.data,
+          }),
+        ]).then(() => {
+          dispatch(Actions.getInvoices());
+          history.push("/invoices")
+        });
+      } else {
+        dispatch(showMessage({ message: 'Invoice creation failed' }));
+      }
+    });
+  };
+}
+
+export function getInvoices(page=0, size=10) {
+  const request = axios.get('/api/v1/invoices', { params: { page, size } });
+
+  console.log(request, "get request invoice")
 
   return (dispatch) =>
     request.then((response) =>
       dispatch({
         type: GET_INVOICES,
-        payload: response.data,
-        routeParams,
+        payload: response.data.data
+      })
+    );
+}
+
+export function getInvoiceById(id) {
+  const request = axios.get('/api/v1/invoices/' + id);
+
+  console.log(request, "get request invoice by id")
+
+  return (dispatch) =>
+    request.then((response) =>
+      dispatch({
+        type: GET_INVOICE_BY_ID,
+        payload: response.data.data
       })
     );
 }
@@ -43,7 +86,6 @@ export function getPaymentAdvice(id) {
       dispatch({
         type: GET_PAYMENT_ADVICE,
         payload: response.data,
-        routeParams: { id },
       })
     );
 }
@@ -52,12 +94,6 @@ export function setSearchText(event) {
   return {
     type: SET_SEARCH_TEXT,
     searchText: event.target.value,
-  };
-}
-
-export function selectAllInvoices() {
-  return {
-    type: SELECT_ALL_INVOICES,
   };
 }
 
@@ -101,24 +137,6 @@ export function openNewRecordPaymentDialog() {
 export function closeNewRecordPaymentDialog() {
   return {
     type: CLOSE_NEW_RECORD_PAYMENT_DIALOG,
-  };
-}
-
-export function addInvoice(newInvoice) {
-  return (dispatch, getState) => {
-    const { routeParams } = getState().invoiceApp.invoices;
-
-    const request = axios.post('/api/add-invoice', {
-      newInvoice,
-    });
-
-    return request.then((response) =>
-      Promise.all([
-        dispatch({
-          type: ADD_INVOICE,
-        }),
-      ]).then(() => dispatch(getInvoices(routeParams)))
-    );
   };
 }
 

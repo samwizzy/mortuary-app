@@ -37,11 +37,13 @@ function Discounts(props) {
       }}
       header={<DiscountsHeader />}
       contentToolbar={
-        props.match.params.id ? <DiscountsToolbar /> : <DiscountsToolbar />
+        props.match.params.id ? <DiscountsToolbar /> : null
       }
       content={
         <div className='p-24 w-full'>
-          {props.match.params.id ? <DiscountDetails /> : <DiscountsList />}
+          {props.match.params.id 
+          ? <DiscountDetails /> 
+          : <DiscountsList />}
         </div>
       }
       innerScroll

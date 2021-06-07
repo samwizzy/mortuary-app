@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-// import withReducer from 'app/store/withReducer';
+import withReducer from 'app/store/withReducer';
+import reducer from "./store/reducers";
 import { FusePageCarded } from '@fuse';
 import DeceasedHeader from './deceased/DeceasedHeader';
 import DeceasedList from './deceased/DeceasedList';
 import DeceasedDetails from './details/DeceasedDetails';
 import DeceasedToolbar from './deceased/DeceasedToolbar';
+import DetailsToolbar from './details/DeceasedToolbar';
 
 const styles = (theme) => ({
   layoutRoot: {},
@@ -23,7 +25,7 @@ class DeceasedApp extends Component {
         }}
         header={<DeceasedHeader />}
         contentToolbar={
-          this.props.match.params.id ? <DeceasedToolbar /> : <DeceasedToolbar />
+          this.props.match.params.id ? <DetailsToolbar /> : <DeceasedToolbar />
         }
         content={
           <div className='p-24'>
@@ -40,4 +42,4 @@ class DeceasedApp extends Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(DeceasedApp);
+export default withReducer("deceasedApp", reducer)(withStyles(styles, { withTheme: true })(DeceasedApp));

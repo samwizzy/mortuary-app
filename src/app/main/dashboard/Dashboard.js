@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { FusePageSimple } from '@fuse';
+import {connect} from "react-redux"
+import {bindActionCreators} from "redux"
+import withReducer from "./../../store/withReducer"
+import reducers from "./store/reducers"
+import * as Actions from "./store/actions"
 import DashboardContent from './components/DashboardContent';
 
 const styles = (theme) => ({
@@ -8,6 +13,13 @@ const styles = (theme) => ({
 });
 
 class Example extends Component {
+
+  componentDidMount() {
+    this.props.getCustomers()
+    this.props.getInvoices()
+    this.props.getServices()
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -31,4 +43,12 @@ class Example extends Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Example);
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getCustomers: Actions.getCustomers,
+    getInvoices: Actions.getInvoices,
+    getServices: Actions.getServices,
+  }, dispatch)
+}
+
+export default withReducer("dashboardApp", reducers)(withStyles(styles, { withTheme: true })(connect(null, mapDispatchToProps)(Example)));

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from "react-redux"
 import {
   Table,
   TableBody,
@@ -8,39 +8,43 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
-import DoneIcon from "@material-ui/icons/Done"
-import ClearIcon from "@material-ui/icons/Clear"
 import { FuseScrollbars } from '@fuse';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useRouteMatch } from 'react-router-dom';
 import _ from '@lodash';
-import ServicesTableHead from './ServicesTableHead';
-// import * as Actions from '../store/actions';
+import CustomersTableHead from './RelativesTableHead';
+import * as Actions from '../store/actions';
+import { useDispatch } from 'react-redux';
 
-function ServicesList(props) {
+function RelativesList(props) {
   const dispatch = useDispatch();
-  const serviceReducer = useSelector(({inventoryApp}) => inventoryApp.services)
-  const services = serviceReducer.services;
-  
+  const relativesReducer = useSelector(({customerApp}) => customerApp.relatives);
+  const relatives = relativesReducer.relatives
+  const match = useRouteMatch();
   const searchText = '';
 
+  console.log(relatives, "relatives")
+
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(services);
+  const [data, setData] = useState(relatives);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
+  console.log(match.params, "match.params")
+
   useEffect(() => {
-  }, [dispatch]);
+    dispatch(Actions.getDeceasedRelatives(match.params.id));
+  }, [dispatch, match.params.id]);
 
   useEffect(() => {
     setData(
       searchText.length === 0
-        ? services
-        : _.filter(services, (item) =>
+        ? relatives
+        : _.filter(relatives, (item) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
-  }, [services, searchText]);
+  }, [relatives, searchText]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -62,7 +66,7 @@ function ServicesList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/inventory/services/' + item.id);
+    props.history.push('/deceased/' + match.params.id + '/relatives/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -97,7 +101,7 @@ function ServicesList(props) {
     <div className='w-full flex flex-col'>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
         <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <ServicesTableHead
+          <CustomersTableHead
             numSelected={selected.length}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -148,31 +152,23 @@ function ServicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.service_name}
+                      {n.first_name} {n.last_name}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row'>
+                      {n.other_name}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.service_type}
+                      {n.id}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.amount}
+                      {n.email}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.created_by}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.is_admisson ? <DoneIcon /> : <ClearIcon />}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.is_customer_image ? <DoneIcon /> : <ClearIcon />}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.request_customer_signature ? <DoneIcon /> : <ClearIcon />}
+                    <TableCell component='th' scope='row' align='right'>
+                      {n.phone_number}
                     </TableCell>
                   </TableRow>
                 );
@@ -199,4 +195,4 @@ function ServicesList(props) {
   );
 }
 
-export default withRouter(ServicesList);
+export default withRouter(RelativesList);

@@ -10,9 +10,10 @@ import {
   AppBar,
 } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
-import FuseUtils from '@fuse/FuseUtils';
+import { FuseUtils, FuseChipSelect } from '@fuse';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
+import { types } from "./Services"
 
 const defaultFormState = {
   id: '',
@@ -67,6 +68,11 @@ function ServiceDialog(props) {
   function canBeSubmitted() {
     return form.service_name.length > 0;
   }
+
+  function handleChipChange(value, name) {
+    console.log(value, "value")
+    setForm({...form, [name]: value.value})
+  };
 
   function onSubmit(event) {
     event.preventDefault();
@@ -127,15 +133,20 @@ function ServiceDialog(props) {
             <div className='min-w-48 pt-20'>
               <Typography>Service type</Typography>
             </div>
-            <TextField
-              className='mb-24'
-              label='Service type'
-              id='service_type'
-              name='service_type'
-              value={form.service_type}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
+            
+            <FuseChipSelect
+              className='mt-8 mb-24'
+              value={types.find(type => type.id === Number(form.service_type))}
+              onChange={(value) => handleChipChange(value, 'service_type')}
+              placeholder='Select service type'
+              textFieldProps={{
+                label: 'Service Type',
+                InputLabelProps: {
+                  shrink: true,
+                },
+                variant: 'outlined',
+              }}
+              options={types}
             />
           </div>
 

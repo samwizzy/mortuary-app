@@ -5,11 +5,11 @@ import { withRouter } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
 // import * as Actions from '../store/actions/index';
 
-function ServicesToolbar(props) {
+function InvoiceToolbar(props) {
   //   const dispatch = useDispatch();
-  const items = {};
+  const deceased = {};
 
-  if (!items) {
+  if (!deceased) {
     return null;
   }
 
@@ -35,4 +35,4 @@ function ServicesToolbar(props) {
   );
 }
 
-export default withRouter(ServicesToolbar);
+export default withRouter(InvoiceToolbar);

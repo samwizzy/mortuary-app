@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom"
 import { Icon, IconButton, MenuItem, Popover } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
@@ -56,10 +56,12 @@ function CustomerToolbar(props) {
             }}
             transformOrigin={{
               vertical: 'top',
-              horizontal: 'center',
+              horizontal: 'center',                                 
             }}
           >
-            <MenuItem component={Link} to={`/customers/${match.params.id}/relatives`}>View Relatives</MenuItem>
+            {/* <MenuItem component={Link} to={`/customers/${match.params.id}/relatives`}>View Relatives</MenuItem> */}
+            <MenuItem component={Link} to={`/customers/${match.params.id}/payment-advice`}>Payment advice</MenuItem>
+            <MenuItem component={Link} to='/customers/new?type=returning'>Request services</MenuItem>
           </Popover>
           </>
         </FuseAnimate>

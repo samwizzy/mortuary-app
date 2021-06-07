@@ -2,7 +2,13 @@ import * as Actions from '../actions';
 
 const initialState = {
   loading: false,
-  customers: [],
+  searchText: "",
+  customers: {
+    count: 0,
+    customers: [],
+    totalPages: 0,
+    currentPage: 0
+  },
   customer: null,
   message: null,
 };
@@ -34,6 +40,12 @@ const customerReducer = function (state = initialState, action) {
         ...state,
         loading: false,
         message: action.payload,
+      };
+    }
+    case Actions.SET_SEARCH_TEXT: {
+      return {
+        ...state,
+        searchText: action.searchText,
       };
     }
     default: {

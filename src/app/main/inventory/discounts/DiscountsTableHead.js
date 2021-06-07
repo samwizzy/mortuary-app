@@ -25,14 +25,6 @@ const rows = [
     label: 'Discount Name',
     sort: true,
   },
-
-  {
-    id: 'type',
-    align: 'left',
-    disablePadding: false,
-    label: 'Type',
-    sort: true,
-  },
   {
     id: 'amount',
     align: 'left',
@@ -45,6 +37,13 @@ const rows = [
     align: 'left',
     disablePadding: false,
     label: 'Created By',
+    sort: true,
+  },
+  {
+    id: 'action',
+    align: 'left',
+    disablePadding: false,
+    label: '',
     sort: true,
   },
 ];

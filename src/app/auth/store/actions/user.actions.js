@@ -1,5 +1,5 @@
 import history from '@history';
-import {setDefaultSettings, setInitialSettings} from 'app/store/actions/fuse';
+import {/*setDefaultSettings,*/ setInitialSettings} from 'app/store/actions/fuse';
 import _ from '@lodash';
 import store from 'app/store';
 import * as Actions from 'app/store/actions';
@@ -90,19 +90,22 @@ export function createUserSettingsFirebase(authUser)
  */
 export function setUserData(user)
 {
+    const shortcuts = ['calendar', 'mail', 'contacts', 'todo'];
     return (dispatch) => {
 
         /*
         Set User Settings
          */
-        dispatch(setDefaultSettings(user.data.settings));
+        // dispatch(setDefaultSettings(user.data.settings));
 
         /*
         Set User Data
          */
         dispatch({
             type   : SET_USER_DATA,
-            payload: user
+            payload: { 
+                data: {...user, shortcuts} 
+            }
         })
     }
 }
@@ -169,7 +172,8 @@ export function logoutUser()
         }
 
         history.push({
-            pathname: '/'
+            // pathname: '/'
+            pathname: 'https://dev.ezoneerp.com',
         });
 
         switch ( user.from )

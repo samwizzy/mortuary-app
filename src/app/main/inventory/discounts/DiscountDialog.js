@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
+import _ from "lodash";
 import {
   TextField,
   Button,
@@ -9,9 +10,7 @@ import {
   Toolbar,
   AppBar,
 } from '@material-ui/core';
-import { FuseChipSelect } from '@fuse';
 import { useForm } from '@fuse/hooks';
-import FuseUtils from '@fuse/FuseUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
 
@@ -19,13 +18,7 @@ const defaultFormState = {
   id: '',
   amount: "",
   discount_name: "",
-  discount_type: "DEFAULT",
 };
-
-const discounts = ["DEFAULT"].map(type => ({
-  label: type.toLowerCase(),
-  value: type,
-}));
 
 function DiscountDialog(props) {
   const dispatch = useDispatch();
@@ -48,9 +41,8 @@ function DiscountDialog(props) {
      */
     if (discountDialog.type === 'new') {
       setForm({
-        ...defaultFormState,
+        ..._.omit(defaultFormState, ["id"]),
         ...discountDialog.data,
-        id: FuseUtils.generateGUID(),
       });
     }
   }, [discountDialog.data, discountDialog.type, setForm]);
@@ -66,8 +58,8 @@ function DiscountDialog(props) {
 
   function closeComposeDialog() {
     discountDialog.type === 'edit'
-      ? dispatch(Actions.closeServiceDialog())
-      : dispatch(Actions.closeServiceDialog());
+      ? dispatch(Actions.closeEditDiscountDialog())
+      : dispatch(Actions.closeDiscountDialog());
   }
 
   function canBeSubmitted() {
@@ -100,7 +92,7 @@ function DiscountDialog(props) {
       <AppBar position='static' elevation={1}>
         <Toolbar className='flex w-full'>
           <Typography variant='subtitle1' color='inherit'>
-            {discountDialog.type === 'edit' ? 'Update Discount' : ''}
+            {discountDialog.type === 'edit' ? 'Update Discount' : 'New Discount'}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -131,26 +123,6 @@ function DiscountDialog(props) {
 
           <div className='flex flex-col space-y-2'>
             <div className='min-w-48 pt-20'>
-              <Typography>Discount type</Typography>
-            </div>
-            <FuseChipSelect
-              className='mt-8 mb-24'
-              value={discounts.find(type => type.value === form.discount_type)}
-              onChange={(value) => handleChipChange(value, 'discount_type')}
-              placeholder='Select discount type'
-              textFieldProps={{
-                label: 'Discount Type',
-                InputLabelProps: {
-                  shrink: true,
-                },
-                variant: 'outlined',
-              }}
-              options={discounts}
-            />
-          </div>
-
-          <div className='flex flex-col space-y-2'>
-            <div className='min-w-48 pt-20'>
               <Typography>Amount</Typography>
             </div>
             <TextField
@@ -165,9 +137,10 @@ function DiscountDialog(props) {
             />
           </div>
         </DialogContent>
-
-        {discountDialog.type === 'edit' ? (
-          <DialogActions className='justify-between pl-16'>
+        
+        <DialogActions className='justify-between pl-16'>
+          {discountDialog.type === 'edit' ? 
+          (
             <Button
               variant='contained'
               color='primary'
@@ -176,8 +149,17 @@ function DiscountDialog(props) {
             >
               Update
             </Button>
-          </DialogActions>
-        ) : ( null )}
+          ) : (
+            <Button
+              variant='contained'
+              color='primary'
+              type='submit'
+              disabled={!canBeSubmitted()}
+            >
+              Save
+            </Button>
+          )}
+        </DialogActions>
       </form>
     </Dialog>
   );

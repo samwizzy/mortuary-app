@@ -62,7 +62,7 @@ function ReportsToolbar(props) {
   return (
     <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16 py-2'>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid container justify='justify-start' className={classes.root}>
+        <Grid container justify='flex-start' className={classes.root}>
           <KeyboardDatePicker
             disableToolbar
             variant='inline'

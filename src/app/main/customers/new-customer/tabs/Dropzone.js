@@ -32,7 +32,7 @@ const rejectStyle = {
 };
 
 function ImageDropzone(props) {
-  const { name, title, icon, form, handleImageUpload } = props;
+  const { name, title, icon, form, format, disabled, handleImageUpload } = props;
   const {
     getRootProps,
     getInputProps,
@@ -40,8 +40,9 @@ function ImageDropzone(props) {
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    accept: 'image/jpeg, image/png',
+    accept: format === 'image'? 'image/jpeg, image/png' : '.pdf, .doc',
     multiple: false,
+    disabled: !disabled,
     onDrop: (acceptedFiles) => {
       const files = acceptedFiles.map((file) =>
         Object.assign(file, {
@@ -66,8 +67,9 @@ function ImageDropzone(props) {
       ...(isDragActive ? activeStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
+      borderColor: !disabled ? '#eee' : '#9ac876',
     }),
-    [isDragActive, isDragReject, isDragAccept]
+    [isDragActive, isDragReject, isDragAccept, disabled]
   );
 
   return (
@@ -79,7 +81,7 @@ function ImageDropzone(props) {
           <p>
             <span className='text-green'>Click here or Drop</span> Your {_.startCase(title)}
           </p>
-          <span className='text-xs text-gray-600'>JPG Format Only</span>
+          <span className='text-xs text-gray-600'>{_.startCase(format)} Format Only</span>
         </div>
 
         <aside>

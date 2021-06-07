@@ -4,7 +4,9 @@ import { connect } from "react-redux"
 import { useSelector } from "react-redux"
 import { useRouteMatch } from "react-router-dom";
 import * as Actions from "./../store/actions";
+import moment from "moment";
 import {
+  Button,
   Table,
   TableRow,
   TableHead,
@@ -12,13 +14,15 @@ import {
   TableCell,
   Typography,
 } from '@material-ui/core';
-import { FuseAnimate } from '@fuse';
+import { FuseAnimate, FuseUtils } from '@fuse';
 
 const CustomerDetails = (props) => {
-  const { getCustomerById } = props
+  const { getCustomerById, payForInvoice } = props
   const customerReducer = useSelector(({customerApp}) => customerApp.customer);
   const customer = customerReducer.customer
   const match = useRouteMatch();
+
+  console.log(customer, "customer details")
 
   useEffect(() => {
     getCustomerById(match.params.id)
@@ -115,14 +119,16 @@ const CustomerDetails = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>Emah Thompson</TableCell>
+              {customer?.deceased.map(dsc => 
+              <TableRow key={dsc.id}>
+                <TableCell>{dsc.first_name}</TableCell>
                 <TableCell>00000789</TableCell>
-                <TableCell align='right'>Age</TableCell>
-                <TableCell align='right'>Lagos</TableCell>
-                <TableCell align='right'>3rd July 2019</TableCell>
-                <TableCell align='right'>Release</TableCell>
+                <TableCell align='right'>{dsc.age}</TableCell>
+                <TableCell align='right'>{dsc.place_of_death}</TableCell>
+                <TableCell align='right'>{moment(dsc.dateof_assertion).format("Do MMMM, YYYY")}</TableCell>
+                <TableCell align='right'>{dsc.status > 0 ? "True" : "False"}</TableCell>
               </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
@@ -146,17 +152,23 @@ const CustomerDetails = (props) => {
                 <TableCell align='right'>Bill To</TableCell>
                 <TableCell align='right'>Total Amount</TableCell>
                 <TableCell align='right'>Amount Due</TableCell>
+                <TableCell align='right' />
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>INV/0000001</TableCell>
-                <TableCell>8</TableCell>
-                <TableCell align='right'>3rd Jul 2019</TableCell>
-                <TableCell align='right'>John Well</TableCell>
-                <TableCell align='right'>NGN 600</TableCell>
-                <TableCell align='right'>NGN 0.00</TableCell>
+            {customer?.invoice.map(inv => 
+              <TableRow key={inv.id}>
+                <TableCell>{inv.invoice_number}</TableCell>
+                <TableCell>0</TableCell>
+                <TableCell align='right'>{moment(inv.invoice_date).format("Do MMMM, YYYY")}</TableCell>
+                <TableCell align='right'>{inv.customer?.firstName}</TableCell>
+                <TableCell align='right'>{FuseUtils.formatCurrency(inv.total_amount)}</TableCell>
+                <TableCell align='right'>{FuseUtils.formatCurrency(inv.amount_due)}</TableCell>
+                <TableCell align='right'>
+                  <Button color="primary" variant="contained" onClick={() => payForInvoice(inv.id)}>Pay</Button>
+                </TableCell>
               </TableRow>
+            )}
             </TableBody>
           </Table>
         </div>
@@ -167,7 +179,8 @@ const CustomerDetails = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getCustomerById: Actions.getCustomerById
+    getCustomerById: Actions.getCustomerById,
+    payForInvoice: Actions.payForInvoice,
   }, dispatch)
 }
 

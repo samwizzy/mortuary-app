@@ -1,6 +1,6 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { Paper, Input, Icon, Typography } from '@material-ui/core';
+import { withRouter, Link } from 'react-router-dom';
+import { Button, Paper, Input, Icon, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
 import { useSelector } from 'react-redux';
@@ -20,7 +20,7 @@ function InvoicesHeader(props) {
         </FuseAnimate>
         <FuseAnimate animation='transition.slideLeftIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
-            {match.params.id ? 'Profomer Invoice Details' : 'Profomer Invoices'}
+            {match.params.id ? 'Proforma Invoice Details' : 'Proforma Invoices'}
           </Typography>
         </FuseAnimate>
       </div>
@@ -50,6 +50,20 @@ function InvoicesHeader(props) {
             </Paper>
           </FuseAnimate>
         </ThemeProvider>
+      </div>
+      
+      <div>
+        <FuseAnimate animation='transition.slideRightIn' delay={300}>
+          <Button
+            component={Link}
+            to='/invoices/new'
+            className='whitespace-no-wrap'
+            variant='contained'
+          >
+            <span className='hidden sm:flex'>Add New INvoice</span>
+            <span className='flex sm:hidden'>New</span>
+          </Button>
+        </FuseAnimate>
       </div>
     </div>
   );

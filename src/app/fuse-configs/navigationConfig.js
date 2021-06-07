@@ -63,7 +63,7 @@ const navigationConfig = [
       },
       {
         id: 'invoice-component',
-        title: 'Profomer Invoices',
+        title: 'Proforma Invoices',
         type: 'item',
         icon: 'receipt',
         url: '/invoices',

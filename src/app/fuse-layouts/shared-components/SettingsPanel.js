@@ -26,7 +26,8 @@ const useStyles = makeStyles(theme => ({
         '&:hover'              : {
             backgroundColor: red[500],
             opacity        : 1
-        }
+        },
+        display: "none"
     },
     '@keyframes rotating': {
         from: {

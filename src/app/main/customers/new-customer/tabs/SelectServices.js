@@ -20,7 +20,7 @@ function SelectServices(props) {
   const serviceReducer = useSelector(({customerApp}) => customerApp.services);
   const discountsReducer = useSelector(({customerApp}) => customerApp.discounts);
 
-  const services = serviceReducer.services;
+  const services = serviceReducer.services.services;
   const discounts = discountsReducer.discounts;
 
   return (
@@ -30,7 +30,8 @@ function SelectServices(props) {
           <TableHead>
             <TableRow>
               <TableCell>Services</TableCell>
-              <TableCell>Billing Amount</TableCell>
+              <TableCell>Rate</TableCell>
+              <TableCell>Days</TableCell>
               <TableCell>Discount Type</TableCell>
               <TableCell>Discount Amount</TableCell>
               <TableCell align='left'>
@@ -57,7 +58,7 @@ function SelectServices(props) {
                 >
                   <TableCell component='th' scope='row'>
                     <TextField
-                      className='mt-8 mb-16'
+                      className='mt-8 mb-16 min-w-192'
                       select
                       required
                       label='Services'
@@ -85,6 +86,21 @@ function SelectServices(props) {
                       id={`rate-${i}`}
                       name='rate'
                       value={n.rate}
+                      // onChange={handleMultiChange(i)}
+                      variant='outlined'
+                      fullWidth
+                    />
+                  </TableCell>
+
+                  <TableCell className='truncate' component='th' scope='row'>
+                    <TextField
+                      className='mt-8 mb-16 w-128'
+                      required
+                      label='Days'
+                      autoFocus
+                      id={`days-${i}`}
+                      name='days'
+                      value={n.days}
                       onChange={handleMultiChange(i)}
                       variant='outlined'
                       fullWidth
@@ -93,7 +109,7 @@ function SelectServices(props) {
 
                   <TableCell component='th' scope='row' align='left'>
                     <TextField
-                      className='mt-8 mb-16'
+                      className='mt-8 mb-16 min-w-128'
                       select
                       required
                       label='Discount Types'
@@ -112,7 +128,7 @@ function SelectServices(props) {
                     </TextField>  
                   </TableCell>
 
-                  <TableCell component='th' scope='row' align='right'>
+                  <TableCell component='th' scope='row'>
                     <TextField
                       className='mt-8 mb-16'
                       required
@@ -121,7 +137,7 @@ function SelectServices(props) {
                       id={`discount_amount-${i}`}
                       name='discount_amount'
                       value={n.discount_amount}
-                      // onChange={handleChange}
+                      onChange={handleMultiChange(i)}
                       variant='outlined'
                       fullWidth
                     />

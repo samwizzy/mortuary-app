@@ -1,14 +1,14 @@
 import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Button, Paper, Input, Icon, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
-import { useSelector } from 'react-redux';
-// import * as Actions from '../store/actions';
+import { useSelector, useDispatch } from 'react-redux';
+import * as Actions from '../store/actions';
 
 function DiscountsHeader(props) {
   const { match } = props;
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const searchText = '';
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
 
@@ -54,12 +54,12 @@ function DiscountsHeader(props) {
 
       <FuseAnimate animation='transition.slideRightIn' delay={300}>
         <Button
-          component={Link}
-          to='/inventory/discounts/new'
+          // component={Link}
+          // to='/inventory/discounts/new'
           className='whitespace-no-wrap'
           variant='contained'
         >
-          <span className='hidden sm:flex'>Add New Discount</span>
+          <span className='hidden sm:flex' onClick={() => dispatch(Actions.openDiscountDialog())}>Add New Discount</span>
           <span className='flex sm:hidden'>New</span>
         </Button>
       </FuseAnimate>

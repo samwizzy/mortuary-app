@@ -18,6 +18,11 @@ export const CustomersConfig = {
       component: React.lazy(() => import('./CustomersApp')),
     },
     {
+      path: '/customers/:id/payment-advice',
+      exact: true,
+      component: React.lazy(() => import('./invoiceAdvice/Invoice')),
+    },
+    {
       path: '/customers/:id/relatives',
       exact: true,
       component: React.lazy(() => import('./relatives/Relatives')),
