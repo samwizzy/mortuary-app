@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
 import {
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -11,50 +14,26 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import DeceasedTableHead from './DeceasedTableHead';
-// import * as Actions from '../store/actions';
-import { useDispatch } from 'react-redux';
+import * as Actions from '../store/actions';
 
 function DeceasedList(props) {
   const dispatch = useDispatch();
-  const deceased = [
-    {
-      id: '5725a680b3249760ea21de52',
-      firstName: 'Emah',
-      lastName: 'Thompson',
-      age: '32',
-      placeOfDeath: 'Lagos',
-      dateOfDeath: '2021-04-22',
-      status: 'Released',
-    },
-    {
-      id: '5725a680606588342058356d',
-      firstName: 'Arnold',
-      lastName: 'Thompson',
-      age: '32',
-      placeOfDeath: 'Lagos',
-      dateOfDeath: '2021-04-22',
-      status: 'Released',
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      firstName: 'Arnold',
-      lastName: 'Thompson',
-      age: '32',
-      placeOfDeath: 'Lagos',
-      dateOfDeath: '2021-04-22',
-      status: 'Released',
-    },
-  ];
-  const searchText = '';
+  const deceasedReducer = useSelector(({deceasedApp}) => deceasedApp.deceased);
+  const searchText = deceasedReducer.searchText
+  const deceasedData = deceasedReducer.allDeceased
+  const deceased = deceasedData.deceased
+  const count = deceasedData.count
+  const currentPage = deceasedData.currentPage
+  
+  console.log(searchText, "searchText shit") 
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(deceased);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
+    dispatch(Actions.getAllDeceased());
   }, [dispatch]);
 
   useEffect(() => {
@@ -62,7 +41,7 @@ function DeceasedList(props) {
       searchText.length === 0
         ? deceased
         : _.filter(deceased, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.first_name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [deceased, searchText]);
@@ -87,7 +66,7 @@ function DeceasedList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/deceased/' + item.id + '/' + item.handle);
+    props.history.push('/deceased/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -111,7 +90,7 @@ function DeceasedList(props) {
   }
 
   function handleChangePage(event, page) {
-    setPage(page);
+    dispatch(Actions.getAllDeceased(page));
   }
 
   function handleChangeRowsPerPage(event) {
@@ -147,7 +126,6 @@ function DeceasedList(props) {
               ],
               [order.direction]
             )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
@@ -173,11 +151,11 @@ function DeceasedList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {`${n.firstName} ${n.lastName}`}
+                      {`${n.first_name} ${n.last_name}`}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.id}
+                      {n.gender}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
@@ -185,15 +163,15 @@ function DeceasedList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.placeOfDeath}
+                      {n.place_of_death}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.dateOfDeath}
+                      {moment(n.dateof_assertion).format("Do MMM, yyyy")}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='right'>
-                      {n.status}
+                      {n.status > 0 ? <Chip label="True" /> : <Chip label="False" />}
                     </TableCell>
                   </TableRow>
                 );
@@ -204,9 +182,9 @@ function DeceasedList(props) {
 
       <TablePagination
         component='div'
-        count={data.length}
+        count={count}
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={currentPage}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}

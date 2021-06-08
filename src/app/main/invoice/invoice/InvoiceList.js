@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from "react-redux"
+import { withRouter, useRouteMatch } from 'react-router-dom';
 import {
   Table,
   TableHead,
@@ -9,61 +11,27 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
-import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import InvoiceTableHead from './InvoiceTableHead';
-// import * as Actions from '../store/actions';
-import { useDispatch } from 'react-redux';
+import * as Actions from '../store/actions';
+import { connect } from 'react-redux';
 
 function InvoiceList(props) {
+  const { /*searchText,*/ invoice } = props
   const dispatch = useDispatch();
-  const deceased = [
-    {
-      id: '5725a680b3249760ea21de52',
-      services: 'Dressing',
-      discount: '4000',
-      days: '24',
-      rate: '32',
-      amount: 5000,
-    },
-    {
-      id: '5725a680606588342058356d',
-      services: 'Dressing',
-      discount: '4000',
-      days: '24',
-      rate: '32',
-      amount: 5000,
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      services: 'Dressing',
-      discount: '4000',
-      days: '24',
-      rate: '32',
-      amount: 5000,
-    },
-  ];
-  const searchText = '';
+  const match = useRouteMatch();
 
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(deceased);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
+  const data = [];
+
+  console.log(invoice, "invoice by id")
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
-  }, [dispatch]);
-
-  useEffect(() => {
-    setData(
-      searchText.length === 0
-        ? deceased
-        : _.filter(deceased, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
-          )
-    );
-  }, [deceased, searchText]);
+    dispatch(Actions.getInvoiceById(match.params.id));
+  }, [dispatch, match.params.id]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -150,7 +118,7 @@ function InvoiceList(props) {
                             Invoice Number
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            INV/2093746382
+                            {invoice?.invoice_number}
                           </dd>
                         </div>
                         <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -158,7 +126,7 @@ function InvoiceList(props) {
                             Invoice date
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            5th April 2021
+                            {invoice?.invoice_date}
                           </dd>
                         </div>
                         <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -166,7 +134,7 @@ function InvoiceList(props) {
                             Due date
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            5th April 2021
+                            {invoice?.invoice_date}
                           </dd>
                         </div>
                       </dl>
@@ -178,7 +146,7 @@ function InvoiceList(props) {
                             Name
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            John Well
+                            {invoice?.customer?.firstName}
                           </dd>
                         </div>
                         <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -194,7 +162,7 @@ function InvoiceList(props) {
                             Address
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            3a Idowu Martins Victoria Island Lagos
+                            {invoice?.bill_to}
                           </dd>
                         </div>
                       </dl>
@@ -207,8 +175,7 @@ function InvoiceList(props) {
                           Notes
                         </h3>
                         <p className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit, sed do eiusmod tempor incididunt ut labore
+                          {invoice?.notes}
                         </p>
                       </div>
                     </TableCell>
@@ -316,4 +283,13 @@ function InvoiceList(props) {
   );
 }
 
-export default withRouter(InvoiceList);
+const mapStateToProps = ({invoicesApp}) => {
+  const { invoices } = invoicesApp
+  console.log(invoices, "invoices")
+  return {
+    searchText: invoices.searchText,
+    invoice: invoices.invoice,
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(InvoiceList));

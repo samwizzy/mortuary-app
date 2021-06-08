@@ -2,17 +2,17 @@ import React from 'react';
 import _ from 'lodash';
 import { Button, Icon, Typography } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
-// import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import * as Actions from '../store/actions';
+import * as Actions from '../store/actions';
 
 function CustomersHeader(props) {
   const { form } = props;
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const searchText = '';
 
   function canBeSubmitted() {
-    return form.firstName.length > 0 && !_.isEqual({}, form);
+    return form.first_name.length > 0 && !_.isEqual({}, form);
   }
 
   return (
@@ -49,7 +49,7 @@ function CustomersHeader(props) {
           className='whitespace-no-wrap'
           variant='contained'
           disabled={!canBeSubmitted()}
-          // onClick={() => dispatch(Actions.saveProduct(form))}
+          onClick={() => dispatch(Actions.createCustomer(form))}
         >
           Save
         </Button>

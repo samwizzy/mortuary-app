@@ -46,6 +46,12 @@ const navigationConfig = [
             type: 'item',
             url: '/inventory/services',
           },
+          {
+            id: 'inventory-discounts',
+            title: 'Discounts',
+            type: 'item',
+            url: '/inventory/discounts',
+          },
         ],
       },
       {
@@ -57,7 +63,7 @@ const navigationConfig = [
       },
       {
         id: 'invoice-component',
-        title: 'Profomer Invoices',
+        title: 'Proforma Invoices',
         type: 'item',
         icon: 'receipt',
         url: '/invoices',

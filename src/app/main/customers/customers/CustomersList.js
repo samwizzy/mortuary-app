@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { connect, useSelector } from "react-redux"
 import {
   Table,
   TableBody,
@@ -10,45 +11,26 @@ import {
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
-import CustomerTableHead from './CustomerTableHead';
-// import * as Actions from '../store/actions';
+import CustomersTableHead from './CustomersTableHead';
+import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
 
 function CustomersList(props) {
+  const { searchText } = props
   const dispatch = useDispatch();
-  const customers = [
-    {
-      id: '5725a680b3249760ea21de52',
-      firstName: 'Abbott',
-      lastName: 'Keitch',
-      email: 'abbott@withinpixels.com',
-      phone: '+234-806-555-0175',
-    },
-    {
-      id: '5725a680606588342058356d',
-      firstName: 'Arnold',
-      lastName: 'Matlock',
-      email: 'arnold@withinpixels.com',
-      phone: '+234-806-555-0175',
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      firstName: 'Barrera',
-      lastName: 'Bradbury',
-      email: 'barrera@withinpixels.com',
-      phone: '+234-806-555-0175',
-    },
-  ];
-  const searchText = '';
+  const customerReducer = useSelector(({customerApp}) => customerApp.customer);
+  const customersData = customerReducer.customers
+  const customers = customersData.customers
+  const count = customersData.count
+  const currentPage = customersData.currentPage
+  console.log(customers, "customers")
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(customers);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
   }, [dispatch]);
 
   useEffect(() => {
@@ -56,7 +38,7 @@ function CustomersList(props) {
       searchText.length === 0
         ? customers
         : _.filter(customers, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.first_name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [customers, searchText]);
@@ -81,7 +63,7 @@ function CustomersList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/customers/' + item.id + '/' + item.handle);
+    props.history.push('/customers/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -105,7 +87,7 @@ function CustomersList(props) {
   }
 
   function handleChangePage(event, page) {
-    setPage(page);
+    dispatch(Actions.getCustomers(page))
   }
 
   function handleChangeRowsPerPage(event) {
@@ -116,7 +98,7 @@ function CustomersList(props) {
     <div className='w-full flex flex-col'>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
         <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <CustomerTableHead
+          <CustomersTableHead
             numSelected={selected.length}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -141,7 +123,6 @@ function CustomersList(props) {
               ],
               [order.direction]
             )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
@@ -167,7 +148,11 @@ function CustomersList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.firstName}
+                      {n.first_name} {n.last_name}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row'>
+                      {n.other_name}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
@@ -179,7 +164,7 @@ function CustomersList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='right'>
-                      {n.phone}
+                      {n.phone_number}
                     </TableCell>
                   </TableRow>
                 );
@@ -190,9 +175,9 @@ function CustomersList(props) {
 
       <TablePagination
         component='div'
-        count={data.length}
+        count={count}
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={currentPage}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -206,4 +191,11 @@ function CustomersList(props) {
   );
 }
 
-export default withRouter(CustomersList);
+const mapStateToProps = ({customerApp}) => {
+  const { customer } = customerApp
+  return {
+    searchText: customer.searchText
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(CustomersList));

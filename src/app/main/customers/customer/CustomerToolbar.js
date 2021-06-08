@@ -1,5 +1,6 @@
-import React from 'react';
-import { Icon, IconButton } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Link, useRouteMatch } from "react-router-dom"
+import { Icon, IconButton, MenuItem, Popover } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
@@ -7,6 +8,20 @@ import { withRouter } from 'react-router-dom';
 
 function CustomerToolbar(props) {
   //   const dispatch = useDispatch();
+  const match = useRouteMatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
   const customer = {};
 
   if (!customer) {
@@ -24,6 +39,31 @@ function CustomerToolbar(props) {
           <IconButton>
             <Icon>edit</Icon>
           </IconButton>
+        </FuseAnimate>
+        <FuseAnimate animation='transition.expandIn' delay={100}>
+          <>
+          <IconButton aria-describedby={id} onClick={handleClick}>
+            <Icon>settings</Icon>
+          </IconButton>
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',                                 
+            }}
+          >
+            {/* <MenuItem component={Link} to={`/customers/${match.params.id}/relatives`}>View Relatives</MenuItem> */}
+            <MenuItem component={Link} to={`/customers/${match.params.id}/payment-advice`}>Payment advice</MenuItem>
+            <MenuItem component={Link} to='/customers/new?type=returning'>Request services</MenuItem>
+          </Popover>
+          </>
         </FuseAnimate>
       </div>
     </div>

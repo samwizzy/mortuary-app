@@ -1,7 +1,7 @@
 import React from 'react';
 import { FuseAnimate } from '@fuse';
 
-function ServiceDetails() {
+function DiscountDetails(props) {
   return (
     <div>
       <div className='flex items-center justify-between overflow-hidden'>
@@ -165,4 +165,4 @@ function ServiceDetails() {
   );
 }
 
-export default ServiceDetails;
+export default DiscountDetails;

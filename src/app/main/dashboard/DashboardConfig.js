@@ -1,5 +1,5 @@
 import React from 'react';
-// import Example from './Example';
+// import { Redirect } from "react-router-dom"
 
 export const DashboardConfig = {
   settings: {
@@ -12,5 +12,14 @@ export const DashboardConfig = {
       path: '/dashboard',
       component: React.lazy(() => import('./Dashboard')),
     },
+    {
+      path: '/',
+      exact: true,
+      component: React.lazy(() => import('./Dashboard')),
+    },
+    // {
+    //   path: '/',
+    //   component: <Redirect to="/dashboard" />,
+    // },
   ],
 };

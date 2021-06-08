@@ -1,5 +1,5 @@
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+// import jwtDecode from 'jwt-decode';
 import FuseUtils from '@fuse/FuseUtils';
 
 class jwtService extends FuseUtils.EventEmitter {
@@ -15,7 +15,7 @@ class jwtService extends FuseUtils.EventEmitter {
             return response;
         }, err => {
             return new Promise((resolve, reject) => {
-                if ( err.response.status === 401 && err.config && !err.config.__isRetryRequest )
+                if ( err.response?.status === 401 && err.config && !err.config.__isRetryRequest )
                 {
                     // if you ever get an unauthorized response, logout the user
                     this.emit('onAutoLogout', 'Invalid access_token');
@@ -29,6 +29,7 @@ class jwtService extends FuseUtils.EventEmitter {
     handleAuthentication = () => {
 
         let access_token = this.getAccessToken();
+        console.log(access_token, "just before handle authentication")
 
         if ( !access_token )
         {
@@ -37,6 +38,7 @@ class jwtService extends FuseUtils.EventEmitter {
 
         if ( this.isAuthTokenValid(access_token) )
         {
+            console.log(access_token, "access_token")
             this.setSession(access_token);
             this.emit('onAutoLogin', true);
         }
@@ -64,18 +66,15 @@ class jwtService extends FuseUtils.EventEmitter {
         });
     };
 
-    signInWithEmailAndPassword = (email, password) => {
+    signInWithEmailAndPassword = (username, password, grant_type="password") => {
         return new Promise((resolve, reject) => {
-            axios.get('/api/auth', {
-                data: {
-                    email,
-                    password
-                }
-            }).then(response => {
-                if ( response.data.user )
+            axios.post('/authserv/oauth/token', { username, password, grant_type })
+            .then(response => {
+                if ( response.data )
                 {
                     this.setSession(response.data.access_token);
-                    resolve(response.data.user);
+                    const user = this.getProfileData()
+                    resolve(user);
                 }
                 else
                 {
@@ -112,15 +111,25 @@ class jwtService extends FuseUtils.EventEmitter {
         });
     };
 
+    getProfileData = () => {
+        return new Promise((resolve, reject) => {
+         axios.get('https://dev.ezoneapps.com/gateway/authserv/api/v1/users/profile')
+            .then(response => {
+                console.log(response, "response")
+                resolve(response.data)
+            })
+        })
+    };
+
     setSession = access_token => {
         if ( access_token )
         {
-            localStorage.setItem('jwt_access_token', access_token);
+            localStorage.setItem('access_token', access_token);
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
         }
         else
         {
-            localStorage.removeItem('jwt_access_token');
+            localStorage.removeItem('access_token');
             delete axios.defaults.headers.common['Authorization'];
         }
     };
@@ -134,21 +143,22 @@ class jwtService extends FuseUtils.EventEmitter {
         {
             return false;
         }
-        const decoded = jwtDecode(access_token);
-        const currentTime = Date.now() / 1000;
-        if ( decoded.exp < currentTime )
-        {
-            console.warn('access token expired');
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return true;
+        // const decoded = jwtDecode(access_token);
+        // const currentTime = Date.now() / 1000;
+        // if ( decoded.exp < currentTime )
+        // {
+        //     console.warn('access token expired');
+        //     return false;
+        // }
+        // else
+        // {
+        //     return true;
+        // }
     };
 
     getAccessToken = () => {
-        return window.localStorage.getItem('jwt_access_token');
+        return window.localStorage.getItem('access_token');
     };
 }
 

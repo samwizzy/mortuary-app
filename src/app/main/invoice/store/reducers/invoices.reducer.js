@@ -1,11 +1,16 @@
 import * as Actions from '../actions';
-import _ from '@lodash';
 
 const initialState = {
-  entities: null,
   searchText: '',
+  invoices: {
+    totalItems: 0,
+    invoices: [],
+    totalPages: 0,
+    currentPage: 0
+  },
+  invoice: null,
   selectedInvoiceIds: [],
-  routeParams: {},
+  paymentAdvice: null,
   invoiceDialog: {
     type: 'new',
     props: {
@@ -27,8 +32,19 @@ const invoicesReducer = function (state = initialState, action) {
     case Actions.GET_INVOICES: {
       return {
         ...state,
-        entities: _.keyBy(action.payload, 'id'),
-        routeParams: action.routeParams,
+        invoices: action.payload,
+      };
+    }
+    case Actions.GET_INVOICE_BY_ID: {
+      return {
+        ...state,
+        invoice: action.payload,
+      };
+    }
+    case Actions.GET_PAYMENT_ADVICE: {
+      return {
+        ...state,
+        paymentAdvice: action.payload,
       };
     }
     case Actions.SET_SEARCH_TEXT: {
@@ -37,16 +53,16 @@ const invoicesReducer = function (state = initialState, action) {
         searchText: action.searchText,
       };
     }
-    case Actions.SELECT_ALL_INVOICES: {
-      const arr = Object.keys(state.entities).map((k) => state.entities[k]);
+    // case Actions.SELECT_ALL_INVOICES: {
+    //   const arr = Object.keys(state.entities).map((k) => state.entities[k]);
 
-      const selectedInvoiceIds = arr.map((invoice) => invoice.id);
+    //   const selectedInvoiceIds = arr.map((invoice) => invoice.id);
 
-      return {
-        ...state,
-        selectedInvoiceIds: selectedInvoiceIds,
-      };
-    }
+    //   return {
+    //     ...state,
+    //     selectedInvoiceIds: selectedInvoiceIds,
+    //   };
+    // }
     case Actions.DESELECT_ALL_INVOICES: {
       return {
         ...state,

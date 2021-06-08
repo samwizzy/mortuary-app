@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
-import { Button, TextField } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/AddCircle';
-// import { makeStyles } from '@material-ui/styles';
-import { FuseChipSelect } from '@fuse';
+import { TextField, MenuItem } from '@material-ui/core';
+
+const relationships = ["Brother", "Sister", "Mother", "Father", "Son", "Daughter", "Others"].map(r => ({
+  label: r,
+  value: r,
+}))
 
 function CustomerInfo(props) {
-  const { form, handleChange, handleChipChange } = props;
+  const { form, handleChange } = props;
 
   return (
     <Fragment>
@@ -15,9 +17,9 @@ function CustomerInfo(props) {
           required
           label='First Name'
           autoFocus
-          id='name'
-          name='name'
-          value={form.firstName}
+          id='first-name'
+          name='first_name'
+          value={form.first_name}
           onChange={handleChange}
           variant='outlined'
           fullWidth
@@ -27,10 +29,9 @@ function CustomerInfo(props) {
           className='mt-8 mb-16'
           required
           label='Last Name'
-          autoFocus
-          id='name'
-          name='name'
-          value={form.lastName}
+          id='last-name'
+          name='last_name'
+          value={form.last_name}
           onChange={handleChange}
           variant='outlined'
           fullWidth
@@ -40,10 +41,9 @@ function CustomerInfo(props) {
           className='mt-8 mb-16'
           required
           label='Other Name'
-          autoFocus
           id='other-name'
-          name='otherName'
-          value={form.otherName}
+          name='other_name'
+          value={form.other_name}
           onChange={handleChange}
           variant='outlined'
           fullWidth
@@ -53,7 +53,6 @@ function CustomerInfo(props) {
           className='mt-8 mb-16'
           required
           label='Email'
-          autoFocus
           id='email'
           name='email'
           value={form.email}
@@ -62,26 +61,28 @@ function CustomerInfo(props) {
           fullWidth
         />
 
-        <FuseChipSelect
-          className='mt-8 mb-24'
-          value={[]}
-          onChange={(value) => handleChipChange(value, 'categories')}
-          placeholder='Select multiple categories'
-          textFieldProps={{
-            label: 'Relationship with Deceased',
-            InputLabelProps: {
-              shrink: true,
-            },
-            variant: 'outlined',
-          }}
-          isMulti
-        />
+        <TextField
+          className='mt-8 mb-16'
+          required
+          select
+          label='Relationship with deceased'
+          id='relationship_with_deceased'
+          name='relationship_with_deceased'
+          value={form.relationship_with_deceased}
+          onChange={handleChange}
+          variant='outlined'
+          fullWidth
+        >
+          <MenuItem value="">Select relation with deceased</MenuItem>
+          {relationships.map(r => 
+            <MenuItem key={r.value} value={r.value}>{r.value}</MenuItem>
+          )}
+        </TextField> 
 
         <TextField
           className='mt-8 mb-16'
           required
           label='Address'
-          autoFocus
           id='address'
           name='address'
           value={form.address}
@@ -94,19 +95,14 @@ function CustomerInfo(props) {
           className='mt-8 mb-16'
           required
           label='Phone'
-          autoFocus
           id='phone'
-          name='phone'
-          value={form.phone}
+          name='phone_number'
+          value={form.phone_number}
           onChange={handleChange}
           variant='outlined'
           fullWidth
         />
       </div>
-
-      <Button color='primary'>
-        <AddIcon /> Add Relatives
-      </Button>
     </Fragment>
   );
 }

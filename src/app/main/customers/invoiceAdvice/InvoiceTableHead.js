@@ -19,18 +19,31 @@ import { makeStyles } from '@material-ui/styles';
 
 const rows = [
   {
-    id: 'serviceName',
+    id: 'services',
     align: 'left',
     disablePadding: false,
-    label: 'Service Name',
+    label: 'Services',
     sort: true,
   },
-
   {
-    id: 'type',
+    id: 'discount',
     align: 'left',
     disablePadding: false,
-    label: 'Type',
+    label: 'Discount',
+    sort: true,
+  },
+  {
+    id: 'days',
+    align: 'left',
+    disablePadding: false,
+    label: 'Days',
+    sort: true,
+  },
+  {
+    id: 'rate',
+    align: 'left',
+    disablePadding: false,
+    label: 'Rate',
     sort: true,
   },
   {
@@ -38,20 +51,6 @@ const rows = [
     align: 'left',
     disablePadding: false,
     label: 'Amount',
-    sort: true,
-  },
-  {
-    id: 'created-by',
-    align: 'left',
-    disablePadding: false,
-    label: 'Created By',
-    sort: true,
-  },
-  {
-    id: 'date-created',
-    align: 'left',
-    disablePadding: false,
-    label: 'Date Created',
     sort: true,
   },
 ];

@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux"
+import { useRouteMatch } from "react-router-dom"
+import * as Actions from "./../store/actions"
 import { FuseAnimate } from '@fuse';
 
-function ItemDetails() {
+function ItemDetails(props) {
+  const dispatch = useDispatch()
+  const match = useRouteMatch()
+  const itemReducer = useSelector(({inventoryApp}) => inventoryApp.items)
+  const item = itemReducer.item
+
+  console.log(item, "item in item details")
+
+  useEffect(() => {
+    dispatch(Actions.getItemById(match.params.id))
+  }, [dispatch, match.params.id])
+
   return (
     <div>
       <div className='flex items-center justify-between overflow-hidden'>
@@ -11,147 +25,44 @@ function ItemDetails() {
               <div className='w-full bg-white shadow overflow-hidden sm:rounded-lg'>
                 <div className='px-4 py-5 sm:px-6'>
                   <h3 className='text-lg leading-6 font-medium text-gray-900'>
-                    Basic Information
+                    Item Information
                   </h3>
                   <p className='mt-1 max-w-2xl text-sm text-gray-500'>
-                    Personal details and application.
+                    Details of item
                   </p>
                 </div>
                 <div className='border-t border-gray-200'>
                   <dl>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>
-                        First name
+                        Item name
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Margot
+                        {item?.item_name}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>
-                        Sarah
+                        Item ID
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Margot Foster
+                        {item?.item_id}
                       </dd>
                     </div>
                     <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>
-                        Last name
+                        Unit Price
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Foster
+                        {item?.unit_price}
                       </dd>
                     </div>
                     <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
                       <dt className='text-sm font-medium text-gray-500'>
-                        Gender
+                        Stock at hand
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Male
-                      </dd>
-                    </div>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>Age</dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        60
-                      </dd>
-                    </div>
-
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Address
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Marina, Lagos.
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
-
-              <div className='w-full bg-white shadow overflow-hidden sm:rounded-lg'>
-                <div className='px-4 py-5 sm:px-6'>
-                  <h3 className='text-lg leading-6 font-medium text-gray-900'>
-                    Date of Assertion
-                  </h3>
-                </div>
-                <div className='border-t border-gray-200'>
-                  <dl>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Place of death
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Lagos
-                      </dd>
-                    </div>
-                    <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Date
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        2021-04-23
-                      </dd>
-                    </div>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Cause of death
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Car Accident
-                      </dd>
-                    </div>
-                    <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Time
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        23:45
-                      </dd>
-                    </div>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        How was death ascertained?
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        How death was ascertained...
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
-
-              <div className='w-full bg-white shadow overflow-hidden sm:rounded-lg'>
-                <div className='px-4 py-5 sm:px-6'>
-                  <h3 className='text-lg leading-6 font-medium text-gray-900'>
-                    Medical
-                  </h3>
-                </div>
-                <div className='border-t border-gray-200'>
-                  <dl>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Name of Hosipital
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Doren Specialist
-                      </dd>
-                    </div>
-                    <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Medical Attendant
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Margot Foster
-                      </dd>
-                    </div>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
-                        Address
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        Thomas Estate, Ajah, Lagos
+                        {item?.stock_at_hand}
                       </dd>
                     </div>
                   </dl>

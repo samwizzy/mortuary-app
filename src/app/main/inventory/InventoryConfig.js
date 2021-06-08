@@ -23,11 +23,16 @@ export const InventoryConfig = {
     },
     {
       path: '/inventory/services/:id',
-      component: React.lazy(() => import('./services/AddService')),
+      component: React.lazy(() => import('./services/Services')),
     },
-    // {
-    //   path: '/inventory/services/:id',
-    //   component: React.lazy(() => import('./services/Services')),
-    // },
+    {
+      path: '/inventory/discounts',
+      exact: true,
+      component: React.lazy(() => import('./discounts/Discounts')),
+    },
+    {
+      path: '/inventory/discounts/:id',
+      component: React.lazy(() => import('./discounts/Discounts')),
+    },
   ],
 };

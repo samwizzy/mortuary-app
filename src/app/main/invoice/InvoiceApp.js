@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import {bindActionCreators} from "redux"
+import {connect} from "react-redux"
 import withReducer from 'app/store/withReducer';
 import reducers from './store/reducers';
+import * as Actions from './store/actions';
 import { FusePageCarded } from '@fuse';
 import InvoicesHeader from './invoices/InvoicesHeader';
 import InvoiceHeader from './invoice/InvoiceHeader';
@@ -11,14 +14,28 @@ import InvoicesToolbar from './invoices/InvoicesToolbar';
 import InvoiceToolbar from './invoice/InvoiceToolbar';
 import InvoiceDialog from './dialog/InvoiceDialog';
 import RecordPaymentDialog from './dialog/RecordPaymentDialog';
+import AddInvoice from './new-invoice/AddInvoice';
 
 const styles = (theme) => ({
   layoutRoot: {},
 });
 
 class InvoiceApp extends Component {
+
+  componentDidMount() {
+    // this.props.getInvoices()
+    this.props.getCustomers()
+    this.props.getServices()
+    this.props.getDiscounts()
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, match } = this.props;
+
+    if (match.params.id === 'new') {
+      return <AddInvoice />;
+    }
+
     return (
       <React.Fragment>
         <FusePageCarded
@@ -51,7 +68,16 @@ class InvoiceApp extends Component {
   }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getInvoices: Actions.getInvoices,
+    getCustomers: Actions.getCustomers,
+    getServices: Actions.getServices,
+    getDiscounts: Actions.getDiscounts,
+  }, dispatch)
+}
+
 export default withReducer(
   'invoicesApp',
   reducers
-)(withStyles(styles, { withTheme: true })(InvoiceApp));
+)(withStyles(styles, { withTheme: true })(connect(null, mapDispatchToProps)(InvoiceApp)));

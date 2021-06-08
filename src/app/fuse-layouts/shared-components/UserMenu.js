@@ -23,21 +23,21 @@ function UserMenu(props)
         <React.Fragment>
 
             <Button className="h-64" onClick={userMenuClick}>
-                {user.data.photoURL ?
+                {user.data.organisation.logo ?
                     (
-                        <Avatar className="" alt="user photo" src={user.data.photoURL}/>
+                        <Avatar className="" alt="user photo" src={`data:image/jpg;base64,${user.data.organisation.logo}`}/>
                     )
                     :
                     (
                         <Avatar className="">
-                            {user.data.displayName[0]}
+                            {user.data.organisation.companyName[0]}
                         </Avatar>
                     )
                 }
 
                 <div className="hidden md:flex flex-col ml-12 items-start">
                     <Typography component="span" className="normal-case font-600 flex">
-                        {user.data.displayName}
+                        {user.data.organisation.companyName}
                     </Typography>
                     <Typography className="text-11 capitalize" color="textSecondary">
                         {user.role.toString()}
@@ -80,17 +80,11 @@ function UserMenu(props)
                     </React.Fragment>
                 ) : (
                     <React.Fragment>
-                        <MenuItem component={Link} to="/pages/profile" onClick={userMenuClose}>
+                        <MenuItem component="a" href="https://dev.ezoneerp.com/user-profile" onClick={userMenuClose}>
                             <ListItemIcon className="min-w-40">
                                 <Icon>account_circle</Icon>
                             </ListItemIcon>
                             <ListItemText className="pl-0" primary="My Profile"/>
-                        </MenuItem>
-                        <MenuItem component={Link} to="/apps/mail" onClick={userMenuClose}>
-                            <ListItemIcon className="min-w-40">
-                                <Icon>mail</Icon>
-                            </ListItemIcon>
-                            <ListItemText className="pl-0" primary="Inbox"/>
                         </MenuItem>
                         <MenuItem
                             onClick={() => {

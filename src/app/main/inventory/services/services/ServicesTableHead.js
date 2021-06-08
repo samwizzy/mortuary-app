@@ -19,31 +19,53 @@ import { makeStyles } from '@material-ui/styles';
 
 const rows = [
   {
-    id: 'name',
+    id: 'serviceName',
     align: 'left',
     disablePadding: false,
-    label: 'Name',
+    label: 'Service Name',
+    sort: true,
+  },
+
+  {
+    id: 'type',
+    align: 'left',
+    disablePadding: false,
+    label: 'Type',
     sort: true,
   },
   {
-    id: 'id',
+    id: 'amount',
     align: 'left',
     disablePadding: false,
-    label: 'Customer ID',
+    label: 'Amount',
     sort: true,
   },
   {
-    id: 'email',
+    id: 'created-by',
     align: 'left',
     disablePadding: false,
-    label: 'Email',
+    label: 'Created By',
     sort: true,
   },
   {
-    id: 'phone',
-    align: 'right',
+    id: 'is-admission',
+    align: 'left',
     disablePadding: false,
-    label: 'Phone Number',
+    label: 'Admission',
+    sort: true,
+  },
+  {
+    id: 'is_customer_image',
+    align: 'left',
+    disablePadding: false,
+    label: 'Cust. Image',
+    sort: true,
+  },
+  {
+    id: 'request_customer_signature',
+    align: 'left',
+    disablePadding: false,
+    label: 'Cust. Signature',
     sort: true,
   },
 ];

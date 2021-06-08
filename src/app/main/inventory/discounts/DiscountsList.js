@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  Icon,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -11,58 +13,35 @@ import {
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
-import ServicesTableHead from './ServicesTableHead';
-// import * as Actions from '../store/actions';
+import DiscountsTableHead from './DiscountsTableHead';
+import * as Actions from '../store/actions';
+import DiscountDialog from "./DiscountDialog"
 
-function ServicesList(props) {
+function DiscountsList(props) {
   const dispatch = useDispatch();
-  const deceased = [
-    {
-      id: '5725a680b3249760ea21de52',
-      serviceName: 'Embalming',
-      type: 'Fixed',
-      amount: '3200',
-      createdBy: 'Samuel Okeke',
-      dateCreated: '2021-04-22',
-    },
-    {
-      id: '5725a680606588342058356d',
-      serviceName: 'Dressing ',
-      type: 'Fixed',
-      amount: '3200',
-      createdBy: 'John David',
-      dateCreated: '2021-04-22',
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      serviceName: 'Recovery and Pick up',
-      type: 'Recurrent',
-      amount: '3200',
-      createdBy: 'Joy Essien',
-      dateCreated: '2021-04-22',
-    },
-  ];
+  const discountReducer = useSelector(({inventoryApp}) => inventoryApp.discounts)
+  const discounts = discountReducer.discounts;
+  
   const searchText = '';
 
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(deceased);
+  const [data, setData] = useState(discounts);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
   }, [dispatch]);
 
   useEffect(() => {
     setData(
       searchText.length === 0
-        ? deceased
-        : _.filter(deceased, (item) =>
+        ? discounts
+        : _.filter(discounts, (item) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
-  }, [deceased, searchText]);
+  }, [discounts, searchText]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -84,7 +63,7 @@ function ServicesList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/inventory/services/' + item.id + '/' + item.handle);
+    // props.history.push('/inventory/discounts/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -119,7 +98,7 @@ function ServicesList(props) {
     <div className='w-full flex flex-col'>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
         <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <ServicesTableHead
+          <DiscountsTableHead
             numSelected={selected.length}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -170,11 +149,7 @@ function ServicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.serviceName}
-                    </TableCell>
-
-                    <TableCell className='truncate' component='th' scope='row'>
-                      {n.type}
+                      {n.discount_name}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
@@ -182,11 +157,11 @@ function ServicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.createdBy}
+                      {n.created_by}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.dateCreated}
+                      <IconButton onClick={() => dispatch(Actions.openEditDiscountDialog(n))}><Icon>edit</Icon></IconButton>
                     </TableCell>
                   </TableRow>
                 );
@@ -209,8 +184,10 @@ function ServicesList(props) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+
+      <DiscountDialog />
     </div>
   );
 }
 
-export default withRouter(ServicesList);
+export default withRouter(DiscountsList);

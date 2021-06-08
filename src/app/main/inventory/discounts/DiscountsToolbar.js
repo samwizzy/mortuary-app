@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
 // import * as Actions from '../store/actions/index';
 
-function ServicesToolbar(props) {
+function DiscountsToolbar(props) {
   //   const dispatch = useDispatch();
   const items = {};
 
@@ -35,4 +35,4 @@ function ServicesToolbar(props) {
   );
 }
 
-export default withRouter(ServicesToolbar);
+export default withRouter(DiscountsToolbar);

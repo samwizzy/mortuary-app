@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { Icon } from "@material-ui/core"
+import _ from "lodash"
 
 const baseStyle = {
   flex: 1,
@@ -30,7 +32,7 @@ const rejectStyle = {
 };
 
 function ImageDropzone(props) {
-  const { name, icon, form, handleImageUpload } = props;
+  const { name, title, icon, form, format, disabled, handleImageUpload } = props;
   const {
     getRootProps,
     getInputProps,
@@ -38,8 +40,9 @@ function ImageDropzone(props) {
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    accept: 'image/jpeg, image/png',
+    accept: format === 'image'? 'image/jpeg, image/png' : '.pdf, .doc',
     multiple: false,
+    disabled: !disabled,
     onDrop: (acceptedFiles) => {
       const files = acceptedFiles.map((file) =>
         Object.assign(file, {
@@ -51,12 +54,12 @@ function ImageDropzone(props) {
   });
 
   const files =
-    form.images.length > 0 &&
-    form.images.map((img) => (
-      <li>
-        <img src={`data:image/jpg;base64,${img}`} alt='' className='h-40' />
+    _.get(form, name) && (
+      <li className="flex items-center space-x-2">
+        <img src={`data:image/jpg;base64,${_.get(form, name)}`} alt='' className='h-40' />
+        <Icon>close</Icon>
       </li>
-    ));
+    )
 
   const style = useMemo(
     () => ({
@@ -64,8 +67,9 @@ function ImageDropzone(props) {
       ...(isDragActive ? activeStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
+      borderColor: !disabled ? '#eee' : '#9ac876',
     }),
-    [isDragActive, isDragReject, isDragAccept]
+    [isDragActive, isDragReject, isDragAccept, disabled]
   );
 
   return (
@@ -75,13 +79,13 @@ function ImageDropzone(props) {
           <input {...getInputProps()} />
           <img className='h-10' src={icon} alt='upload-icon' />
           <p>
-            <span className='text-green'>Click here or Drop</span> Your Image
+            <span className='text-green'>Click here or Drop</span> Your {_.startCase(title)}
           </p>
-          <span className='text-xs text-gray-600'>JPG Format Only</span>
+          <span className='text-xs text-gray-600'>{_.startCase(format)} Format Only</span>
         </div>
 
         <aside>
-          <ul className='flex py-4'>{files}</ul>
+          <ul className='flex py-4 list-none' style={{listStyle: "none"}}>{files}</ul>
         </aside>
       </section>
     </div>

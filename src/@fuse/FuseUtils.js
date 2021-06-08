@@ -452,6 +452,20 @@ class FuseUtils {
         }
     }
 
+    static toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    static formatCurrency = (value, code = 'NGN', locale = 'en-NG') => {
+        if (!code) code = 'NGN';
+        return new Intl.NumberFormat(locale, { style: 'currency', currency: code }).format(Number(value))
+    }
+
 }
 
 export default FuseUtils;

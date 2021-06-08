@@ -3,14 +3,16 @@ import { withRouter, Link } from 'react-router-dom';
 import { Button, Paper, Input, Icon, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
-import { useSelector } from 'react-redux';
-// import * as Actions from '../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import * as Actions from '../store/actions';
 
 function ItemsHeader(props) {
   const { match } = props;
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const searchText = '';
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
+  const itemReducer = useSelector(({ inventoryApp }) => inventoryApp.items)
+  const item = itemReducer.item
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
@@ -53,15 +55,22 @@ function ItemsHeader(props) {
       </div>
 
       <FuseAnimate animation='transition.slideRightIn' delay={300}>
-        <Button
-          component={Link}
-          to='/inventory/items/new'
-          className='whitespace-no-wrap'
-          variant='contained'
-        >
-          <span className='hidden sm:flex'>Add New Item</span>
-          <span className='flex sm:hidden'>New</span>
-        </Button>
+        {match.params.id ?
+          <Button className='whitespace-no-wrap' variant='contained' onClick={() => dispatch(Actions.openItemDialog(item))}>
+            <span className='hidden sm:flex'>Update Item</span>
+            <span className='flex sm:hidden'>New</span>
+          </Button>
+          :
+          <Button
+            component={Link}
+            to='/inventory/items/new'
+            className='whitespace-no-wrap'
+            variant='contained'
+          >
+            <span className='hidden sm:flex'>Add New Item</span>
+            <span className='flex sm:hidden'>Update</span>
+          </Button>
+        }
       </FuseAnimate>
     </div>
   );
