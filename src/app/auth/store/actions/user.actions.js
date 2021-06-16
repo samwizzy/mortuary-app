@@ -1,4 +1,4 @@
-import history from '@history';
+// import history from '@history';
 import {/*setDefaultSettings,*/ setInitialSettings} from 'app/store/actions/fuse';
 import _ from '@lodash';
 import store from 'app/store';
@@ -171,10 +171,9 @@ export function logoutUser()
             return null;
         }
 
-        history.push({
-            // pathname: '/'
-            pathname: 'https://dev.ezoneerp.com',
-        });
+        // history.push({ pathname: '/' });
+
+        window.location.replace('https://dev.ezoneerp.com')
 
         switch ( user.from )
         {

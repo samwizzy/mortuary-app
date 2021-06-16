@@ -16,7 +16,7 @@ import { FuseAnimate } from '@fuse';
 
 const RelativeDetails = (props) => {
   const { getRelativeById } = props
-  const relativesReducer = useSelector(({customerApp}) => customerApp.relatives);
+  const relativesReducer = useSelector(({deceasedApp}) => deceasedApp.relatives);
   const relative = relativesReducer.relative
   const match = useRouteMatch();
 

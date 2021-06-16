@@ -40,7 +40,7 @@ class Auth extends Component {
         jwtService.on('onAutoLogin', () => {
             console.log("I am auto loggging")
 
-            this.props.showMessage({message: 'Logging in with JWT'});
+            this.props.showMessage({message: 'Logging in...'});
 
             /**
              * Sign in and retrieve user data from Api
@@ -48,10 +48,9 @@ class Auth extends Component {
             /* signInWithToken */
             jwtService.getProfileData() 
                 .then(user => {
-                    console.log(user, "i am getting user")
                     this.props.setUserData(user);
 
-                    this.props.showMessage({message: 'Logged in with JWT'});
+                    this.props.showMessage({message: 'Logged in'});
                 })
                 .catch(error => {
                     console.dir(error, "error")

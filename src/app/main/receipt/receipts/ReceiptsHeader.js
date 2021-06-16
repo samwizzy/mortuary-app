@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 // import * as Actions from '../store/actions';
 
 function ReceiptsHeader(props) {
-  const { match } = props;
   // const dispatch = useDispatch();
   const searchText = '';
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
@@ -20,7 +19,7 @@ function ReceiptsHeader(props) {
         </FuseAnimate>
         <FuseAnimate animation='transition.slideLeftIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
-            {match.params.id ? 'Invoice Details' : 'Invoices'}
+            Receipts
           </Typography>
         </FuseAnimate>
       </div>

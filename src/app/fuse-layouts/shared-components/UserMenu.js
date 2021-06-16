@@ -37,7 +37,7 @@ function UserMenu(props)
 
                 <div className="hidden md:flex flex-col ml-12 items-start">
                     <Typography component="span" className="normal-case font-600 flex">
-                        {user.data.organisation.companyName}
+                        {user.data.organisation.companyShortName}
                     </Typography>
                     <Typography className="text-11 capitalize" color="textSecondary">
                         {user.role.toString()}

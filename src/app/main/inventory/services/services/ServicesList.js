@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import {
   Table,
   TableBody,
@@ -14,22 +14,23 @@ import { FuseScrollbars, FuseUtils } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import ServicesTableHead from './ServicesTableHead';
-// import * as Actions from '../store/actions';
+import * as Actions from '../../store/actions';
 import { types } from "./../Services"
 
 function ServicesList(props) {
+  const { searchText } = props
   const dispatch = useDispatch();
   const serviceReducer = useSelector(({inventoryApp}) => inventoryApp.services)
   const servicesData = serviceReducer.services;
-  const services = servicesData.services
+  const services = servicesData.services;
+  const count = servicesData.count;
+  const currentPage = servicesData.currentPage;
 
   console.log(services, "services")
-  
-  const searchText = '';
+  console.log(searchText, "searchText")
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(services);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
@@ -41,7 +42,7 @@ function ServicesList(props) {
       searchText.length === 0
         ? services
         : _.filter(services, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.service_name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [services, searchText]);
@@ -90,7 +91,7 @@ function ServicesList(props) {
   }
 
   function handleChangePage(event, page) {
-    setPage(page);
+    dispatch(Actions.getServices(page))
   }
 
   function handleChangeRowsPerPage(event) {
@@ -115,8 +116,8 @@ function ServicesList(props) {
               [
                 (o) => {
                   switch (order.id) {
-                    case 'categories': {
-                      return o.categories[0];
+                    case 'service_name': {
+                      return o.service_name;
                     }
                     default: {
                       return o[order.id];
@@ -126,7 +127,6 @@ function ServicesList(props) {
               ],
               [order.direction]
             )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
@@ -187,9 +187,9 @@ function ServicesList(props) {
 
       <TablePagination
         component='div'
-        count={data.length}
+        count={count}
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={currentPage}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -203,4 +203,11 @@ function ServicesList(props) {
   );
 }
 
-export default withRouter(ServicesList);
+const mapStateToProps = ({inventoryApp}) => {
+  const { services } = inventoryApp
+  return {
+    searchText: services.searchText
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(ServicesList));

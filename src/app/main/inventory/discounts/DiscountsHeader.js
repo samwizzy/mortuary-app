@@ -9,15 +9,12 @@ import * as Actions from '../store/actions';
 function DiscountsHeader(props) {
   const { match } = props;
   const dispatch = useDispatch();
-  const searchText = '';
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
+  const searchText = useSelector(({ inventoryApp }) => inventoryApp.discounts.searchText);
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
       <div className='flex items-center'>
-        <FuseAnimate animation='transition.expandIn' delay={300}>
-          <Icon className='text-32 mr-0 sm:mr-12'>person</Icon>
-        </FuseAnimate>
         <FuseAnimate animation='transition.slideLeftIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
             {match.params.id ? 'Discount Details' : 'Discounts'}
@@ -45,7 +42,7 @@ function DiscountsHeader(props) {
                 inputProps={{
                   'aria-label': 'Search',
                 }}
-                // onChange={ev => dispatch(Actions.setProductsSearchText(ev))}
+                onChange={ev => dispatch(Actions.setSearchText(ev))}
               />
             </Paper>
           </FuseAnimate>
@@ -54,12 +51,10 @@ function DiscountsHeader(props) {
 
       <FuseAnimate animation='transition.slideRightIn' delay={300}>
         <Button
-          // component={Link}
-          // to='/inventory/discounts/new'
           className='whitespace-no-wrap'
           variant='contained'
         >
-          <span className='hidden sm:flex' onClick={() => dispatch(Actions.openDiscountDialog())}>Add New Discount</span>
+          <span className='hidden sm:flex' onClick={() => dispatch(Actions.openDiscountDialog())}>Add Discount</span>
           <span className='flex sm:hidden'>New</span>
         </Button>
       </FuseAnimate>

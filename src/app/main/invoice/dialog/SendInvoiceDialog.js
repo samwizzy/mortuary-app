@@ -5,54 +5,46 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  Icon,
-  IconButton,
   Typography,
   Toolbar,
   AppBar,
 } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
-import FuseUtils from '@fuse/FuseUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
 import InvoiceUploadImage from './InvoiceUploadImage';
 
 const defaultFormState = {
-  id: '',
   from: '',
-  to: '',
-  cc: '',
+  bill_to: '',
   subject: '',
   message: '',
+  invoice: null
 };
 
-function InvoiceDialog(props) {
+function SendInvoiceDialog(props) {
   const dispatch = useDispatch();
-  const invoiceDialog = useSelector(
-    ({ invoicesApp }) => invoicesApp.invoices.invoiceDialog
-  );
+  const invoiceDialog = useSelector(({ invoicesApp }) => invoicesApp.invoices.sendInvoiceDialog);
+  const user = useSelector(({ auth }) => auth.user.data);
 
   const { form, handleChange, setForm } = useForm(defaultFormState);
 
-  const initDialog = useCallback(() => {
-    /**
-     * Dialog type: 'edit'
-     */
-    if (invoiceDialog.type === 'edit' && invoiceDialog.data) {
-      setForm({ ...invoiceDialog.data });
-    }
+  console.log(invoiceDialog.data, "invoiceDialog.data")
+  console.log(user, "user invoiceDialog")
+  console.log(form, "form invoiceDialog")
 
-    /**
-     * Dialog type: 'new'
-     */
-    if (invoiceDialog.type === 'new') {
-      setForm({
-        ...defaultFormState,
-        ...invoiceDialog.data,
-        id: FuseUtils.generateGUID(),
-      });
-    }
-  }, [invoiceDialog.data, invoiceDialog.type, setForm]);
+  const initDialog = useCallback(() => {
+  /**
+   * Dialog type: 'new'
+   */
+  const { customer } = invoiceDialog.data 
+    setForm({
+      ...defaultFormState,
+      bill_to: customer?.email,
+      from: user?.organisation?.emailAddress,
+      invoice: invoiceDialog.data
+    });
+  }, [invoiceDialog.data, user, setForm]);
 
   useEffect(() => {
     /**
@@ -64,28 +56,17 @@ function InvoiceDialog(props) {
   }, [invoiceDialog.props.open, initDialog]);
 
   function closeComposeDialog() {
-    invoiceDialog.type === 'edit'
-      ? dispatch(Actions.closeEditInvoiceDialog())
-      : dispatch(Actions.closeNewInvoiceDialog());
+    dispatch(Actions.closeSendInvoiceDialog());
   }
 
   function canBeSubmitted() {
-    return form.from.length > 0;
+    return form.message.length > 0;
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    if (invoiceDialog.type === 'new') {
-      dispatch(Actions.addInvoice(form));
-    } else {
-      dispatch(Actions.updateInvoice(form));
-    }
-    closeComposeDialog();
-  }
-
-  function handleRemove() {
-    dispatch(Actions.removeInvoice(form.id));
+    const { invoice: { customer: {id} } } = form
+    dispatch(Actions.sendInvoice(form, id));
     closeComposeDialog();
   }
 
@@ -102,7 +83,7 @@ function InvoiceDialog(props) {
       <AppBar position='static' elevation={1}>
         <Toolbar className='flex w-full'>
           <Typography variant='subtitle1' color='inherit'>
-            {invoiceDialog.type === 'new' ? 'Send Invoice' : 'Edit Invoice'}
+            Send Invoice
           </Typography>
         </Toolbar>
       </AppBar>
@@ -121,10 +102,10 @@ function InvoiceDialog(props) {
               className='mb-24'
               label='From'
               autoFocus
+              InputProps={{disabled: true}}
               id='from'
               name='from'
               value={form.from}
-              onChange={handleChange}
               variant='outlined'
               required
               fullWidth
@@ -139,31 +120,16 @@ function InvoiceDialog(props) {
               className='mb-24'
               label='To'
               id='to'
-              name='to'
-              value={form.to}
+              InputProps={{disabled: true}}
+              name='bill_to'
+              value={form.bill_to}
               onChange={handleChange}
               variant='outlined'
               fullWidth
             />
           </div>
 
-          <div className='flex space-x-2'>
-            <div className='min-w-48 pt-20'>
-              <Typography>CC</Typography>
-            </div>
-            <TextField
-              className='mb-24'
-              label='CC'
-              id='cc'
-              name='cc'
-              value={form.cc}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
-            />
-          </div>
-
-          <div className='flex space-x-2'>
+          <div className='flex flex-col space-y-2'>
             <div className='min-w-48 pt-20'>
               <Typography>Subject</Typography>
             </div>
@@ -179,8 +145,8 @@ function InvoiceDialog(props) {
             />
           </div>
 
-          <div className='flex flex-col'>
-            <div className='min-w-48 pt-20 mb-8'>
+          <div className='flex flex-col space-y-2'>
+            <div className='min-w-48 pt-20'>
               <Typography>Message</Typography>
             </div>
             <TextField
@@ -196,42 +162,25 @@ function InvoiceDialog(props) {
               fullWidth
             />
           </div>
-          <div className='flex '>
+          <div className='flex mt-16'>
             <InvoiceUploadImage />
           </div>
         </DialogContent>
 
-        {invoiceDialog.type === 'new' ? (
-          <DialogActions className='justify-between pl-16'>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={handleSubmit}
-              type='submit'
-              disabled={!canBeSubmitted()}
-            >
-              Add
-            </Button>
-          </DialogActions>
-        ) : (
-          <DialogActions className='justify-between pl-16'>
-            <Button
-              variant='contained'
-              color='primary'
-              type='submit'
-              onClick={handleSubmit}
-              disabled={!canBeSubmitted()}
-            >
-              Save
-            </Button>
-            <IconButton onClick={handleRemove}>
-              <Icon>delete</Icon>
-            </IconButton>
-          </DialogActions>
-        )}
+        <DialogActions className='justify-between pl-16'>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={handleSubmit}
+            type='submit'
+            disabled={!canBeSubmitted()}
+          >
+            Send invoice
+          </Button>
+        </DialogActions>
       </form>
     </Dialog>
   );
 }
 
-export default InvoiceDialog;
+export default SendInvoiceDialog;

@@ -27,15 +27,18 @@ import InvoiceUploadImage from './InvoiceUploadImage';
 
 const defaultFormState = {
   id: '',
-  customer: '',
-  receiptNumber: '',
-  amountReceived: '',
-  bankCharges: '',
-  paymentDate: moment().format('YYYY-MM-DDTHH:mm:ss'),
-  amountDeposit: '',
-  paymentMethod: '',
-  notes: '',
+  account_to_deposit: "",
+  amount_received: 0,
+  bank_changes: "",
+  customer_name: "",
+  file: "",
+  notes: "",
+  org_key: "",
+  payment_date: moment().format('YYYY-MM-DDTHH:mm:ss'),
+  payment_method: "DEFAULT",
+  receipt_number: ""
 };
+
 
 function RecordPaymentDialog(props) {
   const dispatch = useDispatch();
@@ -81,10 +84,12 @@ function RecordPaymentDialog(props) {
   }
 
   function canBeSubmitted() {
-    return form.customer.length > 0;
+    return form.customer_name.length > 0;
   }
 
-  const handleDateChange = (name) => (date) => {};
+  const handleDateChange = (name) => (date) => {
+    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DDTHH:mm:ss') })
+  };
 
   const handleChipChange = () => {};
 
@@ -134,9 +139,9 @@ function RecordPaymentDialog(props) {
               className='mb-24'
               label='Customer'
               autoFocus
-              id='customer'
-              name='customer'
-              value={form.customer}
+              id='customer-name'
+              name='customer_name'
+              value={form.customer_name}
               onChange={handleChange}
               variant='outlined'
               required
@@ -148,8 +153,8 @@ function RecordPaymentDialog(props) {
               label='Receipt Number'
               autoFocus
               id='receipt-number'
-              name='receiptNumber'
-              value={form.receiptNumber}
+              name='receipt_number'
+              value={form.receipt_number}
               onChange={handleChange}
               variant='outlined'
               required
@@ -161,9 +166,9 @@ function RecordPaymentDialog(props) {
             <TextField
               className='mb-24'
               label='Amount Received (NGN)'
-              id='amountReceived'
-              name='amount-received'
-              value={form.amountReceived}
+              id='amount_received'
+              name='amount_received'
+              value={form.amount_received}
               onChange={handleChange}
               variant='outlined'
               fullWidth
@@ -175,8 +180,8 @@ function RecordPaymentDialog(props) {
               className='mb-24'
               label='Bank Charges'
               id='bank-charges'
-              name='bankCharges'
-              value={form.bankCharges}
+              name='bank_changes'
+              value={form.bank_changes}
               onChange={handleChange}
               variant='outlined'
               fullWidth
@@ -193,8 +198,8 @@ function RecordPaymentDialog(props) {
                 id='payment-date'
                 label='Payment Date'
                 fullWidth
-                value={form.paymentDate}
-                onChange={handleDateChange}
+                value={form.payment_date}
+                onChange={handleDateChange("payment_date")}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
@@ -202,8 +207,8 @@ function RecordPaymentDialog(props) {
             </MuiPickersUtilsProvider>
             <FuseChipSelect
               className='mt-0 mb-24 w-full'
-              value={form.amountDeposit}
-              onChange={(value) => handleChipChange(value, 'amount')}
+              value={form.account_to_deposit}
+              onChange={(value) => handleChipChange(value, 'account_to_deposit')}
               placeholder=''
               textFieldProps={{
                 label: 'Amount to Deposit',
@@ -222,8 +227,8 @@ function RecordPaymentDialog(props) {
           <div className='flex items-center space-x-2'>
             <FuseChipSelect
               className='mt-0 mb-24 w-full'
-              value={form.paymentMethod}
-              onChange={(value) => handleChipChange(value, 'paymentMethod')}
+              value={form.payment_method}
+              onChange={(value) => handleChipChange(value, 'payment_method')}
               placeholder='Method'
               textFieldProps={{
                 label: 'Payment Method',

@@ -1,5 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
+import {useLocation} from "react-router-dom"
+import qs from "qs";
 import { Button, Icon, Typography } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { useDispatch } from 'react-redux';
@@ -9,10 +11,17 @@ import * as Actions from '../store/actions';
 function CustomersHeader(props) {
   const { form } = props;
   const dispatch = useDispatch();
-  // const searchText = '';
+  const location = useLocation();
+  const customerId = qs.parse(location.search, { ignoreQueryPrefix: true }).customerId
 
   function canBeSubmitted() {
-    return form.first_name.length > 0 && !_.isEqual({}, form);
+    return form.deceased.first_name.length > 0 && !_.isEqual({}, form);
+  }
+
+  const handleSubmit = () => {
+    customerId 
+    ? dispatch(Actions.createReturningCustomer(form, customerId))
+    : dispatch(Actions.createCustomer(form))
   }
 
   return (
@@ -49,7 +58,7 @@ function CustomersHeader(props) {
           className='whitespace-no-wrap'
           variant='contained'
           disabled={!canBeSubmitted()}
-          onClick={() => dispatch(Actions.createCustomer(form))}
+          onClick={handleSubmit}
         >
           Save
         </Button>

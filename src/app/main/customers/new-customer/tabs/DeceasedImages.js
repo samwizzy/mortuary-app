@@ -25,7 +25,7 @@ function DeceasedImages(props) {
             form={form}
             handleImageUpload={handleImageUpload}
             icon='/assets/images/icons/upload.svg'
-            format="pdf"
+            format="pdf, images"
             disabled="false"
           />
           <Dropzone
@@ -34,7 +34,7 @@ function DeceasedImages(props) {
             form={form}
             handleImageUpload={handleImageUpload}
             icon='/assets/images/icons/upload.svg'
-            format="pdf"
+            format="pdf, images"
             disabled="false"
           />
         </FuseScrollbars>

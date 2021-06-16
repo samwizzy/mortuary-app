@@ -28,7 +28,7 @@ class DeceasedApp extends Component {
           this.props.match.params.id ? <DetailsToolbar /> : <DeceasedToolbar />
         }
         content={
-          <div className='p-24'>
+          <div className='p-24 w-full'>
             {this.props.match.params.id ? (
               <DeceasedDetails />
             ) : (

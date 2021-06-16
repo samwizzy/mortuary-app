@@ -30,9 +30,9 @@ function AddServices(props) {
     service_name: "",
     service_type: null,
     amount: "",
-    is_admisson: true,
-    is_customer_image: true,
-    request_customer_signature: true,
+    is_admisson: false,
+    is_customer_image: false,
+    request_customer_signature: false,
   });
 
   const handleChange = (event) => {
@@ -75,7 +75,7 @@ function AddServices(props) {
                 color='inherit'
               >
                 <Icon className='mr-4 text-20'>arrow_back</Icon>
-                Services
+                Services / Products
               </Typography>
             </FuseAnimate>
 
@@ -83,7 +83,7 @@ function AddServices(props) {
               <div className='flex min-w-0'>
                 <FuseAnimate animation='transition.slideLeftIn' delay={300}>
                   <Typography className='hidden sm:flex' variant='h6'>
-                    Add Service
+                    Add Service / Product
                   </Typography>
                 </FuseAnimate>
               </div>

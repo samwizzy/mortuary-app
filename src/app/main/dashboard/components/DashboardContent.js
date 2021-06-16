@@ -8,16 +8,12 @@ function DashboardContent(props) {
   const servicesReducer = useSelector(({dashboardApp}) => dashboardApp.services.services)
   const invoicesReducer = useSelector(({dashboardApp}) => dashboardApp.invoices.invoices)
 
-  console.log(customerReducer, "customerReducer")
-  console.log(servicesReducer, "servicesReducer")
-  console.log(invoicesReducer, "invoicesReducer")
-
   return (
     <div className='w-full'>
       <div className='flex md:flex-row flex-col justify-between md:space-x-16 space-y-16 md:space-y-0'>
         <Widget1 count={customerReducer.count} />
-        <Widget2 count={servicesReducer.count}  />
-        <Widget3 count={invoicesReducer.totalItems}  />
+        <Widget2 count={invoicesReducer.totalItems}  />
+        <Widget3 count={servicesReducer.count}  />
       </div>
 
       <RegistrationsList />

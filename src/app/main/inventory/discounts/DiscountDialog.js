@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  MenuItem,
   Typography,
   Toolbar,
   AppBar,
@@ -127,14 +128,22 @@ function DiscountDialog(props) {
             </div>
             <TextField
               className='mb-24'
+              select
               label='Amount'
               id='amount'
               name='amount'
               value={form.amount}
               onChange={handleChange}
               variant='outlined'
+              InputProps={{
+                endAdornment: (<Typography className="pr-16">%</Typography>)
+              }}
               fullWidth
-            />
+            >
+              {_.range(5, 100, 5).map(r => 
+                <MenuItem key={r} value={r}>{r}</MenuItem>
+              )}
+            </TextField>  
           </div>
         </DialogContent>
         

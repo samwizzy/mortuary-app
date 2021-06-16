@@ -29,4 +29,4 @@ function Relatives(props) {
   );
 }
 
-export default withReducer('customerApp', reducer)(Relatives);
+export default withReducer('deceasedApp', reducer)(Relatives);

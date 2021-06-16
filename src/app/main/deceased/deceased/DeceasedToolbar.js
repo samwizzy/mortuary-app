@@ -7,11 +7,6 @@ import { withRouter } from 'react-router-dom';
 
 function DeceasedToolbar(props) {
   //   const dispatch = useDispatch();
-  const deceased = {};
-
-  if (!deceased) {
-    return null;
-  }
 
   return (
     <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16'>

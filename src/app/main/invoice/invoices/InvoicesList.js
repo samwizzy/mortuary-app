@@ -156,7 +156,7 @@ function InvoicesList(props) {
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.service}
+                      {n.service?.length}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>

@@ -6,13 +6,17 @@ import history from "../../../../../@history"
 export const GET_INVOICES = '[INVOICES APP] GET INVOICES';
 export const GET_INVOICE_BY_ID = '[INVOICES APP] GET INVOICE BY ID';
 export const SET_SEARCH_TEXT = '[INVOICES APP] SET SEARCH TEXT';
+export const SEND_INVOICE = '[INVOICES APP] SEND INVOICE';
 
 export const SELECT_ALL_INVOICES = '[INVOICES APP] SELECT ALL INVOICES';
 export const DESELECT_ALL_INVOICES = '[INVOICES APP] DESELECT ALL INVOICES';
-export const OPEN_NEW_INVOICE_DIALOG = '[INVOICES APP] OPEN NEW INVOICE DIALOG';
-export const CLOSE_NEW_INVOICE_DIALOG = '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
+export const OPEN_INVOICE_PAYMENT_DIALOG = '[INVOICES APP] OPEN NEW INVOICE DIALOG';
+export const CLOSE_INVOICE_PAYMENT_DIALOG = '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
 export const OPEN_EDIT_INVOICE_DIALOG = '[INVOICES APP] OPEN EDIT INVOICE DIALOG';
 export const CLOSE_EDIT_INVOICE_DIALOG = '[INVOICES APP] CLOSE EDIT INVOICE DIALOG';
+
+export const OPEN_SEND_INVOICE_DIALOG = '[INVOICES APP] OPEN SEND INVOICE DIALOG';
+export const CLOSE_SEND_INVOICE_DIALOG = '[INVOICES APP] CLOSE SEND INVOICE DIALOG';
 
 export const OPEN_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] OPEN NEW RECORD PAYMENT DIALOG';
 export const CLOSE_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] CLOSE NEW RECORD PAYMENT DIALOG';
@@ -45,6 +49,31 @@ export function addInvoice(data) {
         });
       } else {
         dispatch(showMessage({ message: 'Invoice creation failed' }));
+      }
+    });
+  };
+}
+
+export function sendInvoice(data, id) {
+  const request = axios.post(`/api/v1/invoices/customer_id/${id}/send_invoice`, data);
+  console.log(request, 'sending Invoice request');
+
+  return (dispatch) => {
+    request.then((response) => {
+      if (response.status === 200) {
+        dispatch(showMessage({ message: 'Invoice sent successfully' }));
+
+        Promise.all([
+          dispatch({
+            type: SEND_INVOICE,
+            payload: response.data,
+          }),
+        ]).then(() => {
+          dispatch(Actions.getInvoices());
+          history.push("/invoices")
+        });
+      } else {
+        dispatch(showMessage({ message: 'Invoice sending failed' }));
       }
     });
   };
@@ -103,15 +132,29 @@ export function deSelectAllInvoices() {
   };
 }
 
-export function openNewInvoiceDialog() {
+export function openInvoicePaymentDialog(payload) {
   return {
-    type: OPEN_NEW_INVOICE_DIALOG,
+    type: OPEN_INVOICE_PAYMENT_DIALOG,
+    payload
   };
 }
 
-export function closeNewInvoiceDialog() {
+export function closeInvoicePaymentDialog() {
   return {
-    type: CLOSE_NEW_INVOICE_DIALOG,
+    type: CLOSE_INVOICE_PAYMENT_DIALOG,
+  };
+}
+
+export function openSendInvoiceDialog(payload) {
+  return {
+    type: OPEN_SEND_INVOICE_DIALOG,
+    payload
+  };
+}
+
+export function closeSendInvoiceDialog() {
+  return {
+    type: CLOSE_SEND_INVOICE_DIALOG,
   };
 }
 

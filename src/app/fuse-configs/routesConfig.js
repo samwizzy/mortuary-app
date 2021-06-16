@@ -8,6 +8,7 @@ import { RelativesConfig } from 'app/main/relatives/RelativesConfig';
 import { DeceasedConfig } from 'app/main/deceased/DeceasedConfig';
 import { InventoryConfig } from 'app/main/inventory/InventoryConfig';
 import { InvoiceConfig } from 'app/main/invoice/InvoiceConfig';
+import { ProformaInvoiceConfig } from 'app/main/proforma/ProformaInvoiceConfig';
 import { ReceiptConfig } from 'app/main/receipt/ReceiptConfig';
 import { ReportsConfig } from 'app/main/reports/ReportsConfig';
 import { AuthConfig } from 'app/main/auth/AuthConfig';
@@ -20,6 +21,7 @@ const routeConfigs = [
   RelativesConfig,
   InventoryConfig,
   InvoiceConfig,
+  ProformaInvoiceConfig,
   ReceiptConfig,
   ReportsConfig,
   DeceasedConfig,
