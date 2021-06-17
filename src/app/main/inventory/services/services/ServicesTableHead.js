@@ -22,7 +22,7 @@ const rows = [
     id: 'serviceName',
     align: 'left',
     disablePadding: false,
-    label: 'Service Name',
+    label: 'Product/Service Name',
     sort: true,
   },
 

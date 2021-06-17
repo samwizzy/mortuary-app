@@ -1,30 +1,17 @@
 import React from 'react';
-import _ from "lodash";
+import _ from "@lodash";
 import { FuseScrollbars } from '@fuse';
 import { useSelector } from "react-redux"
 import { withRouter } from 'react-router-dom';
 import Dropzone from './Dropzone';
 
-_.mixin({
-  'findByValues': function(collection, property, values) {
-    return _.filter(collection, function(item) {
-      return _.includes(values, item[property]);
-    });
-  }
-});
-
 function CustomerImages(props) {
   const { form, handleImageUpload } = props;
   const serviceReducer = useSelector(({customerApp}) => customerApp.services);
-
   const services = serviceReducer.services.services;
   
   const formServices = form.service.map(s => s.service_id);
-
-  console.log(formServices, "services customer images")
-
-  const serviceBool =_.findByValues(services, "id", formServices)
-  console.log(_.some(serviceBool, {is_admisson: true}), "boolena")
+  const serviceBool = _.findByValues(services, "id", formServices)
 
   return (
     <div className=' md:w-4/12 max-w-4xl mx-auto'>

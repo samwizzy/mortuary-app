@@ -26,10 +26,10 @@ const rows = [
     sort: true,
   },
   {
-    id: 'amount',
+    id: 'rate',
     align: 'left',
     disablePadding: false,
-    label: 'Amount',
+    label: 'Rate (%)',
     sort: true,
   },
   {

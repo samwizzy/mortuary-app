@@ -12,29 +12,22 @@ import InvoiceList from './invoice/InvoiceList';
 import InvoicesList from './invoices/InvoicesList';
 import InvoicesToolbar from './invoices/InvoicesToolbar';
 import InvoiceToolbar from './invoice/InvoiceToolbar';
-import InvoiceDialog from './dialog/InvoiceDialog';
+import SendInvoiceDialog from './dialog/SendInvoiceDialog';
 import RecordPaymentDialog from './dialog/RecordPaymentDialog';
-import AddInvoice from './new-invoice/AddInvoice';
 
 const styles = (theme) => ({
   layoutRoot: {},
 });
 
 class InvoiceApp extends Component {
-
   componentDidMount() {
-    // this.props.getInvoices()
     this.props.getCustomers()
     this.props.getServices()
     this.props.getDiscounts()
   }
 
   render() {
-    const { classes, match } = this.props;
-
-    if (match.params.id === 'new') {
-      return <AddInvoice />;
-    }
+    const { classes } = this.props;
 
     return (
       <React.Fragment>
@@ -42,7 +35,7 @@ class InvoiceApp extends Component {
           classes={{
             root: classes.layoutRoot,
             content: 'flex',
-            header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
+            header: 'min-h-72 h-72 sm:h-136 sm:min-h-130',
           }}
           header={
             this.props.match.params.id ? <InvoiceHeader /> : <InvoicesHeader />
@@ -61,7 +54,7 @@ class InvoiceApp extends Component {
           }
           innerScroll
         />
-        <InvoiceDialog />
+        <SendInvoiceDialog />
         <RecordPaymentDialog />
       </React.Fragment>
     );

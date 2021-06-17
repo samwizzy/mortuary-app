@@ -32,7 +32,7 @@ function AddInvoice(props) {
     invoice_number: "",
     notes: "",
     service: [
-      { service_id: '', rate: '', discount_type_id: '', days: '', discount_amount: '' }
+      { service_id: '', rate: '', discount_type_id: '', days: '', discount_amount: '', new_amount: '' }
     ],
     total_amount: 0
   });
@@ -50,7 +50,7 @@ function AddInvoice(props) {
   };
 
   function addServiceRow() {
-    const newRole = { service_id: '', rate: '', discount_type_id: '', discount_amount: '' }
+    const newRole = { service_id: '', rate: '', discount_type_id: '', discount_amount: '', new_amount: '' }
     setForm({...form, service: [ ...form.service, newRole ]});
   }
 

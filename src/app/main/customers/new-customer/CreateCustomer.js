@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from "react-redux"
+import { useLocation } from "react-router-dom"
+import qs from "qs"
 import _ from 'lodash';
 import moment from 'moment';
 import { FusePageCarded, FuseUtils } from '@fuse';
@@ -16,12 +18,40 @@ import CustomerImages from './tabs/CustomerImages';
 import DeceasedImages from './tabs/DeceasedImages';
 import DeceasedInfo from './tabs/DeceasedInfo';
 
+const defaultReturningform = {
+  service: [
+    { service_id: '', rate: '', qty: '', discount: null },
+  ],
+  relative: [],
+  deceased: {
+    first_name: '',
+    last_name: '',
+    other_name: '',
+    gender: '',
+    age: '',
+    address: '',
+    place_of_death: '',
+    dateof_assertion: moment().format("YYYY-MM-DDTHH:mm:ss"),
+    time_of_death: moment().format("YYYY HH:mm:ss"),
+    cause_of_death: '',
+    how_was_death_assertained: "",
+    name_of_hospital: '',
+    medical_attendant_name: '',
+    hospital_address: '',
+    status: 'ADMIT',
+    deceased_image: null,
+    record_of_death_from_hospital: '',
+    supporting_document: '',
+  },
+}
+
 function CreateCustomer(props) {
   const { discounts, services } = props
   const [tabValue, setTabValue] = useState(0);
   const dispatch = useDispatch();
-  const params = new URLSearchParams(window.location.search);
-  const type = params.get('type');
+  const location = useLocation();
+  const type = qs.parse(location.search, { ignoreQueryPrefix: true }).type
+
   const { form, handleChange, setForm } = useForm({
     first_name: '',
     last_name: '',
@@ -33,7 +63,7 @@ function CreateCustomer(props) {
     customer_image: '',
     signature: '',
     service: [
-      { service_id: '', rate: '', discount_type_id: '', days: '', discount_amount: '' },
+      { service_id: '', rate: '', qty: 1, discount: null },
     ],
     relative: [],
     deceased: {
@@ -51,7 +81,7 @@ function CreateCustomer(props) {
       name_of_hospital: '',
       medical_attendant_name: '',
       hospital_address: '',
-      status: 'DEFAULT',
+      status: 'ADMIT', // RELEASE
       deceased_image: null,
       record_of_death_from_hospital: '',
       supporting_document: '',
@@ -61,15 +91,32 @@ function CreateCustomer(props) {
   useEffect(() => {
     if(type === "returning"){
       setTabValue(1)
+      setForm({...defaultReturningform})
     }
-  }, [type])
+  }, [type, setForm])
 
-  function handleChipChange(value, name) {
-    setForm(_.set({ ...form }, name, value.value));
+  useEffect(() => {
+    dispatch(Actions.getServices())
+    dispatch(Actions.getDiscounts())
+  }, [dispatch]);
+
+  function handleChipChange(value, name, i) {
+    if(name === "discount"){
+      setForm(_.set({ ...form }, name, value));
+    }else{
+      setForm(_.set({ ...form }, name, value.value));
+    }
   }
 
+  function handleSelectChange(value, name, i) {
+    const { service } = form
+    service[i][name] = value 
+    setForm({ ...form, service });
+  }
+
+
   function addServiceRow() {
-    const newRole = { service_id: '', rate: '', discount_type_id: '', days: '', discount_amount: '' }
+    const newRole = { service_id: '', rate: '', qty: '', discount: null }
     setForm({...form, service: [ ...form.service, newRole ]});
   }
 
@@ -95,14 +142,13 @@ function CreateCustomer(props) {
   const handleMultiChange = i => event => {
     const { name, value } = event.target
     const { service } = form
-    if(name === "discount_type_id"){
-      const discount = discounts.find(d => d.id === value)
-      service[i][name] =  discount.id
-      service[i].discount_amount = discount.amount
-    }else if(name === "service_id"){
+    if(name === "service_id"){
       const serv = services.find(s => s.id === value)
       service[i][name] = serv.id
       service[i].rate = serv.amount
+      if(_.find(services, {id: service[i].service_id})?.service_type === "2"){
+        service[i].qty = 1;
+      }
     }else{
       service[i][name] = value
     }
@@ -116,22 +162,17 @@ function CreateCustomer(props) {
     setForm({ ...form, relative });
   }
 
-  useEffect(() => {
-    dispatch(Actions.getServices())
-    dispatch(Actions.getDiscounts())
-  }, [setForm, dispatch]);
-
   const handleDateChange = (name) => (date) => {
     setForm(_.set({ ...form }, name, moment(date).format("YYYY-MM-DD")));
   };
 
   const handleTimeChange = (name) => (date) => {
-    setForm(_.set({ ...form }, name, moment(date).format("HH:mm:ss")));
+    setForm(_.set({ ...form }, name, moment(date).format("YYYY HH:mm:ss")));
   };
 
   function handleChangeTab(event, tabValue) {
     if(type === "returning") {
-      setTabValue(tabValue === 0 ? 1 : tabValue)
+      setTabValue((tabValue === 0 || tabValue === 2) ? 1 : tabValue)
     }else{
       setTabValue(tabValue);
     }
@@ -182,11 +223,12 @@ function CreateCustomer(props) {
               form={form}
               handleChange={handleChange}
               handleMultiChange={handleMultiChange}
+              handleSelectChange={handleSelectChange}
               addServiceRow={addServiceRow}
               removeServiceRow={removeServiceRow}
             />
           )}
-          {tabValue === 2 && (
+          {(tabValue === 2 && type !== "returning") && (
             <CustomerImages form={form} handleImageUpload={handleImageUpload} />
           )}
           {tabValue === 3 && (

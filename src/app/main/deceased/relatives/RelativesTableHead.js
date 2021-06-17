@@ -48,7 +48,7 @@ const rows = [
   },
   {
     id: 'phone',
-    align: 'right',
+    align: 'left',
     disablePadding: false,
     label: 'Phone Number',
     sort: true,

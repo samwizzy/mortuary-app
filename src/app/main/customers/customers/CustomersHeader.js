@@ -57,7 +57,7 @@ function CustomersHeader(props) {
           className='whitespace-no-wrap'
           variant='contained'
         >
-          <span className='hidden sm:flex'>Add New Customer</span>
+          <span className='hidden sm:flex'>Add Customer</span>
           <span className='flex sm:hidden'>New</span>
         </Button>
       </FuseAnimate>

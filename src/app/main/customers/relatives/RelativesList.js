@@ -165,7 +165,7 @@ function RelativesList(props) {
                       {n.email}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
+                    <TableCell component='th' scope='row' align='left'>
                       {n.phone_number}
                     </TableCell>
                   </TableRow>

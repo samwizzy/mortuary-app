@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useRouteMatch } from "react-router-dom";
-import { Icon, IconButton, MenuItem, Popover } from '@material-ui/core';
+import { Button, Icon, IconButton, MenuItem, Popover } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
@@ -22,12 +22,6 @@ function DeceasedToolbar(props) {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const customer = {};
-
-  if (!customer) {
-    return null;
-  }
-
   return (
     <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16'>
       <IconButton onClick={() => props.history.goBack()}>
@@ -42,9 +36,9 @@ function DeceasedToolbar(props) {
         </FuseAnimate>
         <FuseAnimate animation='transition.expandIn' delay={100}>
           <>
-          <IconButton aria-describedby={id} onClick={handleClick}>
-            <Icon>settings</Icon>
-          </IconButton>
+          <Button aria-describedby={id} onClick={handleClick}>
+            <Icon>settings</Icon> Options
+          </Button>
           <Popover
             id={id}
             open={open}
@@ -61,6 +55,13 @@ function DeceasedToolbar(props) {
           >
             <MenuItem component={Link} to={`/deceased/${match.params.id}/relatives`}>View Relatives</MenuItem>
             <MenuItem component={Link} to={`/deceased/${match.params.id}/relatives`}>Payment Advice</MenuItem>
+            <MenuItem component={Link} to={`/deceased/${match.params.id}/relatives`}>View relatives</MenuItem>
+            <MenuItem component={Link} to={`/deceased`}>Print admission form</MenuItem>
+            <MenuItem component={Link} to={`/deceased`}>View embalmming report</MenuItem>
+            <MenuItem component={Link} to={`/deceased`}>Fill embalmming report</MenuItem>
+            <MenuItem component={Link} to={`/deceased`}>Print embalmming report</MenuItem>
+            <MenuItem component={Link} to={`/deceased`}>Print cremation report</MenuItem>
+            <MenuItem component={Link} to={`/deceased`}>Release corpse</MenuItem>
           </Popover>
           </>
         </FuseAnimate>

@@ -2,8 +2,8 @@ import axios from 'axios';
 
 export const GET_SERVICES = '[CUSTOMER APP] GET SERVICES';
 
-export function getServices() {
-  const request = axios.get('/api/v1/services');
+export function getServices(page=0, size=500) {
+  const request = axios.get('/api/v1/services', { params: { page, size } });
 
   return (dispatch) =>
     request.then((response) => {

@@ -40,7 +40,7 @@ function ImageDropzone(props) {
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    accept: format === 'image'? 'image/jpeg, image/png' : '.pdf, .doc',
+    accept: format === 'image'? 'image/jpeg, image/png' : '.pdf, .doc, image/jpeg, image/png',
     multiple: false,
     disabled: !disabled,
     onDrop: (acceptedFiles) => {
@@ -81,7 +81,7 @@ function ImageDropzone(props) {
           <p>
             <span className='text-green'>Click here or Drop</span> Your {_.startCase(title)}
           </p>
-          <span className='text-xs text-gray-600'>{_.startCase(format)} Format Only</span>
+          <span className='text-xs text-gray-600'>{format.split(",").join(" and ")} format only</span>
         </div>
 
         <aside>

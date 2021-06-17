@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
   IconButton,
@@ -18,11 +18,10 @@ import * as Actions from '../store/actions';
 import DiscountDialog from "./DiscountDialog"
 
 function DiscountsList(props) {
+  const { searchText } = props
   const dispatch = useDispatch();
   const discountReducer = useSelector(({inventoryApp}) => inventoryApp.discounts)
   const discounts = discountReducer.discounts;
-  
-  const searchText = '';
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(discounts);
@@ -38,7 +37,7 @@ function DiscountsList(props) {
       searchText.length === 0
         ? discounts
         : _.filter(discounts, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.discount_name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [discounts, searchText]);
@@ -153,7 +152,7 @@ function DiscountsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.amount}
+                      {n.amount || 0}%
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
@@ -161,7 +160,7 @@ function DiscountsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      <IconButton onClick={() => dispatch(Actions.openEditDiscountDialog(n))}><Icon>edit</Icon></IconButton>
+                      <IconButton size="small" onClick={() => dispatch(Actions.openEditDiscountDialog(n))}><Icon>edit</Icon></IconButton>
                     </TableCell>
                   </TableRow>
                 );
@@ -190,4 +189,11 @@ function DiscountsList(props) {
   );
 }
 
-export default withRouter(DiscountsList);
+const mapStateToProps = ({inventoryApp}) => {
+  const { discounts } = inventoryApp
+  return {
+    searchText: discounts.searchText
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(DiscountsList));

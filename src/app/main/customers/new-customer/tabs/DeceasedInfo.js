@@ -147,6 +147,7 @@ function DeceasedInfo(props) {
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                   margin='normal'
+                  format="dd/MM/yyyy"
                   inputVariant='outlined'
                   id='date-of-death'
                   label='Date of assertion'
@@ -162,6 +163,7 @@ function DeceasedInfo(props) {
                 <KeyboardTimePicker
                   margin='normal'
                   inputVariant='outlined'
+                  format="hh:mm:ss a"
                   id='time-of-death'
                   label='Time of death'
                   value={form.deceased.time_of_death}

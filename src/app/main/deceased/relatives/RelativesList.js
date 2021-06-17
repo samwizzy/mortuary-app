@@ -17,7 +17,7 @@ import { useDispatch } from 'react-redux';
 
 function RelativesList(props) {
   const dispatch = useDispatch();
-  const relativesReducer = useSelector(({customerApp}) => customerApp.relatives);
+  const relativesReducer = useSelector(({deceasedApp}) => deceasedApp.relatives);
   const relatives = relativesReducer.relatives
   const match = useRouteMatch();
   const searchText = '';
@@ -167,7 +167,7 @@ function RelativesList(props) {
                       {n.email}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
+                    <TableCell component='th' scope='row' align='left'>
                       {n.phone_number}
                     </TableCell>
                   </TableRow>

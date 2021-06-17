@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from "react-redux"
+import _ from "lodash";
 import {
   Table,
   TableHead,
@@ -10,18 +11,21 @@ import {
   IconButton,
   MenuItem,
 } from '@material-ui/core';
+import {Autocomplete} from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 
 function SelectServices(props) {
-  const { form, handleMultiChange, addServiceRow, removeServiceRow } = props;
+  const { form, handleMultiChange, handleSelectChange, addServiceRow, removeServiceRow } = props;
   const serviceReducer = useSelector(({customerApp}) => customerApp.services);
   const discountsReducer = useSelector(({customerApp}) => customerApp.discounts);
 
   const services = serviceReducer.services.services;
   const discounts = discountsReducer.discounts;
+
+  console.log(services, "services")
 
   return (
     <div className='w-full flex flex-col'>
@@ -31,9 +35,8 @@ function SelectServices(props) {
             <TableRow>
               <TableCell>Services</TableCell>
               <TableCell>Rate</TableCell>
-              <TableCell>Days</TableCell>
-              <TableCell>Discount Type</TableCell>
-              <TableCell>Discount Amount</TableCell>
+              <TableCell>Days/Qty</TableCell>
+              <TableCell>Discount</TableCell>
               <TableCell align='left'>
                 <IconButton onClick={addServiceRow}>
                   <AddIcon />
@@ -82,11 +85,10 @@ function SelectServices(props) {
                       className='mt-8 mb-16'
                       required
                       label='Rate'
-                      autoFocus
                       id={`rate-${i}`}
                       name='rate'
                       value={n.rate}
-                      // onChange={handleMultiChange(i)}
+                      onChange={handleMultiChange(i)}
                       variant='outlined'
                       fullWidth
                     />
@@ -96,52 +98,47 @@ function SelectServices(props) {
                     <TextField
                       className='mt-8 mb-16 w-128'
                       required
-                      label='Days'
-                      autoFocus
-                      id={`days-${i}`}
-                      name='days'
-                      value={n.days}
+                      label='Days/Qty'
+                      id={`qty-${i}`}
+                      name='qty'
+                      value={n.qty}
                       onChange={handleMultiChange(i)}
                       variant='outlined'
+                      disabled={_.find(services, {id: n.service_id})?.service_type === "2"}
                       fullWidth
                     />
                   </TableCell>
 
                   <TableCell component='th' scope='row' align='left'>
-                    <TextField
+                    {/* <TextField
                       className='mt-8 mb-16 min-w-128'
                       select
                       required
                       label='Discount Types'
-                      autoFocus
-                      id={`discount_type_id-${i}`}
-                      name='discount_type_id'
-                      value={n.discount_type_id}
+                      id={`discount-${i}`}
+                      name='discount'
+                      value={n.discount}
                       onChange={handleMultiChange(i)}
                       variant='outlined'
                       fullWidth
                     >
                       <MenuItem value="">Select discount type</MenuItem>
                       {discounts.map(d => 
-                        <MenuItem key={d.id} value={d.id}>{d.discount_name}</MenuItem>
+                        <MenuItem key={d.id} value={d.amount}>{d.discount_name} ( {d.amount}% )</MenuItem>
                       )}
-                    </TextField>  
-                  </TableCell>
+                    </TextField>   */}
 
-                  <TableCell component='th' scope='row'>
-                    <TextField
-                      className='mt-8 mb-16'
-                      required
-                      label='Discount Amount'
-                      autoFocus
-                      id={`discount_amount-${i}`}
-                      name='discount_amount'
-                      value={n.discount_amount}
-                      onChange={handleMultiChange(i)}
-                      variant='outlined'
-                      fullWidth
+                    <Autocomplete
+                      className='mt-8 mb-24'
+                      value={n.discount}
+                      onChange={(ev, value) => handleSelectChange(value, 'discount', i)}
+                      placeholder='Select discount type'
+                      options={discounts}
+                      getOptionLabel={(option) => (`${option.discount_name} (${option.amount}%)`)}
+                      renderInput={(params) => <TextField {...params} label="Discount types" variant="outlined" />}
                     />
                   </TableCell>
+
                   <TableCell className='' padding='checkbox'>
                     <IconButton onClick={removeServiceRow(i)}>
                       <DeleteIcon />

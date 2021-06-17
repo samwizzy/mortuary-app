@@ -10,10 +10,15 @@ const initialState = {
         email      : '',
         organisation: {
             logo: null,
+            orgId: "",
             companyName: "",
+            companyShortName: "",
             emailAddress: "",
             phoneNumber: "",
             website: "",
+            city: "",
+            state: "",
+            country: "",
         },
         shortcuts    : [
             'calendar',

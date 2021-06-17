@@ -4,6 +4,7 @@ import * as Actions from './';
 import history from "../../../../../@history"
 
 export const CREATE_CUSTOMER = '[CUSTOMER APP] CREATE CUSTOMER';
+export const CREATE_RETURNING_CUSTOMER = '[CUSTOMER APP] CREATE RETURNING CUSTOMER';
 export const UPDATE_CUSTOMER = '[CUSTOMER APP] UPDATE CUSTOMER';
 export const GET_CUSTOMERS = '[CUSTOMER APP] GET CUSTOMERS';
 export const GET_CUSTOMER_BY_ID = '[CUSTOMER APP] GET CUSTOMER BY ID';
@@ -12,7 +13,6 @@ export const SET_SEARCH_TEXT = '[CUSTOMER APP] SET SEARCH TEXT';
 
 export function createCustomer(data) {
   const request = axios.post('/api/v1/customers', data);
-  console.log(request, 'creating customer request');
 
   return (dispatch) => {
     request.then((response) => {
@@ -30,6 +30,30 @@ export function createCustomer(data) {
         });
       } else {
         dispatch(showMessage({ message: 'Customer creation failed' }));
+      }
+    });
+  };
+}
+
+export function createReturningCustomer(data, id) {
+  const request = axios.post(`/api/v1/customers/customer_id/${id}/request_service`, data);
+
+  return (dispatch) => {
+    request.then((response) => {
+      if (response.status === 200) {
+        dispatch(showMessage({ message: 'Services requested successfully' }));
+
+        Promise.all([
+          dispatch({
+            type: CREATE_RETURNING_CUSTOMER,
+            payload: response.data,
+          }),
+        ]).then(() => {
+          dispatch(Actions.getCustomers());
+          history.push("/customers")
+        });
+      } else {
+        dispatch(showMessage({ message: 'Services request failed' }));
       }
     });
   };

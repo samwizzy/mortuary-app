@@ -29,7 +29,7 @@ const rows = [
     id: 'items-number',
     align: 'left',
     disablePadding: false,
-    label: 'No. of Items',
+    label: 'No. of Services',
     sort: true,
   },
   {

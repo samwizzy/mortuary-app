@@ -51,7 +51,6 @@ function CustomerInfo(props) {
 
         <TextField
           className='mt-8 mb-16'
-          required
           label='Email'
           id='email'
           name='email'

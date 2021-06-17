@@ -49,8 +49,8 @@ export function createService(data) {
   };
 }
 
-export function getServices() {
-  const request = axios.get('/api/v1/services');
+export function getServices(page=0, size=10) {
+  const request = axios.get('/api/v1/services', { params: {page, size} });
 
   return (dispatch) =>
     request.then((response) =>

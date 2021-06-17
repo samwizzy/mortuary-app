@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { bindActionCreators } from "redux"
 import { connect } from "react-redux"
 import { useSelector } from "react-redux"
-import { useRouteMatch } from "react-router-dom";
+import { useRouteMatch, Link } from "react-router-dom";
 import * as Actions from "./../store/actions";
 import moment from "moment";
 import {
@@ -13,6 +13,9 @@ import {
   TableBody,
   TableCell,
   Typography,
+  Card,
+  CardHeader,
+  CardMedia,
 } from '@material-ui/core';
 import { FuseAnimate, FuseUtils } from '@fuse';
 
@@ -22,7 +25,7 @@ const CustomerDetails = (props) => {
   const customer = customerReducer.customer
   const match = useRouteMatch();
 
-  console.log(customer, "customer details")
+  console.log(customer, "customer")
 
   useEffect(() => {
     getCustomerById(match.params.id)
@@ -31,7 +34,7 @@ const CustomerDetails = (props) => {
   return (
     <div className=''>
       <div className='bg-white overflow-hidden sm:rounded-lg'>
-        <div className='px-4 py-5 sm:px-6'>
+        <div className='px-4 py-0 sm:px-6'>
           <h3 className='text-lg leading-6 font-medium text-gray-900'>
             Applicant Information
           </h3>
@@ -39,62 +42,76 @@ const CustomerDetails = (props) => {
             Personal details and application.
           </p>
         </div>
-        <div className='border-t border-gray-200 mb-24'>
-          <dl>
-            <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500'>Full name</dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                {customer?.first_name}
-              </dd>
-            </div>
-            <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500'>
-                Other name
-              </dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                {customer?.other_name}
-              </dd>
-            </div>
-            <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500'>
-                Last name
-              </dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                {customer?.last_name}
-              </dd>
-            </div>
-            <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500'>
-                Email address
-              </dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                {customer?.email}
-              </dd>
-            </div>
-            <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500'>
-                Phone Number
-              </dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                {customer?.phone_number}
-              </dd>
-            </div>
-            
-            <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500'>Address</dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                {customer?.address}
-              </dd>
-            </div>
-            <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500'>
-                Relationship with Deceased
-              </dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                {customer?.relationship_with_deceased}
-              </dd>
-            </div>
-          </dl>
+
+        <div className="grid grid-cols-2 gap-6">
+          <div className='border-t border-gray-200 mb-24'>
+            <dl>
+              <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                <dt className='text-sm font-medium text-gray-500'>Full name</dt>
+                <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                  {customer?.first_name}
+                </dd>
+              </div>
+              <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                <dt className='text-sm font-medium text-gray-500'>
+                  Other name
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                  {customer?.other_name}
+                </dd>
+              </div>
+              <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                <dt className='text-sm font-medium text-gray-500'>
+                  Last name
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                  {customer?.last_name}
+                </dd>
+              </div>
+              <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                <dt className='text-sm font-medium text-gray-500'>
+                  Email address
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                  {customer?.email}
+                </dd>
+              </div>
+              <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                <dt className='text-sm font-medium text-gray-500'>
+                  Phone Number
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                  {customer?.phone_number}
+                </dd>
+              </div>
+              
+              <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                <dt className='text-sm font-medium text-gray-500'>Address</dt>
+                <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                  {customer?.address}
+                </dd>
+              </div>
+              <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                <dt className='text-sm font-medium text-gray-500'>
+                  Relationship with Deceased
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                  {customer?.relationship_with_deceased}
+                </dd>
+              </div>
+            </dl>
+          </div>
+          <div className='border-t border-gray-200 mb-24'>
+            <Card className="w-192 border border-grey-light border-solid text-center mb-16" elevation={0}>
+              <CardMedia image={customer?.customer_image} className="w-full h-192" />
+             
+              <CardHeader className="text-center" title="Customer Image" titleTypographyProps={{variant: "subtitle2"}} />
+            </Card>
+            <Card className="w-192 border border-grey-light border-solid text-center" elevation={0}>
+              <CardMedia image={customer?.signature} className="w-full h-192" />
+              <CardHeader className="text-center" title="Signature" titleTypographyProps={{variant: "subtitle2"}} />
+            </Card>
+          </div>
         </div>
 
         <div className='mb-24 px-4 py-5 sm:px-6'>
@@ -121,7 +138,7 @@ const CustomerDetails = (props) => {
             <TableBody>
               {customer?.deceased.map(dsc => 
               <TableRow key={dsc.id}>
-                <TableCell>{dsc.first_name}</TableCell>
+                <TableCell><Link to={`/deceased/${dsc.id}`}>{dsc.first_name}</Link></TableCell>
                 <TableCell>00000789</TableCell>
                 <TableCell align='right'>{dsc.age}</TableCell>
                 <TableCell align='right'>{dsc.place_of_death}</TableCell>
@@ -147,7 +164,7 @@ const CustomerDetails = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>Invoice Number</TableCell>
-                <TableCell>No. of Items</TableCell>
+                <TableCell>No. of Products/Services</TableCell>
                 <TableCell align='right'>Invoice Date</TableCell>
                 <TableCell align='right'>Bill To</TableCell>
                 <TableCell align='right'>Total Amount</TableCell>
@@ -158,7 +175,7 @@ const CustomerDetails = (props) => {
             <TableBody>
             {customer?.invoice.map(inv => 
               <TableRow key={inv.id}>
-                <TableCell>{inv.invoice_number}</TableCell>
+                <TableCell><Link to={`/invoices/${inv.id}`}>{inv.invoice_number}</Link></TableCell>
                 <TableCell>0</TableCell>
                 <TableCell align='right'>{moment(inv.invoice_date).format("Do MMMM, YYYY")}</TableCell>
                 <TableCell align='right'>{inv.customer?.firstName}</TableCell>

@@ -11,7 +11,13 @@ const initialState = {
   invoice: null,
   selectedInvoiceIds: [],
   paymentAdvice: null,
-  invoiceDialog: {
+  paymentDialog: {
+    props: {
+      open: false,
+    },
+    data: null,
+  },
+  sendInvoiceDialog: {
     type: 'new',
     props: {
       open: false,
@@ -39,6 +45,12 @@ const invoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         invoice: action.payload,
+      };
+    }
+    case Actions.SEND_INVOICE: {
+      return {
+        ...state,
+        loading: false
       };
     }
     case Actions.GET_PAYMENT_ADVICE: {
@@ -69,11 +81,10 @@ const invoicesReducer = function (state = initialState, action) {
         selectedInvoiceIds: [],
       };
     }
-    case Actions.OPEN_NEW_INVOICE_DIALOG: {
+    case Actions.OPEN_INVOICE_PAYMENT_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'new',
+        paymentDialog: {
           props: {
             open: true,
           },
@@ -81,11 +92,10 @@ const invoicesReducer = function (state = initialState, action) {
         },
       };
     }
-    case Actions.CLOSE_NEW_INVOICE_DIALOG: {
+    case Actions.CLOSE_INVOICE_PAYMENT_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'new',
+        paymentDialog: {
           props: {
             open: false,
           },
@@ -93,23 +103,21 @@ const invoicesReducer = function (state = initialState, action) {
         },
       };
     }
-    case Actions.OPEN_EDIT_INVOICE_DIALOG: {
+    case Actions.OPEN_SEND_INVOICE_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'edit',
+        sendInvoiceDialog: {
           props: {
             open: true,
           },
-          data: action.data,
+          data: action.payload,
         },
       };
     }
-    case Actions.CLOSE_EDIT_INVOICE_DIALOG: {
+    case Actions.CLOSE_SEND_INVOICE_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'edit',
+        sendInvoiceDialog: {
           props: {
             open: false,
           },

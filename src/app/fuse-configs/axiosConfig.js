@@ -3,7 +3,7 @@ import axios from "axios";
 
 const baseURL = "https://dev.ezoneapps.com/gateway/mortuary-service/";
 
-const token = localStorage.getItem('access_token')  //"9148410f-169b-4ef6-8c42-1971b76fa21e"
+const token = localStorage.getItem('access_token')
 
 axios.defaults.baseURL = baseURL;
 

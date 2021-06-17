@@ -2,7 +2,12 @@ import * as Actions from '../actions';
 
 const initialState = {
   loading: false,
-  invoices: [],
+  invoices: {
+    totalItems: 0,
+    invoices: [],
+    totalPages: 0,
+    currentPage: 0
+  },
   message: null,
 };
 

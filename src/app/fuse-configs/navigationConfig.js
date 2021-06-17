@@ -35,14 +35,8 @@ const navigationConfig = [
         icon: 'store',
         children: [
           {
-            id: 'inventory-items',
-            title: 'Items',
-            type: 'item',
-            url: '/inventory/items',
-          },
-          {
             id: 'inventory-services',
-            title: 'Services',
+            title: 'Products & Services',
             type: 'item',
             url: '/inventory/services',
           },
@@ -63,10 +57,17 @@ const navigationConfig = [
       },
       {
         id: 'invoice-component',
-        title: 'Proforma Invoices',
+        title: 'Invoices',
         type: 'item',
         icon: 'receipt',
         url: '/invoices',
+      },
+      {
+        id: 'proforma-component',
+        title: 'Proforma Invoices',
+        type: 'item',
+        icon: 'receipt',
+        url: '/proforma',
       },
       {
         id: 'receipts-component',

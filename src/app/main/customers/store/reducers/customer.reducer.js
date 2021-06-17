@@ -21,6 +21,12 @@ const customerReducer = function (state = initialState, action) {
         customers: action.payload,
       };
     }
+    case Actions.CREATE_RETURNING_CUSTOMER: {
+      return {
+        ...state,
+        message: action.payload,
+      };
+    }
     case Actions.GET_CUSTOMER_BY_ID: {
       return {
         ...state,
