@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import {FuseAnimate} from "@fuse"
 import { Button, Icon, TextField, Accordion, AccordionSummary, AccordionDetails, MenuItem, IconButton } from '@material-ui/core';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import { makeStyles } from '@material-ui/styles';
@@ -16,12 +17,16 @@ const relationships = ["Brother", "Sister", "Mother", "Father", "Son", "Daughter
 
 function RelativesInfo(props) {
   const classes = useStyles()
-  const { form, handleRowChange, addRelativeRow, removeRelativeRow } = props;
+  const { form, errors, validateField, handleRowChange, addRelativeRow, removeRelativeRow, handlePrev, handleNext, tabValue } = props;
   const [expanded, setExpanded] = React.useState("relatives");
 
   const handlePanelChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  function canBeSubmitted() {
+    return form.relative.length > 0  
+  }
 
   return (
     <Fragment>
@@ -62,7 +67,6 @@ function RelativesInfo(props) {
                 className='mt-8 mb-16'
                 required
                 label='Last Name'
-                autoFocus
                 id='relative-last-name'
                 name='last_name'
                 value={r.last_name}
@@ -75,7 +79,6 @@ function RelativesInfo(props) {
                 className='mt-8 mb-16'
                 required
                 label='Other Name'
-                autoFocus
                 id='relative-other-name'
                 name='other_name'
                 value={r.other_name}
@@ -87,13 +90,16 @@ function RelativesInfo(props) {
               <TextField
                 className='mt-8 mb-16'
                 required
+                type="email"
                 label='Email'
-                autoFocus
                 id='relative-email'
                 name='email'
                 value={r.email}
                 onChange={handleRowChange(i)}
+                onKeyUp={validateField("relative")}
                 variant='outlined'
+                error={Boolean(errors?.relative && errors?.relative[i]?.email)}
+                helperText={errors?.relative && errors?.relative[i]?.email}
                 fullWidth
               />
 
@@ -102,7 +108,6 @@ function RelativesInfo(props) {
                 required
                 select
                 label='Relationship with deceased'
-                autoFocus
                 id='relative.relationship_with_deceased'
                 name='relationship_with_deceased'
                 value={r.relationship_with_deceased}
@@ -120,7 +125,6 @@ function RelativesInfo(props) {
                 className='mt-8 mb-16'
                 required
                 label='Address'
-                autoFocus
                 id='relative-address'
                 name='address'
                 value={r.address}
@@ -132,12 +136,15 @@ function RelativesInfo(props) {
               <TextField
                 className='mt-8 mb-16'
                 required
+                type="number"
                 label='Phone'
-                autoFocus
                 id='relative-phone'
                 name='phone_number'
                 value={r.phone_number}
                 onChange={handleRowChange(i)}
+                onKeyUp={validateField("relative")}
+                error={Boolean(errors?.relative && errors?.relative[i]?.phone_number)}
+                helperText={errors?.relative && errors?.relative[i]?.phone_number}
                 variant='outlined'
                 fullWidth
               />
@@ -145,6 +152,7 @@ function RelativesInfo(props) {
               <TextField
                 className='mt-8 mb-16'
                 required
+                type="number"
                 label='Age'
                 id='relative-age'
                 name='age'
@@ -160,6 +168,35 @@ function RelativesInfo(props) {
           </div>
           </AccordionDetails>
         </Accordion>
+
+        <div className="flex justify-end space-x-8 my-16">
+          {tabValue > 0 &&
+            <FuseAnimate animation='transition.slideRightIn' delay={300}>
+              <Button
+                className='whitespace-no-wrap'
+                variant='contained'
+                color="default"
+                disableElevation
+                onClick={handlePrev}
+              >
+                Back
+              </Button>
+            </FuseAnimate>
+          }
+          {tabValue < 5 &&
+            <FuseAnimate animation='transition.slideRightIn' delay={300}>
+              <Button
+                className='whitespace-no-wrap'
+                variant='contained'
+                disableElevation
+                onClick={handleNext}
+                disabled={!canBeSubmitted()}
+              >
+                Next
+              </Button>
+            </FuseAnimate>
+          }
+        </div>
       </div>
     </Fragment>
   );

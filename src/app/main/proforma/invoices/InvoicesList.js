@@ -11,7 +11,9 @@ import {
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from "moment"
 import InvoicesTableHead from './InvoicesTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../store/actions';
 
 function InvoicesList(props) {
@@ -39,7 +41,7 @@ function InvoicesList(props) {
       searchText.length === 0
         ? invoices
         : _.filter(invoices, (item) =>
-            item.invoice_number.toLowerCase().includes(searchText.toLowerCase())
+            item.proforma_invoice_number.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [invoices, searchText]);
@@ -93,6 +95,7 @@ function InvoicesList(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getProformaInvoices(0, event.target.value))
   }
 
   return (
@@ -160,20 +163,22 @@ function InvoicesList(props) {
                       {n.contact_person}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.total}
+                    <TableCell component='th' scope='row'>
+                      —
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.total}
+                      {moment(n.created_at).format("Do MMM, YYYY")}
                     </TableCell>
                     
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.total}
-                    </TableCell>
                   </TableRow>
                 );
               })}
+
+              {data.length === 0 && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
           </TableBody>
         </Table>
       </FuseScrollbars>

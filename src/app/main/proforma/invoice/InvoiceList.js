@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from "react-redux"
 import { withRouter, useRouteMatch } from 'react-router-dom';
+import clsx from "clsx"
 import {
   Icon,
   IconButton,
@@ -9,15 +10,26 @@ import {
   TableCell,
   TableRow,
 } from '@material-ui/core';
-import { FuseScrollbars, FuseAnimate } from '@fuse';
+import { makeStyles } from '@material-ui/core/styles';
+import { FuseScrollbars, FuseAnimate, FuseUtils } from '@fuse';
 import moment from 'moment';
 import InvoiceTableHead from './InvoiceTableHead';
 import * as Actions from '../store/actions';
 import { connect } from 'react-redux';
 import Pdf from "react-to-pdf"
 
+const useStyles = makeStyles(theme => ({
+  table: {
+    "& .MuiTableRow-root": {
+      borderLeft: `1px solid ${theme.palette.divider}`,
+      borderRight: `1px solid ${theme.palette.divider}`
+    },
+  }
+}))
+
 function InvoiceList(props) {
   const { invoice, user } = props
+  const classes = useStyles()
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const printRef = React.createRef();
@@ -47,7 +59,7 @@ function InvoiceList(props) {
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col p-24'>
       <FuseAnimate delay={100}>
         <div className='flex flex-col flex-wrap mt-0 mb-24 relative'>
           <div className="absolute right-0 top-0 bg-orange-lighter">
@@ -86,9 +98,11 @@ function InvoiceList(props) {
                     </dt>
                     <dt>{user.organisation?.emailAddress}</dt>
                     <dt><hr className="my-16 border-0 border-t border-grey-lightest" /></dt>
-                    <dt>A/C NAME: OMEGA FUNERAL HOMES</dt>
-                    <dt>GTBank 0174644878</dt>
-                    <dt>Polaris Bank 1771874077</dt>
+                    <div className="text-red font-bold">
+                      <dt>A/C NAME: OMEGA FUNERAL HOMES</dt>
+                      <dt>GTBank 0174644878</dt>
+                      <dt>Polaris Bank 1771874077</dt>
+                    </div>
                   </div>
                   <div className="text-gray-600">
                     <dt>{moment(invoice?.invoice_date).format("dddd, MMMM Do, YYYY")}</dt>
@@ -104,7 +118,7 @@ function InvoiceList(props) {
 
             <div className='p-24 border border-solid border-grey-light'>
               <dl>
-                <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                <div className='bg-gray-100 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-bold text-gray-600'>
                     Family Name :
                   </dt>
@@ -112,7 +126,7 @@ function InvoiceList(props) {
                     {invoice?.family_name}
                   </dd>
                 </div>
-                <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                <div className='bg-white px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-bold text-gray-600'>
                     Contact Person :
                   </dt>
@@ -120,7 +134,7 @@ function InvoiceList(props) {
                     {invoice?.contact_person}
                   </dd>
                 </div>
-                <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                <div className='bg-gray-100 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-bold text-gray-600'>
                     Address :
                   </dt>
@@ -128,7 +142,7 @@ function InvoiceList(props) {
                     {invoice?.address}
                   </dd>
                 </div>
-                <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                <div className='bg-white px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-bold text-gray-600'>
                     Phone :
                   </dt>
@@ -136,7 +150,7 @@ function InvoiceList(props) {
                     {invoice?.phone_number}
                   </dd>
                 </div>
-                <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                <div className='bg-gray-100 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-bold text-gray-600'>
                     Email :
                   </dt>
@@ -147,7 +161,7 @@ function InvoiceList(props) {
               </dl>
 
               <FuseScrollbars className='flex-grow overflow-x-auto'>
-                <Table className='mt-24' aria-labelledby='tableTitle'>
+                <Table className={clsx(classes.table, 'mt-24')} aria-labelledby='tableTitle'>
                   <InvoiceTableHead
                     numSelected={selected.length}
                     onSelectAllClick={handleSelectAllClick}
@@ -160,9 +174,7 @@ function InvoiceList(props) {
                         const isSelected = selected.indexOf(n.id) !== -1;
                         return (
                           <TableRow
-                            className='h-64 cursor-pointer'
-                            hover
-                            role='checkbox'
+                            className='h-48'
                             aria-checked={isSelected}
                             tabIndex={-1}
                             key={i}
@@ -176,23 +188,36 @@ function InvoiceList(props) {
                               {n.service?.serviceName}
                             </TableCell>
 
+                            <TableCell component='th' scope='row' align='left'>
+                              {FuseUtils.formatCurrency(n.rate)}
+                            </TableCell>
+
+                            <TableCell component='th' scope='row' align='left'>
+                              {n.qty}
+                            </TableCell>
+
                             <TableCell component='th' scope='row' align='right'>
-                              {n.rate}
+                              {FuseUtils.formatCurrency(n.rate * n.qty)}
                             </TableCell>
 
                           </TableRow>
                         );
                       })}
+                       
                   </TableBody>
                 </Table>
               </FuseScrollbars>
-                    
             </div>
+
+            <div className="flex flex-col space-y-1 mt-16 text-red font-bold uppercase text-xs">
+              <span>No cash payment accepted</span>
+              <span>We never accept payment for our products & services via our employees personal account numbers. </span>
+              <span>All payment must be made to Omega Funeral Home</span>
+            </div> 
+            
           </div>
         </div>
       </FuseAnimate>
-
-      
     </div>
   );
 }

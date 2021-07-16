@@ -1,32 +1,27 @@
 import React, { useEffect, useCallback } from 'react';
 import {
   TextField,
+  IconButton, Icon,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  Icon,
-  IconButton,
-  Link,
   Typography,
   Toolbar,
   AppBar,
 } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
-import FuseUtils from '@fuse/FuseUtils';
-import { FuseChipSelect } from '@fuse';
+import { FuseChipSelect, FuseUtils } from '@fuse';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import moment from 'moment';
+import _ from 'lodash';
 import * as Actions from '../store/actions';
 import InvoiceUploadImage from './InvoiceUploadImage';
+import { MenuItem } from '@material-ui/core';
 
 const defaultFormState = {
-  id: '',
   account_to_deposit: "",
   amount_received: 0,
   bank_changes: "",
@@ -34,39 +29,40 @@ const defaultFormState = {
   file: "",
   notes: "",
   org_key: "",
-  payment_date: moment().format('YYYY-MM-DDTHH:mm:ss'),
-  payment_method: "DEFAULT",
+  payment_date: moment().format('YYYY-MM-DD'),
+  payment_method: "CASH",
   receipt_number: ""
 };
 
+const paymentMethods = ['CASH', 'CHECK', 'BANK_TRANSFER', 'CREDIT_DEBIT_CARD', 'INTERNET_BANKING'].map((method) => ({
+  label: method.replaceAll("_", " "),
+  value: method,
+}))
 
 function RecordPaymentDialog(props) {
   const dispatch = useDispatch();
-  const recordPaymentDialog = useSelector(
-    ({ invoicesApp }) => invoicesApp.invoices.recordPaymentDialog
-  );
+  const recordPaymentDialog = useSelector(({ invoicesApp }) => invoicesApp.invoices.recordPaymentDialog);
+
+  console.log(recordPaymentDialog, "recordPaymentDialog")
 
   const { form, handleChange, setForm } = useForm(defaultFormState);
 
   const initDialog = useCallback(() => {
     /**
-     * Dialog type: 'edit'
-     */
-    if (recordPaymentDialog.type === 'edit' && recordPaymentDialog.data) {
-      setForm({ ...recordPaymentDialog.data });
-    }
-
-    /**
      * Dialog type: 'new'
      */
-    if (recordPaymentDialog.type === 'new') {
+    if (recordPaymentDialog.data) {
+      const { customer, receipt_number, receipt_id } = recordPaymentDialog.data
       setForm({
         ...defaultFormState,
-        ...recordPaymentDialog.data,
-        id: FuseUtils.generateGUID(),
+        customer_name: customer?.firstName + " " + customer?.lastName,
+        receipt_id: receipt_id,
+        receipt_number: receipt_number,
       });
     }
-  }, [recordPaymentDialog.data, recordPaymentDialog.type, setForm]);
+  }, [recordPaymentDialog.data, setForm]);
+
+  console.log(form, "form")
 
   useEffect(() => {
     /**
@@ -78,34 +74,43 @@ function RecordPaymentDialog(props) {
   }, [recordPaymentDialog.props.open, initDialog]);
 
   function closeComposeDialog() {
-    recordPaymentDialog.type === 'edit'
-      ? dispatch(Actions.closeNewRecordPaymentDialog())
-      : dispatch(Actions.closeNewRecordPaymentDialog());
+    dispatch(Actions.closeNewRecordPaymentDialog());
   }
 
   function canBeSubmitted() {
-    return form.customer_name.length > 0;
+    return (
+      form.customer_name.length > 0 &&
+      form.amount_received.length > 0 &&
+      form.payment_method.length > 0 &&
+      form.notes.length > 0
+    );
   }
 
   const handleDateChange = (name) => (date) => {
-    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DDTHH:mm:ss') })
+    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DD') })
   };
 
-  const handleChipChange = () => {};
+  const handleChipChange = (value, name) => {
+    setForm({ ...form, [name]: value.value })
+  };
+
+  const handleFileCancel = () => {
+    setForm({ ...form, file: "" })
+  };
+  
+  const handleImageUpload = (event) => {
+    const files = event.target.files;
+    const name = event.target.name;
+    FuseUtils.toBase64(files[0]).then(data => {
+      setForm(_.set({ ...form }, name, data));
+    })
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
+    const { invoice } = recordPaymentDialog.data
 
-    if (recordPaymentDialog.type === 'new') {
-      dispatch(Actions.addInvoice(form));
-    } else {
-      dispatch(Actions.updateInvoice(form));
-    }
-    closeComposeDialog();
-  }
-
-  function handleRemove() {
-    dispatch(Actions.removeInvoice(form.id));
+    dispatch(Actions.recordInvoicePayment(form, invoice.id));
     closeComposeDialog();
   }
 
@@ -120,11 +125,9 @@ function RecordPaymentDialog(props) {
       maxWidth='xs'
     >
       <AppBar position='static' elevation={1}>
-        <Toolbar className='flex w-full'>
+        <Toolbar className='flex'>
           <Typography variant='subtitle1' color='inherit'>
-            {recordPaymentDialog.type === 'new'
-              ? 'Payment for INV/0000001'
-              : 'Edit Payment'}
+            Payment for <em>{recordPaymentDialog.data?.invoice?.invoiceNumber}</em>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -141,19 +144,20 @@ function RecordPaymentDialog(props) {
               autoFocus
               id='customer-name'
               name='customer_name'
+              disabled
               value={form.customer_name}
               onChange={handleChange}
               variant='outlined'
               required
               fullWidth
-            />
+            /> 
 
             <TextField
               className='mb-24'
               label='Receipt Number'
-              autoFocus
               id='receipt-number'
               name='receipt_number'
+              disabled
               value={form.receipt_number}
               onChange={handleChange}
               variant='outlined'
@@ -176,23 +180,9 @@ function RecordPaymentDialog(props) {
           </div>
 
           <div className='flex space-x-2'>
-            <TextField
-              className='mb-24'
-              label='Bank Charges'
-              id='bank-charges'
-              name='bank_changes'
-              value={form.bank_changes}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
-            />
-          </div>
-
-          <div className='flex space-x-2'>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
                 disableToolbar
-                variant='inline'
                 inputVariant='outlined'
                 format='MM/dd/yyyy'
                 id='payment-date'
@@ -205,29 +195,27 @@ function RecordPaymentDialog(props) {
                 }}
               />
             </MuiPickersUtilsProvider>
-            <FuseChipSelect
-              className='mt-0 mb-24 w-full'
+
+            <TextField
+              className='mb-24'
+              select
+              label='Account receivable'
+              id='account_to_deposit'
+              name='account_to_deposit'
+              disabled
               value={form.account_to_deposit}
-              onChange={(value) => handleChipChange(value, 'account_to_deposit')}
-              placeholder=''
-              textFieldProps={{
-                label: 'Amount to Deposit',
-                InputLabelProps: {
-                  shrink: true,
-                },
-                variant: 'outlined',
-              }}
-              options={['Cash', 'Transfer'].map((method) => ({
-                label: method,
-                value: method,
-              }))}
-              isMulti
-            />
+              onChange={handleChange}
+              variant='outlined'
+              required
+              fullWidth
+            >
+              <MenuItem value="">Select account receivable</MenuItem>  
+            </TextField>  
           </div>
-          <div className='flex items-center space-x-2'>
+          <div className='flex items-center'>
             <FuseChipSelect
-              className='mt-0 mb-24 w-full'
-              value={form.payment_method}
+              className='mt-0 mb-20 w-full'
+              value={_.find(paymentMethods, { value: form.payment_method })}
               onChange={(value) => handleChipChange(value, 'payment_method')}
               placeholder='Method'
               textFieldProps={{
@@ -237,19 +225,12 @@ function RecordPaymentDialog(props) {
                 },
                 variant: 'outlined',
               }}
-              options={['Cash', 'Transfer'].map((method) => ({
-                label: method,
-                value: method,
-              }))}
-              isMulti
+              options={paymentMethods}
             />
-            <Link className='whitespace-no-wrap' href='/'>
-              Add new
-            </Link>
           </div>
 
           <div className='flex flex-col'>
-            <div className='min-w-48 pt-20 mb-8'>
+            <div className='min-w-48 mb-8'>
               <Typography>Notes</Typography>
             </div>
             <TextField
@@ -265,39 +246,30 @@ function RecordPaymentDialog(props) {
               fullWidth
             />
           </div>
-          <div className='flex '>
-            <InvoiceUploadImage />
+          <div className='flex'>
+            <InvoiceUploadImage handleImageUpload={handleImageUpload} />
+            {form?.file && 
+              <div className="border border-solid border-grey-light rounded-lg p-1 mx-4 relative">
+                <IconButton onClick={handleFileCancel} className="absolute right-0" size="small">
+                  <Icon>cancel</Icon>
+                </IconButton>
+                <img src={`data:image/jpg;base64,${form?.file}`} alt="" className="h-72 w-auto rounded-md" />
+              </div>
+            }
           </div>
         </DialogContent>
 
-        {recordPaymentDialog.type === 'new' ? (
-          <DialogActions className='justify-between pl-16'>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={handleSubmit}
-              type='submit'
-              disabled={!canBeSubmitted()}
-            >
-              Add
-            </Button>
-          </DialogActions>
-        ) : (
-          <DialogActions className='justify-between pl-16'>
-            <Button
-              variant='contained'
-              color='primary'
-              type='submit'
-              onClick={handleSubmit}
-              disabled={!canBeSubmitted()}
-            >
-              Save
-            </Button>
-            <IconButton onClick={handleRemove}>
-              <Icon>delete</Icon>
-            </IconButton>
-          </DialogActions>
-        )}
+        <DialogActions className='justify-end pr-32 py-16'>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={handleSubmit}
+            type='submit'
+            disabled={!canBeSubmitted()}
+          >
+            Save
+          </Button>
+        </DialogActions>
       </form>
     </Dialog>
   );

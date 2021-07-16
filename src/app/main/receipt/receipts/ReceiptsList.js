@@ -11,8 +11,10 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import _ from '@lodash';
-import { FuseScrollbars } from '@fuse';
+import moment from "moment";
+import { FuseScrollbars, FuseUtils } from '@fuse';
 import InvoicesTableHead from './ReceiptsTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 
 function ReceiptsList(props) {
   const { searchText } = props
@@ -149,31 +151,36 @@ function ReceiptsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.id}
+                      {n.receiptNumber}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.noOfItems}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.invoiceDate}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
                       {n.billTo}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.totalAmount}
+                      {n.invoiceNumber}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.amountDue}
+                    <TableCell component='th' scope='row' align='left'>
+                      {moment(n.invoiceDate).isValid() ? moment(n.invoiceDate).format("Do MMM, yyyy") : null}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {FuseUtils.formatCurrency(n.invoiceAmount)}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row'>
+                      {FuseUtils.formatCurrency(n.paymentAmount)}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+              {data.length === 0 && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
           </TableBody>
         </Table>
       </FuseScrollbars>

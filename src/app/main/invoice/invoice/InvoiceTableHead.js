@@ -16,10 +16,10 @@ const rows = [
     sort: true,
   },
   {
-    id: 'discount (%)',
+    id: 'discount',
     align: 'left',
     disablePadding: false,
-    label: 'Discount',
+    label: 'Discount (%)',
     sort: true,
   },
   {
@@ -40,6 +40,13 @@ const rows = [
     id: 'total',
     align: 'right',
     disablePadding: false,
+    label: 'Sub Total',
+    sort: true,
+  },
+  {
+    id: 'discounted-total',
+    align: 'right',
+    disablePadding: false,
     label: 'Total',
     sort: true,
   },
@@ -49,7 +56,7 @@ function CustomersTableHead(props) {
 
   return (
     <TableHead>
-      <TableRow className='h-64 bg-blue'>
+      <TableRow className='h-48 bg-blue'>
         
         {rows.map((row) => {
           return (

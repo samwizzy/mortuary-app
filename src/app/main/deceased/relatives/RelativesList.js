@@ -12,6 +12,7 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter, useRouteMatch } from 'react-router-dom';
 import _ from '@lodash';
 import CustomersTableHead from './RelativesTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
 
@@ -29,8 +30,6 @@ function RelativesList(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
-
-  console.log(match.params, "match.params")
 
   useEffect(() => {
     dispatch(Actions.getDeceasedRelatives(match.params.id));
@@ -160,7 +159,7 @@ function RelativesList(props) {
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.id}
+                      {n.deceased?.firstName} {n.deceased?.lastName}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
@@ -173,6 +172,11 @@ function RelativesList(props) {
                   </TableRow>
                 );
               })}
+
+              {data.length === 0 && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
           </TableBody>
         </Table>
       </FuseScrollbars>

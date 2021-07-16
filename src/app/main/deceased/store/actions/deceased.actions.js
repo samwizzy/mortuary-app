@@ -8,6 +8,10 @@ export const UPDATE_DECEASED = '[CUSTOMER APP] UPDATE DECEASED';
 export const GET_ALL_DECEASED = '[CUSTOMER APP] GET ALL DECEASED';
 export const GET_DECEASED_BY_ID = '[CUSTOMER APP] GET DECEASED BY ID';
 
+export const PRINT_ADMISSION_FORM = '[CUSTOMER APP] PRINT ADMISSION FORM';
+export const ADD_RELEASE_FORM = '[CUSTOMER APP] ADD RELEASE FORM';
+export const GET_RELEASED_FORMS = '[CUSTOMER APP] GET RELEASED FORMS';
+
 export const SET_SEARCH_TEXT = '[CUSTOMER APP] SET SEARCH TEXT';
 
 export function createDeceased(data) {
@@ -35,6 +39,31 @@ export function createDeceased(data) {
   };
 }
 
+export function addReleaseForm(data, id) {
+  const request = axios.post(`/api/v1/forms/deceased_id/${id}/release_form`, data);
+  console.log(request, 'addReleaseForm request');
+
+  return (dispatch) => {
+    request.then((response) => {
+      if (response.status === 200) {
+        dispatch(showMessage({ message: 'Corpse release form created successfully' }));
+
+        Promise.all([
+          dispatch({
+            type: ADD_RELEASE_FORM,
+            payload: response.data,
+          }),
+        ]).then(() => {
+          dispatch(Actions.getAllDeceased());
+          history.push(`/deceased/${id}`)
+        });
+      } else {
+        dispatch(showMessage({ message: 'Corpse release form creation failed' }));
+      }
+    });
+  };
+}
+
 export function getAllDeceased(page=0, size=10) {
   const request = axios.get('/api/v1/deceased', { params: {page, size} });
 
@@ -57,6 +86,30 @@ export function getDeceasedById(id) {
         payload: response.data.data,
       })
     );
+}
+
+export function printAdmissionForm(id) {
+  const request = axios.get(`/api/v1/forms/deceased_id/${id}/print_admission_form`);
+
+  return (dispatch) =>
+    request.then((response) =>
+      dispatch({
+        type: PRINT_ADMISSION_FORM,
+        payload: response.data.data,
+      })
+    );
+}
+
+export function getReleasedForms(page=0, size=10) {
+  const request = axios.get('/api/v1/forms/release_forms', { params: {page, size} });
+
+  return (dispatch) =>
+    request.then((response) => {
+      dispatch({
+        type: GET_RELEASED_FORMS,
+        payload: response.data.data,
+      })
+    });
 }
 
 export function updateDeceased(data) {

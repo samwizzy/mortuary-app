@@ -8,7 +8,7 @@ const reducer = combineReducers({
   invoices,
   customer,
   services,
-  discounts
+  discounts,
 });
 
 export default reducer;

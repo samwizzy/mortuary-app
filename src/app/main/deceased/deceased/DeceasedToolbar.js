@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, IconButton } from '@material-ui/core';
-import { FuseAnimate } from '@fuse';
+// import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
 // import * as Actions from '../store/actions/index';
@@ -15,7 +15,7 @@ function DeceasedToolbar(props) {
       </IconButton>
 
       <div className='flex items-center justify-start' aria-label='Toggle star'>
-        <FuseAnimate animation='transition.expandIn' delay={100}>
+        {/* <FuseAnimate animation='transition.expandIn' delay={100}>
           <IconButton onClick={() => {}}>
             <Icon>star_border</Icon>
           </IconButton>
@@ -24,7 +24,7 @@ function DeceasedToolbar(props) {
           <IconButton onClick={() => {}}>
             <Icon>label</Icon>
           </IconButton>
-        </FuseAnimate>
+        </FuseAnimate> */}
       </div>
     </div>
   );

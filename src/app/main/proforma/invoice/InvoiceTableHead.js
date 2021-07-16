@@ -24,9 +24,23 @@ const rows = [
   },
   {
     id: 'price',
-    align: 'right',
+    align: 'left',
     disablePadding: false,
     label: 'Price',
+    sort: true,
+  },
+  {
+    id: 'qty',
+    align: 'left',
+    disablePadding: false,
+    label: 'Qty',
+    sort: true,
+  },
+  {
+    id: 'total',
+    align: 'right',
+    disablePadding: false,
+    label: 'Total',
     sort: true,
   },
 ];
@@ -37,7 +51,7 @@ function CustomersTableHead(props) {
 
   return (
     <TableHead>
-      <TableRow className='h-64 bg-blue'>
+      <TableRow className='h-48 bg-blue'>
         {rows.map((row) => {
           return (
             <TableCell

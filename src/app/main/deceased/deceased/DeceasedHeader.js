@@ -7,12 +7,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as Actions from '../store/actions';
 
 function DeceasedHeader(props) {
-  const { match } = props;
   const dispatch = useDispatch();
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
   const searchText = useSelector(({ deceasedApp }) => deceasedApp.deceased.searchText);
-
-  console.log(searchText, "searchText")
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
@@ -22,7 +19,7 @@ function DeceasedHeader(props) {
         </FuseAnimate>
         <FuseAnimate animation='transition.slideLeftIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
-            {match.params.id ? 'Deceased Details' : 'Deceased'}
+            Deceased
           </Typography>
         </FuseAnimate>
       </div>

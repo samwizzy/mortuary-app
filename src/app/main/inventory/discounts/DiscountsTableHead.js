@@ -18,13 +18,13 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 
 const rows = [
-  {
-    id: 'discountName',
-    align: 'left',
-    disablePadding: false,
-    label: 'Discount Name',
-    sort: true,
-  },
+  // {
+  //   id: 'discountName',
+  //   align: 'left',
+  //   disablePadding: false,
+  //   label: 'Discount Name',
+  //   sort: true,
+  // },
   {
     id: 'rate',
     align: 'left',
@@ -43,7 +43,7 @@ const rows = [
     id: 'action',
     align: 'left',
     disablePadding: false,
-    label: '',
+    label: <Icon>more_horiz</Icon>,
     sort: true,
   },
 ];

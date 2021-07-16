@@ -3,11 +3,12 @@ import { Paper, /*Button,*/ Input, Icon, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
 import { /*useDispatch,*/ useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 // import * as Actions from '../store/actions';
 
 function RelativesHeader(props) {
   // const dispatch = useDispatch();
+  const match = useRouteMatch()
   const searchText = '';
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
 
@@ -19,7 +20,7 @@ function RelativesHeader(props) {
             className='normal-case flex items-center sm:mb-12'
             component={Link}
             role='button'
-            to='/deceased'
+            to={`/deceased/${match.params.id}`}
             color='inherit'
           >
             <Icon className='mr-4 text-20'>arrow_back</Icon>

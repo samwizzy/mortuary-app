@@ -48,7 +48,7 @@ class InvoiceApp extends Component {
             )
           }
           content={
-            <div className='w-full p-24'>
+            <div className='w-full'>
               {this.props.match.params.id ? <InvoiceList /> : <InvoicesList />}
             </div>
           }

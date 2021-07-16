@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from "react-redux"
 import _ from "lodash";
 import {
+  Button,
   Table,
   TableHead,
   TableBody,
@@ -14,11 +15,11 @@ import {
 import {Autocomplete} from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FuseScrollbars } from '@fuse';
+import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 
 function SelectServices(props) {
-  const { form, handleMultiChange, handleSelectChange, addServiceRow, removeServiceRow } = props;
+  const { form, handleMultiChange, handleSelectChange, addServiceRow, removeServiceRow, handleNext, handlePrev, tabValue } = props;
   const serviceReducer = useSelector(({customerApp}) => customerApp.services);
   const discountsReducer = useSelector(({customerApp}) => customerApp.discounts);
 
@@ -27,17 +28,21 @@ function SelectServices(props) {
 
   console.log(services, "services")
 
+  function canBeSubmitted() {
+    return form.service.length > 0 && form.service[0].service_id
+  }
+
   return (
     <div className='w-full flex flex-col'>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
-        <Table className='min-w-xl' aria-labelledby='tableTitle'>
+        <Table className='' aria-labelledby='tableTitle'>
           <TableHead>
             <TableRow>
               <TableCell>Services</TableCell>
               <TableCell>Rate</TableCell>
               <TableCell>Days/Qty</TableCell>
               <TableCell>Discount</TableCell>
-              <TableCell align='left'>
+              <TableCell align='right'>
                 <IconButton onClick={addServiceRow}>
                   <AddIcon />
                 </IconButton>
@@ -50,9 +55,7 @@ function SelectServices(props) {
               const isSelected = form.service.indexOf(n.id) !== -1;
               return (
                 <TableRow
-                  className='h-64 cursor-pointer'
-                  hover
-                  role='checkbox'
+                  className='h-48'
                   aria-checked={isSelected}
                   tabIndex={-1}
                   key={i}
@@ -61,7 +64,7 @@ function SelectServices(props) {
                 >
                   <TableCell component='th' scope='row'>
                     <TextField
-                      className='mt-8 mb-16 min-w-192'
+                      className='min-w-192'
                       select
                       required
                       label='Services'
@@ -82,13 +85,13 @@ function SelectServices(props) {
 
                   <TableCell className='truncate' component='th' scope='row'>
                     <TextField
-                      className='mt-8 mb-16'
+                      className=''
                       required
+                      disabled
                       label='Rate'
                       id={`rate-${i}`}
                       name='rate'
                       value={n.rate}
-                      onChange={handleMultiChange(i)}
                       variant='outlined'
                       fullWidth
                     />
@@ -96,7 +99,7 @@ function SelectServices(props) {
 
                   <TableCell className='truncate' component='th' scope='row'>
                     <TextField
-                      className='mt-8 mb-16 w-128'
+                      className='w-128'
                       required
                       label='Days/Qty'
                       id={`qty-${i}`}
@@ -109,37 +112,19 @@ function SelectServices(props) {
                     />
                   </TableCell>
 
-                  <TableCell component='th' scope='row' align='left'>
-                    {/* <TextField
-                      className='mt-8 mb-16 min-w-128'
-                      select
-                      required
-                      label='Discount Types'
-                      id={`discount-${i}`}
-                      name='discount'
-                      value={n.discount}
-                      onChange={handleMultiChange(i)}
-                      variant='outlined'
-                      fullWidth
-                    >
-                      <MenuItem value="">Select discount type</MenuItem>
-                      {discounts.map(d => 
-                        <MenuItem key={d.id} value={d.amount}>{d.discount_name} ( {d.amount}% )</MenuItem>
-                      )}
-                    </TextField>   */}
-
+                  <TableCell component='th' scope='row' align='left' className="min-w-96">
                     <Autocomplete
-                      className='mt-8 mb-24'
+                      className=''
                       value={n.discount}
                       onChange={(ev, value) => handleSelectChange(value, 'discount', i)}
                       placeholder='Select discount type'
                       options={discounts}
-                      getOptionLabel={(option) => (`${option.discount_name} (${option.amount}%)`)}
+                      getOptionLabel={(option) => (`${option.amount}%`)}
                       renderInput={(params) => <TextField {...params} label="Discount types" variant="outlined" />}
                     />
                   </TableCell>
 
-                  <TableCell className='' padding='checkbox'>
+                  <TableCell align='right'>
                     <IconButton onClick={removeServiceRow(i)}>
                       <DeleteIcon />
                     </IconButton>
@@ -150,6 +135,35 @@ function SelectServices(props) {
           </TableBody>
         </Table>
       </FuseScrollbars>
+
+      <div className="flex justify-end space-x-8 my-16">
+        {tabValue > 0 &&
+          <FuseAnimate animation='transition.slideRightIn' delay={300}>
+            <Button
+              className='whitespace-no-wrap'
+              variant='contained'
+              color="default"
+              disableElevation
+              onClick={handlePrev}
+            >
+              Back
+            </Button>
+          </FuseAnimate>
+        }
+        {tabValue < 5 &&
+          <FuseAnimate animation='transition.slideRightIn' delay={300}>
+            <Button
+              className='whitespace-no-wrap'
+              variant='contained'
+              disableElevation
+              onClick={handleNext}
+              disabled={!canBeSubmitted()}
+            >
+              Next
+            </Button>
+          </FuseAnimate>
+        }
+      </div>
     </div>
   );
 }

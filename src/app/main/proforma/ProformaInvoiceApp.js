@@ -4,13 +4,13 @@ import {bindActionCreators} from "redux"
 import {connect} from "react-redux"
 import withReducer from 'app/store/withReducer';
 import reducers from './store/reducers';
+import * as appActions from 'app/store/actions';
 import * as Actions from './store/actions';
 import { FusePageCarded } from '@fuse';
 import InvoicesHeader from './invoices/InvoicesHeader';
 import InvoiceHeader from './invoice/InvoiceHeader';
 import InvoiceList from './invoice/InvoiceList';
 import InvoicesList from './invoices/InvoicesList';
-import InvoicesToolbar from './invoices/InvoicesToolbar';
 import InvoiceToolbar from './invoice/InvoiceToolbar';
 import NewProformaInvoice from './new-invoice/AddInvoice';
 import ProformaInvoiceDialog from "./dialog/ProformaInvoiceDialog"
@@ -26,6 +26,7 @@ class ProformaInvoiceApp extends Component {
     this.props.getCustomers()
     this.props.getServices()
     this.props.getDiscounts()
+    this.props.getBranches()
   }
 
   render() {
@@ -52,14 +53,10 @@ class ProformaInvoiceApp extends Component {
             match.params.id ? <InvoiceHeader /> : <InvoicesHeader />
           }
           contentToolbar={
-            match.params.id ? (
-              <InvoiceToolbar />
-            ) : (
-              <InvoicesToolbar />
-            )
+            match.params.id ? <InvoiceToolbar /> : null
           }
           content={
-            <div className='w-full p-24'>
+            <div className='w-full'>
               {match.params.id ? <InvoiceList /> : <InvoicesList />}
             </div>
           }
@@ -76,6 +73,7 @@ const mapDispatchToProps = (dispatch) => {
     getCustomers: Actions.getCustomers,
     getServices: Actions.getServices,
     getDiscounts: Actions.getDiscounts,
+    getBranches: appActions.getBranches,
   }, dispatch)
 }
 

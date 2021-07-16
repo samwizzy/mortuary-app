@@ -9,6 +9,7 @@ import { DeceasedConfig } from 'app/main/deceased/DeceasedConfig';
 import { InventoryConfig } from 'app/main/inventory/InventoryConfig';
 import { InvoiceConfig } from 'app/main/invoice/InvoiceConfig';
 import { ProformaInvoiceConfig } from 'app/main/proforma/ProformaInvoiceConfig';
+import { FuneralMgtConfig } from 'app/main/funeral_mgt/FuneralMgtConfig';
 import { ReceiptConfig } from 'app/main/receipt/ReceiptConfig';
 import { ReportsConfig } from 'app/main/reports/ReportsConfig';
 import { AuthConfig } from 'app/main/auth/AuthConfig';
@@ -22,6 +23,7 @@ const routeConfigs = [
   InventoryConfig,
   InvoiceConfig,
   ProformaInvoiceConfig,
+  FuneralMgtConfig,
   ReceiptConfig,
   ReportsConfig,
   DeceasedConfig,

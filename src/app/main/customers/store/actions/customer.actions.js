@@ -4,32 +4,46 @@ import * as Actions from './';
 import history from "../../../../../@history"
 
 export const CREATE_CUSTOMER = '[CUSTOMER APP] CREATE CUSTOMER';
+export const CREATE_CUSTOMER_ERROR = '[CUSTOMER APP] CREATE CUSTOMER ERROR';
+export const CREATE_CUSTOMER_PROGRESS = '[CUSTOMER APP] CREATE CUSTOMER PROGRESS';
+
 export const CREATE_RETURNING_CUSTOMER = '[CUSTOMER APP] CREATE RETURNING CUSTOMER';
+
 export const UPDATE_CUSTOMER = '[CUSTOMER APP] UPDATE CUSTOMER';
+export const UPDATE_CUSTOMER_ERROR = '[CUSTOMER APP] UPDATE CUSTOMER ERROR';
+
 export const GET_CUSTOMERS = '[CUSTOMER APP] GET CUSTOMERS';
 export const GET_CUSTOMER_BY_ID = '[CUSTOMER APP] GET CUSTOMER BY ID';
 
 export const SET_SEARCH_TEXT = '[CUSTOMER APP] SET SEARCH TEXT';
 
+export const OPEN_EDIT_CUSTOMER_DIALOG = '[CUSTOMER APP] OPEN EDIT CUSTOMER DIALOG';
+export const CLOSE_EDIT_CUSTOMER_DIALOG = '[CUSTOMER APP] CLOSE EDIT CUSTOMER DIALOG';
+
 export function createCustomer(data) {
   const request = axios.post('/api/v1/customers', data);
 
   return (dispatch) => {
-    request.then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: 'Customer created successfully' }));
+    dispatch({ type: CREATE_CUSTOMER_PROGRESS });
 
-        Promise.all([
-          dispatch({
-            type: CREATE_CUSTOMER,
-            payload: response.data,
-          }),
-        ]).then(() => {
-          dispatch(Actions.getCustomers());
-          history.push("/customers")
-        });
-      } else {
-        dispatch(showMessage({ message: 'Customer creation failed' }));
+    request.then((response) => {
+      dispatch(showMessage({ message: 'Customer created successfully' }));
+
+      Promise.all([
+        dispatch({
+          type: CREATE_CUSTOMER,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.getCustomers());
+        history.push("/customers")
+      });
+    })
+    .catch(err => {
+      console.dir(err.response.data, "err")
+      if(err?.response && err.response?.data){
+        dispatch(showMessage({ message: err?.response?.data?.message }));
+        dispatch({type: CREATE_CUSTOMER_ERROR, payload: err?.response})
       }
     });
   };
@@ -39,22 +53,24 @@ export function createReturningCustomer(data, id) {
   const request = axios.post(`/api/v1/customers/customer_id/${id}/request_service`, data);
 
   return (dispatch) => {
-    request.then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: 'Services requested successfully' }));
+    dispatch({ type: CREATE_CUSTOMER_PROGRESS });
 
-        Promise.all([
-          dispatch({
-            type: CREATE_RETURNING_CUSTOMER,
-            payload: response.data,
-          }),
-        ]).then(() => {
-          dispatch(Actions.getCustomers());
-          history.push("/customers")
-        });
-      } else {
-        dispatch(showMessage({ message: 'Services request failed' }));
-      }
+    request.then((response) => {
+      dispatch(showMessage({ message: 'Services requested successfully' }));
+
+      Promise.all([
+        dispatch({
+          type: CREATE_RETURNING_CUSTOMER,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.getCustomers());
+        history.push("/customers")
+      });
+    })
+    .catch(err => {
+      dispatch(showMessage({ message: 'Services request failed' }));
+      dispatch({type: CREATE_CUSTOMER_ERROR, payload: err?.response})
     });
   };
 }
@@ -84,23 +100,25 @@ export function getCustomerById(id) {
     );
 }
 
-export function updateCustomer(data) {
-  const request = axios.put('/api/v1/customers', data);
+export function updateCustomer(customer_id, data) {
+  const request = axios.put(`/api/v1/customers/${customer_id}`, data);
 
   return (dispatch) => {
     request.then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: 'Customer updated successfully' }));
+      dispatch(showMessage({ message: 'Customer updated successfully' }));
 
-        Promise.all([
-          dispatch({
-            type: UPDATE_CUSTOMER,
-            payload: response.data,
-          }),
-        ]).then(() => dispatch(Actions.getCustomers()));
-      } else {
-        dispatch(showMessage({ message: 'Customer update failed' }));
-      }
+      Promise.all([
+        dispatch({
+          type: UPDATE_CUSTOMER,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        history.push(`/customers/${customer_id}`);
+        window.location.reload();
+      });      
+    })
+    .catch(err => {
+      dispatch({type: UPDATE_CUSTOMER_ERROR, payload: err?.response})
     });
   };
 }
@@ -109,5 +127,18 @@ export function setSearchText(event) {
   return {
     type: SET_SEARCH_TEXT,
     searchText: event.target.value,
+  };
+}
+
+export function openEditCustomerDialog(payload) {
+  return {
+    type: OPEN_EDIT_CUSTOMER_DIALOG,
+    payload
+  };
+}
+
+export function closeEditCustomerDialog() {
+  return {
+    type: CLOSE_EDIT_CUSTOMER_DIALOG,
   };
 }

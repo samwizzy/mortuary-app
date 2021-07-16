@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux"
 import moment from "moment";
 import {
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -9,10 +10,11 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
-import { FuseScrollbars } from '@fuse';
+import { FuseScrollbars, FuseUtils } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import InvoicesTableHead from './InvoicesTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../store/actions';
 
 function InvoicesList(props) {
@@ -21,7 +23,6 @@ function InvoicesList(props) {
   const invoiceData = invoicesReducer.invoices
   const invoices = invoiceData.invoices
   const totalItems = invoiceData.totalItems
-  // const totalPages = invoiceData.totalPages
   const currentPage = invoiceData.currentPage
 
   const searchText = '';
@@ -70,6 +71,11 @@ function InvoicesList(props) {
     props.history.push('/invoices/' + item.id);
   }
 
+  function handleRoute(e, customer) {
+    e.stopPropagation()
+    props.history.push('/customers/' + customer.id);
+  }
+
   function handleCheck(event, id) {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -96,6 +102,7 @@ function InvoicesList(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getInvoices(0, event.target.value))
   }
 
   return (
@@ -164,19 +171,28 @@ function InvoicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.bill_to}
+                      <Link onClick={(e) => handleRoute(e, n.customer)}>{n.customer?.email}</Link>
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.total_amount}
+                      {n.status}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.amount_due}
+                    <TableCell component='th' scope='row' align='left'>
+                      {FuseUtils.formatCurrency(n.total_amount)}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {FuseUtils.formatCurrency(n.amount_due)}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+              {data.length === 0 && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
           </TableBody>
         </Table>
       </FuseScrollbars>

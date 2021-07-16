@@ -14,6 +14,7 @@ import { FuseScrollbars, FuseUtils } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import ServicesTableHead from './ServicesTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../../store/actions';
 import { types } from "./../Services"
 
@@ -96,6 +97,7 @@ function ServicesList(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getServices(0, event.target.value))
   }
 
   return (
@@ -181,6 +183,11 @@ function ServicesList(props) {
                   </TableRow>
                 );
               })}
+              
+              {data.length === 0 && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -190,6 +197,7 @@ function ServicesList(props) {
         count={count}
         rowsPerPage={rowsPerPage}
         page={currentPage}
+        rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}

@@ -10,11 +10,25 @@ export const ReportsConfig = {
     {
       path: '/reports',
       exact: true,
-      component: React.lazy(() => import('./ReportsApp')),
+      component: React.lazy(() => import('./reports/ReportsApp')),
     },
     {
-      path: '/reports/:id',
-      component: React.lazy(() => import('./ReportsApp')),
+      path: '/reports/admissions',
+      exact: true,
+      component: React.lazy(() => import('./admissions/ReportsApp')),
+    },
+    {
+      path: '/reports/admissions/:id',
+      component: React.lazy(() => import('./admissions/ReportsApp')),
+    },
+    {
+      path: '/reports/releases',
+      exact: true,
+      component: React.lazy(() => import('./releases/ReportsApp')),
+    },
+    {
+      path: '/reports/releases/:id',
+      component: React.lazy(() => import('./releases/ReportsApp')),
     },
   ],
 };

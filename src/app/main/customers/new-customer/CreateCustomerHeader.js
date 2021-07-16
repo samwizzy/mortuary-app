@@ -1,28 +1,18 @@
 import React from 'react';
-import _ from 'lodash';
-import {useLocation} from "react-router-dom"
-import qs from "qs";
-import { Button, Icon, Typography } from '@material-ui/core';
+import { useSelector } from "react-redux"
+import { Button, CircularProgress, Icon, Typography } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import * as Actions from '../store/actions';
 
 function CustomersHeader(props) {
-  const { form } = props;
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const customerId = qs.parse(location.search, { ignoreQueryPrefix: true }).customerId
+  const { form, handleSubmit } = props;
+  const loading = useSelector(({customerApp}) => customerApp.customer.loading);
 
   function canBeSubmitted() {
-    return form.deceased.first_name.length > 0 && !_.isEqual({}, form);
+    return form.service[0]?.service_id;
   }
 
-  const handleSubmit = () => {
-    customerId 
-    ? dispatch(Actions.createReturningCustomer(form, customerId))
-    : dispatch(Actions.createCustomer(form))
-  }
+  console.log(loading, "loading")
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
@@ -59,6 +49,7 @@ function CustomersHeader(props) {
           variant='contained'
           disabled={!canBeSubmitted()}
           onClick={handleSubmit}
+          endIcon={loading && <CircularProgress size={16} />}
         >
           Save
         </Button>

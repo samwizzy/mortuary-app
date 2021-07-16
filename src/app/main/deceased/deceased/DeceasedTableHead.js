@@ -55,7 +55,7 @@ const rows = [
   },
   {
     id: 'status',
-    align: 'right',
+    align: 'left',
     disablePadding: false,
     label: 'Status',
     sort: true,

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Link } from "react-router-dom"
+import { Icon, Typography } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 // import { useDispatch, useSelector } from 'react-redux';
 // import * as Actions from '../store/actions';
@@ -8,6 +9,19 @@ function CustomersHeader(props) {
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
       <div className='flex flex-col items-start max-w-full'>
+        <FuseAnimate animation='transition.slideRightIn' delay={300}>
+					<Typography
+						className='normal-case flex items-center sm:mb-12'
+						component={Link}
+						role='button'
+						to='/customers'
+						color='inherit'
+					>
+						<Icon className='mr-4 text-20'>arrow_back</Icon>
+						Customers
+					</Typography>
+        </FuseAnimate>
+
         <FuseAnimate animation='transition.slideRightIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
             Customer Details

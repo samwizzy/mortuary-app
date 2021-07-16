@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {FuseAnimate, FuseScrollbars} from "@fuse"
+import {FuseAnimate, FuseScrollbars, FuseUtils} from "@fuse"
 import {useHistory} from "react-router-dom"
 import moment from "moment"
 import {
@@ -68,7 +68,7 @@ function ProformaInvoiceDialog(props) {
               </IconButton>
             </FuseAnimate>
             <FuseAnimate animation='transition.expandIn' delay={100}>
-              <ReactToPdf targetRef={ref} filename="div-blue.pdf" options={options} x={.1} y={.1} scale={0.94}>
+              <ReactToPdf targetRef={ref} filename={`${invoiceDialog.data?.proforma_invoice_number}.pdf`} options={options} x={.1} y={.1} scale={0.94}>
                 {({toPdf}) => (
                   <IconButton color="inherit" disabled={!invoiceDialog.data} onClick={toPdf}>
                     <Icon className="text-white">print</Icon>
@@ -109,9 +109,11 @@ function ProformaInvoiceDialog(props) {
                       </dt>
                       <dt>{user.organisation?.emailAddress}</dt>
                       <dt><hr className="my-16 border-0 border-t border-solid border-grey-light" /></dt>
-                      <dt>A/C NAME: OMEGA FUNERAL HOMES</dt>
-                      <dt>GTBank 0174644878</dt>
-                      <dt>Polaris Bank 1771874077</dt>
+                      <div className="text-red font-bold">
+                        <dt>A/C NAME: OMEGA FUNERAL HOMES</dt>
+                        <dt>GTBank 0174644878</dt>
+                        <dt>Polaris Bank 1771874077</dt>
+                      </div>
                     </div>
                     <div className="text-gray-600">
                       <dt>{moment().format("dddd, MMMM Do, YYYY")}</dt>
@@ -170,12 +172,14 @@ function ProformaInvoiceDialog(props) {
                 </dl>
 
                 <FuseScrollbars className='flex-grow overflow-x-auto'>
-                  <Table className='mt-24' aria-labelledby='tableTitle'>
+                  <Table className='mt-24' size="small" aria-labelledby='tableTitle'>
                     <TableHead>
-                      <TableRow>
+                      <TableRow className='h-48'>
                         <TableCell>S/N</TableCell>
                         <TableCell>Product/Service</TableCell>
                         <TableCell>Rate</TableCell>
+                        <TableCell>Qty</TableCell>
+                        <TableCell>Total</TableCell>
                       </TableRow>
                     </TableHead>
 
@@ -184,11 +188,11 @@ function ProformaInvoiceDialog(props) {
                         .map((s, i) => {
                           return (
                             <TableRow
-                              className='h-64 cursor-pointer'
+                              className='h-48 cursor-pointer'
                               hover
                               role='checkbox'
                               tabIndex={-1}
-                              key={s.id}
+                              key={i}
                             >
                               <TableCell component='th' scope='row'>
                                 {i+1}
@@ -197,9 +201,17 @@ function ProformaInvoiceDialog(props) {
                               <TableCell className='truncate' component='th' scope='row'>
                                 {s.service?.serviceName}
                               </TableCell>
+                              
+                              <TableCell component='th' scope='row'>
+                                {FuseUtils.formatCurrency(s.rate)}
+                              </TableCell>
 
                               <TableCell component='th' scope='row'>
-                                {s.rate}
+                                {s.qty}
+                              </TableCell>
+
+                              <TableCell component='th' scope='row'>
+                                {FuseUtils.formatCurrency(s.rate * s.qty)}
                               </TableCell>
 
                             </TableRow>
@@ -208,7 +220,12 @@ function ProformaInvoiceDialog(props) {
                     </TableBody>
                   </Table>
                 </FuseScrollbars>
-                      
+              </div>
+
+              <div className="flex flex-col space-y-1 mt-16 text-red font-bold uppercase text-xs">
+                <span>No cash payment accepted</span>
+                <span>We never accept payment for our products & services via our employees personal account numbers. </span>
+                <span>All payment must be made to Omega Funeral Home</span>
               </div>
             </div>
           </div>

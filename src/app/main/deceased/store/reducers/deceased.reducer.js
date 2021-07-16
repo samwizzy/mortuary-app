@@ -42,6 +42,13 @@ const deceasedReducer = function (state = initialState, action) {
         message: action.payload,
       };
     }
+    case Actions.PRINT_ADMISSION_FORM: {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
+      };
+    }
     case Actions.SET_SEARCH_TEXT: {
       return {
         ...state,

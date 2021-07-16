@@ -58,14 +58,14 @@ const rows = [
     id: 'is_customer_image',
     align: 'left',
     disablePadding: false,
-    label: 'Cust. Image',
+    label: 'Picture',
     sort: true,
   },
   {
     id: 'request_customer_signature',
     align: 'left',
     disablePadding: false,
-    label: 'Cust. Signature',
+    label: 'Signature',
     sort: true,
   },
 ];

@@ -14,6 +14,7 @@ import _ from '@lodash';
 import CustomersTableHead from './CustomersTableHead';
 import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
+import TableRowSkeleton from './TableRowSkeleton';
 
 function CustomersList(props) {
   const { searchText } = props
@@ -38,7 +39,9 @@ function CustomersList(props) {
       searchText.length === 0
         ? customers
         : _.filter(customers, (item) =>
-            item.first_name.toLowerCase().includes(searchText.toLowerCase())
+            item.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.other_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.email.toLowerCase().includes(searchText.toLowerCase()) 
           )
     );
   }, [customers, searchText]);
@@ -92,6 +95,7 @@ function CustomersList(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getCustomers(0, event.target.value))
   }
 
   return (
@@ -156,21 +160,28 @@ function CustomersList(props) {
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.id}
+                      {n.customer_number}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
                       {n.email}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
+                    <TableCell component='th' scope='row' align='left'>
                       {n.phone_number}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+            {data.length === 0 && 
+              _.range(6).map(k => 
+                <TableRowSkeleton key={k} />
+            )}
           </TableBody>
         </Table>
+
+        
       </FuseScrollbars>
 
       <TablePagination
@@ -178,6 +189,7 @@ function CustomersList(props) {
         count={count}
         rowsPerPage={rowsPerPage}
         page={currentPage}
+        rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
