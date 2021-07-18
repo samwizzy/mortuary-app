@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom"
 import { Icon, IconButton, MenuItem, Popover } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
-// import * as Actions from '../store/actions/index';
+import { useDispatch, useSelector } from 'react-redux';
+import * as Actions from '../store/actions';
 
 function CustomerToolbar(props) {
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const match = useRouteMatch();
   const [anchorEl, setAnchorEl] = useState(null);
+  const customer = useSelector(({customerApp}) => customerApp.customer.customer);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -22,12 +23,6 @@ function CustomerToolbar(props) {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const customer = {};
-
-  if (!customer) {
-    return null;
-  }
-
   return (
     <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16'>
       <IconButton onClick={() => props.history.goBack()}>
@@ -36,14 +31,14 @@ function CustomerToolbar(props) {
 
       <div className='flex items-center justify-start' aria-label='Toggle star'>
         <FuseAnimate animation='transition.expandIn' delay={100}>
-          <IconButton>
+          <IconButton onClick={() => dispatch(Actions.openEditCustomerDialog(customer))}>
             <Icon>edit</Icon>
           </IconButton>
         </FuseAnimate>
         <FuseAnimate animation='transition.expandIn' delay={100}>
           <>
           <IconButton aria-describedby={id} onClick={handleClick}>
-            <Icon>settings</Icon>
+            <Icon>more_horiz</Icon>
           </IconButton>
           <Popover
             id={id}
@@ -56,10 +51,12 @@ function CustomerToolbar(props) {
             }}
             transformOrigin={{
               vertical: 'top',
-              horizontal: 'center',
+              horizontal: 'center',                                 
             }}
           >
-            <MenuItem component={Link} to={`/customers/${match.params.id}/relatives`}>View Relatives</MenuItem>
+            {/* <MenuItem component={Link} to={`/customers/${match.params.id}/relatives`}>View Relatives</MenuItem> */}
+            {/* <MenuItem component={Link} to={`/customers/${match.params.id}/payment-advice`}>Payment advice</MenuItem> */}
+            <MenuItem component={Link} to={`/customers/new?type=returning&customerId=${match.params.id}`}>Request services</MenuItem>
           </Popover>
           </>
         </FuseAnimate>

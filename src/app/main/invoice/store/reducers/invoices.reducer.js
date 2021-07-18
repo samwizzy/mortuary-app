@@ -1,13 +1,23 @@
 import * as Actions from '../actions';
-import _ from '@lodash';
 
 const initialState = {
-  entities: null,
   searchText: '',
+  invoices: {
+    totalItems: 0,
+    invoices: [],
+    totalPages: 0,
+    currentPage: 0
+  },
+  invoice: null,
   selectedInvoiceIds: [],
-  routeParams: {},
   paymentAdvice: null,
-  invoiceDialog: {
+  paymentDialog: {
+    props: {
+      open: false,
+    },
+    data: null,
+  },
+  sendInvoiceDialog: {
     type: 'new',
     props: {
       open: false,
@@ -28,15 +38,37 @@ const invoicesReducer = function (state = initialState, action) {
     case Actions.GET_INVOICES: {
       return {
         ...state,
-        entities: _.keyBy(action.payload, 'id'),
-        routeParams: action.routeParams,
+        invoices: action.payload,
+      };
+    }
+    case Actions.GET_INVOICE_BY_ID: {
+      return {
+        ...state,
+        invoice: action.payload,
+      };
+    }
+    case Actions.SEND_INVOICE: {
+      return {
+        ...state,
+        loading: false
+      };
+    }
+    case Actions.INITIALIZE_INVOICE_PAYMENT: {
+      return {
+        ...state,
+        loading: false
+      };
+    }
+    case Actions.RECORD_INVOICE_PAYMENT: {
+      return {
+        ...state,
+        loading: false
       };
     }
     case Actions.GET_PAYMENT_ADVICE: {
       return {
         ...state,
         paymentAdvice: action.payload,
-        routeParams: action.routeParams,
       };
     }
     case Actions.SET_SEARCH_TEXT: {
@@ -45,27 +77,26 @@ const invoicesReducer = function (state = initialState, action) {
         searchText: action.searchText,
       };
     }
-    case Actions.SELECT_ALL_INVOICES: {
-      const arr = Object.keys(state.entities).map((k) => state.entities[k]);
+    // case Actions.SELECT_ALL_INVOICES: {
+    //   const arr = Object.keys(state.entities).map((k) => state.entities[k]);
 
-      const selectedInvoiceIds = arr.map((invoice) => invoice.id);
+    //   const selectedInvoiceIds = arr.map((invoice) => invoice.id);
 
-      return {
-        ...state,
-        selectedInvoiceIds: selectedInvoiceIds,
-      };
-    }
+    //   return {
+    //     ...state,
+    //     selectedInvoiceIds: selectedInvoiceIds,
+    //   };
+    // }
     case Actions.DESELECT_ALL_INVOICES: {
       return {
         ...state,
         selectedInvoiceIds: [],
       };
     }
-    case Actions.OPEN_NEW_INVOICE_DIALOG: {
+    case Actions.OPEN_INVOICE_PAYMENT_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'new',
+        paymentDialog: {
           props: {
             open: true,
           },
@@ -73,11 +104,10 @@ const invoicesReducer = function (state = initialState, action) {
         },
       };
     }
-    case Actions.CLOSE_NEW_INVOICE_DIALOG: {
+    case Actions.CLOSE_INVOICE_PAYMENT_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'new',
+        paymentDialog: {
           props: {
             open: false,
           },
@@ -85,23 +115,21 @@ const invoicesReducer = function (state = initialState, action) {
         },
       };
     }
-    case Actions.OPEN_EDIT_INVOICE_DIALOG: {
+    case Actions.OPEN_SEND_INVOICE_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'edit',
+        sendInvoiceDialog: {
           props: {
             open: true,
           },
-          data: action.data,
+          data: action.payload,
         },
       };
     }
-    case Actions.CLOSE_EDIT_INVOICE_DIALOG: {
+    case Actions.CLOSE_SEND_INVOICE_DIALOG: {
       return {
         ...state,
-        invoiceDialog: {
-          type: 'edit',
+        sendInvoiceDialog: {
           props: {
             open: false,
           },
@@ -113,11 +141,10 @@ const invoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         recordPaymentDialog: {
-          type: 'new',
           props: {
             open: true,
           },
-          data: null,
+          data: action.payload,
         },
       };
     }
@@ -125,7 +152,6 @@ const invoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         recordPaymentDialog: {
-          type: 'new',
           props: {
             open: false,
           },

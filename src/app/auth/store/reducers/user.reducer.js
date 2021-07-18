@@ -1,18 +1,32 @@
 import * as Actions from '../actions';
 
 const initialState = {
-    role: [],//guest
+    role: ["user"], //guest
     data: {
-        'displayName': 'John Doe',
-        'photoURL'   : 'assets/images/avatars/Velazquez.jpg',
-        'email'      : 'johndoe@withinpixels.com',
+        fullName: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
+        employeeImage: 'assets/images/avatars/Velazquez.jpg',
+        email      : '',
+        organisation: {
+            logo: null,
+            orgId: "",
+            companyName: "",
+            companyShortName: "",
+            emailAddress: "",
+            phoneNumber: "",
+            website: "",
+            city: "",
+            state: "",
+            country: "",
+        },
         shortcuts    : [
             'calendar',
             'mail',
             'contacts',
             'todo'
         ]
-    }
+    },
 };
 
 const user = function (state = initialState, action) {

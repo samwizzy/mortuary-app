@@ -6,8 +6,6 @@ import { FuseAnimate } from '@fuse';
 // import * as Actions from '../store/actions';
 
 function DeceasedHeader(props) {
-  const { match } = props;
-
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
       <div className='flex items-center'>
@@ -16,7 +14,7 @@ function DeceasedHeader(props) {
         </FuseAnimate>
         <FuseAnimate animation='transition.slideLeftIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
-            {match.params.id ? 'Send Receipt' : 'Receipts'}
+            Receipt Details
           </Typography>
         </FuseAnimate>
       </div>

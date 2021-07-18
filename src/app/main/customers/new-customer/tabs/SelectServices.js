@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from "react-redux"
+import _ from "lodash";
 import {
+  Button,
   Table,
   TableHead,
   TableBody,
@@ -10,30 +12,37 @@ import {
   IconButton,
   MenuItem,
 } from '@material-ui/core';
+import {Autocomplete} from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FuseScrollbars } from '@fuse';
+import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 
 function SelectServices(props) {
-  const { form, handleMultiChange, addServiceRow, removeServiceRow } = props;
+  const { form, handleMultiChange, handleSelectChange, addServiceRow, removeServiceRow, handleNext, handlePrev, tabValue } = props;
   const serviceReducer = useSelector(({customerApp}) => customerApp.services);
   const discountsReducer = useSelector(({customerApp}) => customerApp.discounts);
 
-  const services = serviceReducer.services;
+  const services = serviceReducer.services.services;
   const discounts = discountsReducer.discounts;
+
+  console.log(services, "services")
+
+  function canBeSubmitted() {
+    return form.service.length > 0 && form.service[0].service_id
+  }
 
   return (
     <div className='w-full flex flex-col'>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
-        <Table className='min-w-xl' aria-labelledby='tableTitle'>
+        <Table className='' aria-labelledby='tableTitle'>
           <TableHead>
             <TableRow>
               <TableCell>Services</TableCell>
-              <TableCell>Billing Amount</TableCell>
-              <TableCell>Discount Type</TableCell>
-              <TableCell>Discount Amount</TableCell>
-              <TableCell align='left'>
+              <TableCell>Rate</TableCell>
+              <TableCell>Days/Qty</TableCell>
+              <TableCell>Discount</TableCell>
+              <TableCell align='right'>
                 <IconButton onClick={addServiceRow}>
                   <AddIcon />
                 </IconButton>
@@ -46,9 +55,7 @@ function SelectServices(props) {
               const isSelected = form.service.indexOf(n.id) !== -1;
               return (
                 <TableRow
-                  className='h-64 cursor-pointer'
-                  hover
-                  role='checkbox'
+                  className='h-48'
                   aria-checked={isSelected}
                   tabIndex={-1}
                   key={i}
@@ -57,7 +64,7 @@ function SelectServices(props) {
                 >
                   <TableCell component='th' scope='row'>
                     <TextField
-                      className='mt-8 mb-16'
+                      className='min-w-192'
                       select
                       required
                       label='Services'
@@ -78,55 +85,46 @@ function SelectServices(props) {
 
                   <TableCell className='truncate' component='th' scope='row'>
                     <TextField
-                      className='mt-8 mb-16'
+                      className=''
                       required
+                      disabled
                       label='Rate'
-                      autoFocus
                       id={`rate-${i}`}
                       name='rate'
                       value={n.rate}
-                      onChange={handleMultiChange(i)}
                       variant='outlined'
                       fullWidth
                     />
                   </TableCell>
 
-                  <TableCell component='th' scope='row' align='left'>
+                  <TableCell className='truncate' component='th' scope='row'>
                     <TextField
-                      className='mt-8 mb-16'
-                      select
+                      className='w-128'
                       required
-                      label='Discount Types'
-                      autoFocus
-                      id={`discount_type_id-${i}`}
-                      name='discount_type_id'
-                      value={n.discount_type_id}
+                      label='Days/Qty'
+                      id={`qty-${i}`}
+                      name='qty'
+                      value={n.qty}
                       onChange={handleMultiChange(i)}
                       variant='outlined'
-                      fullWidth
-                    >
-                      <MenuItem value="">Select discount type</MenuItem>
-                      {discounts.map(d => 
-                        <MenuItem key={d.id} value={d.id}>{d.discount_name}</MenuItem>
-                      )}
-                    </TextField>  
-                  </TableCell>
-
-                  <TableCell component='th' scope='row' align='right'>
-                    <TextField
-                      className='mt-8 mb-16'
-                      required
-                      label='Discount Amount'
-                      autoFocus
-                      id={`discount_amount-${i}`}
-                      name='discount_amount'
-                      value={n.discount_amount}
-                      // onChange={handleChange}
-                      variant='outlined'
+                      disabled={_.find(services, {id: n.service_id})?.service_type === "2"}
                       fullWidth
                     />
                   </TableCell>
-                  <TableCell className='' padding='checkbox'>
+
+                  <TableCell component='th' scope='row' align='left' className="min-w-96">
+                    <Autocomplete
+                      className=''
+                      value={n.discount}
+                      onChange={(ev, value) => handleSelectChange(value, 'discount', i)}
+                      placeholder='Select discount type'
+                      options={discounts}
+                      getOptionLabel={(option) => (`${option.amount}%`)}
+                      renderInput={(params) => <TextField {...params} label="Discount types" variant="outlined" />}
+                    />
+                  </TableCell>
+
+                  <TableCell align='right'>
                     <IconButton onClick={removeServiceRow(i)}>
                       <DeleteIcon />
                     </IconButton>
@@ -137,6 +135,35 @@ function SelectServices(props) {
           </TableBody>
         </Table>
       </FuseScrollbars>
+
+      <div className="flex justify-end space-x-8 my-16">
+        {tabValue > 0 &&
+          <FuseAnimate animation='transition.slideRightIn' delay={300}>
+            <Button
+              className='whitespace-no-wrap'
+              variant='contained'
+              color="default"
+              disableElevation
+              onClick={handlePrev}
+            >
+              Back
+            </Button>
+          </FuseAnimate>
+        }
+        {tabValue < 5 &&
+          <FuseAnimate animation='transition.slideRightIn' delay={300}>
+            <Button
+              className='whitespace-no-wrap'
+              variant='contained'
+              disableElevation
+              onClick={handleNext}
+              disabled={!canBeSubmitted()}
+            >
+              Next
+            </Button>
+          </FuseAnimate>
+        }
+      </div>
     </div>
   );
 }

@@ -13,10 +13,17 @@ class Auth extends Component {
     {
         super(props);
 
+        const params = new URLSearchParams(window.location.search);
+        const access_token = params.get('token');
+        
+        if(access_token){
+            localStorage.setItem('access_token', access_token);
+        }
+
         /**
          * Comment the line if you do not use JWt
          */
-        //this.jwtCheck();
+        this.jwtCheck();
 
         /**
          * Comment the line if you do not use Auth0
@@ -32,19 +39,21 @@ class Auth extends Component {
     jwtCheck = () => {
         jwtService.on('onAutoLogin', () => {
 
-            this.props.showMessage({message: 'Logging in with JWT'});
+            this.props.showMessage({message: 'Logging in...'});
 
             /**
              * Sign in and retrieve user data from Api
              */
-            jwtService.signInWithToken()
+            /* signInWithToken */
+            jwtService.getProfileData() 
                 .then(user => {
                     this.props.setUserData(user);
 
-                    this.props.showMessage({message: 'Logged in with JWT'});
+                    this.props.showMessage({message: 'Logged in'});
                 })
                 .catch(error => {
-                    this.props.showMessage({message: error});
+                    console.dir(error, "error")
+                    this.props.showMessage({message: error?.message || error});
                 })
         });
 
@@ -116,14 +125,14 @@ class Auth extends Component {
 function mapDispatchToProps(dispatch)
 {
     return bindActionCreators({
-            logout             : userActions.logoutUser,
-            setUserData        : userActions.setUserData,
-            setUserDataAuth0   : userActions.setUserDataAuth0,
-            setUserDataFirebase: userActions.setUserDataFirebase,
-            showMessage        : Actions.showMessage,
-            hideMessage        : Actions.hideMessage
-        },
-        dispatch);
+        logout             : userActions.logoutUser,
+        setUserData        : userActions.setUserData,
+        setUserDataAuth0   : userActions.setUserDataAuth0,
+        setUserDataFirebase: userActions.setUserDataFirebase,
+        showMessage        : Actions.showMessage,
+        hideMessage        : Actions.hideMessage
+    },
+    dispatch);
 }
 
 export default connect(null, mapDispatchToProps)(Auth);

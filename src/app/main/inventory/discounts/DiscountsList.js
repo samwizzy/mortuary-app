@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import {
+  Icon,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -12,14 +14,15 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import DiscountsTableHead from './DiscountsTableHead';
-// import * as Actions from '../store/actions';
+import TableRowSkeleton from './TableRowSkeleton';
+import * as Actions from '../store/actions';
+import DiscountDialog from "./DiscountDialog"
 
 function DiscountsList(props) {
+  const { searchText } = props
   const dispatch = useDispatch();
   const discountReducer = useSelector(({inventoryApp}) => inventoryApp.discounts)
   const discounts = discountReducer.discounts;
-  
-  const searchText = '';
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(discounts);
@@ -35,7 +38,7 @@ function DiscountsList(props) {
       searchText.length === 0
         ? discounts
         : _.filter(discounts, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            String(item.amount).includes(searchText)
           )
     );
   }, [discounts, searchText]);
@@ -57,10 +60,6 @@ function DiscountsList(props) {
       return;
     }
     setSelected([]);
-  }
-
-  function handleClick(item) {
-    props.history.push('/inventory/discounts/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -126,13 +125,11 @@ function DiscountsList(props) {
                 return (
                   <TableRow
                     className='h-64 cursor-pointer'
-                    hover
                     role='checkbox'
                     aria-checked={isSelected}
                     tabIndex={-1}
                     key={n.id}
                     selected={isSelected}
-                    onClick={(event) => handleClick(n)}
                   >
                     <TableCell
                       className='w-48 px-4 sm:px-12'
@@ -145,24 +142,29 @@ function DiscountsList(props) {
                       />
                     </TableCell>
 
-                    <TableCell component='th' scope='row'>
+                    {/* <TableCell component='th' scope='row'>
                       {n.discount_name}
-                    </TableCell>
-
-                    <TableCell className='truncate' component='th' scope='row'>
-                      {n.discount_type}
-                    </TableCell>
+                    </TableCell> */}
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.amount}
+                      {n.amount || 0}%
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
                       {n.created_by}
                     </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      <IconButton size="small" onClick={() => dispatch(Actions.openEditDiscountDialog(n))}><Icon>edit</Icon></IconButton>
+                    </TableCell>
                   </TableRow>
                 );
               })}
+
+            {data.length === 0 && 
+              _.range(6).map(k => 
+                <TableRowSkeleton key={k} />
+            )}
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -181,8 +183,17 @@ function DiscountsList(props) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+
+      <DiscountDialog />
     </div>
   );
 }
 
-export default withRouter(DiscountsList);
+const mapStateToProps = ({inventoryApp}) => {
+  const { discounts } = inventoryApp
+  return {
+    searchText: discounts.searchText
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(DiscountsList));

@@ -1,80 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from "react-redux"
+import { withRouter, useRouteMatch } from 'react-router-dom';
 import {
   Table,
   TableHead,
   TableBody,
   TableCell,
-  TablePagination,
   TableRow,
-  Checkbox,
+  IconButton, Icon
 } from '@material-ui/core';
-import { FuseScrollbars, FuseAnimate } from '@fuse';
-import { withRouter } from 'react-router-dom';
+import { Skeleton } from '@material-ui/lab';
+import { FuseScrollbars, FuseAnimate, FuseUtils } from '@fuse';
 import _ from '@lodash';
+import moment from "moment";
 import InvoiceTableHead from './InvoiceTableHead';
-// import * as Actions from '../store/actions';
-import { useDispatch } from 'react-redux';
+import * as Actions from '../store/actions';
+import { connect } from 'react-redux';
+import converter from "number-to-words";
+import ReactToPdf from "react-to-pdf"
 
-function InvoiceList(props) {
+function InvoiceList(props){
+  const { invoice, user, services } = props
   const dispatch = useDispatch();
-  const deceased = [
-    {
-      id: '5725a680b3249760ea21de52',
-      services: 'Dressing',
-      discount: '4000',
-      days: '24',
-      rate: '32',
-      amount: 5000,
-    },
-    {
-      id: '5725a680606588342058356d',
-      services: 'Dressing',
-      discount: '4000',
-      days: '24',
-      rate: '32',
-      amount: 5000,
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      services: 'Dressing',
-      discount: '4000',
-      days: '24',
-      rate: '32',
-      amount: 5000,
-    },
-  ];
-  const searchText = '';
+  const match = useRouteMatch();
+  const ref = React.createRef();
 
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(deceased);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [order, setOrder] = useState({ direction: 'asc', id: null });
+  const data = invoice? invoice.service : [];
+
+  console.log(invoice, "invoice")
+  console.log(user, "user")
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
-  }, [dispatch]);
-
-  useEffect(() => {
-    setData(
-      searchText.length === 0
-        ? deceased
-        : _.filter(deceased, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
-          )
-    );
-  }, [deceased, searchText]);
-
-  function handleRequestSort(event, property) {
-    const id = property;
-    let direction = 'desc';
-
-    if (order.id === property && order.direction === 'desc') {
-      direction = 'asc';
-    }
-
-    setOrder({ direction, id });
-  }
+    dispatch(Actions.getInvoiceById(match.params.id));
+  }, [dispatch, match.params.id]);
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -84,236 +43,264 @@ function InvoiceList(props) {
     setSelected([]);
   }
 
-  function handleClick(item) {
-    props.history.push('/invoice/' + item.id + '/' + item.handle);
-  }
-
-  function handleCheck(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  }
-
-  function handleChangePage(event, page) {
-    setPage(page);
-  }
-
-  function handleChangeRowsPerPage(event) {
-    setRowsPerPage(event.target.value);
-  }
+  const options = {
+    orientation: 'portrait',
+    unit: 'in',
+    format: [9,14]
+  };
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col p-24'>
       <FuseAnimate delay={100}>
-        <div className='flex flex-wrap mt-8 mb-24'>
-          <div className='w-full bg-white overflow-hidden sm:rounded-lg'>
-            <div className='px-4 py-5 sm:px-6'>
+        <div className='flex flex-col flex-wrap mt-0 mb-24 relative'>
+          <div className="absolute right-0 top-0 bg-orange-lighter">
+            <ReactToPdf targetRef={ref} filename={`${invoice?.invoice_number}.pdf`} options={options} x={.4} y={.4} scale={0.92}>
+              {({toPdf}) => (
+                <IconButton disabled={!invoice} onClick={toPdf}>
+                  <Icon>cloud_download</Icon>
+                </IconButton>
+              )}
+            </ReactToPdf>
+          </div>
+
+          <div className='w-9/12 mx-auto bg-white overflow-hidden sm:rounded-lg' ref={ref}>
+            <div className='flex justify-between px-4 py-0 sm:px-6'>
               <h1>
                 <img
-                  className='h-72'
+                  className='h-96'
                   src='/assets/images/profile/omega-homes.svg'
                   alt=''
                 />
               </h1>
-              <h3 className='text-xl leading-6 font-bold text-gray-900'>
-                Invoice
-              </h3>
+              
+              <div>
+                <dl className="space-y-16 text-right text-xs">
+                  <div>
+                    <dt className="capitalize">{user.organisation?.city} Location</dt>
+                    <dt>{user.organisation?.companyName}</dt>
+                    <dt>{user.organisation?.address}</dt>
+                    <dt>{user.organisation?.city}, {user.organisation?.state}</dt>
+                    <dt>{user.organisation?.country}</dt>
+                    <dt>
+                      <div className="space-x-8">
+                      <span>{user.organisation?.phoneNumber}</span>
+                      <span>{user.organisation?.contactPersonPhone}</span>
+                      <span>{user.organisation?.contactPersonTel}</span>
+                      </div>
+                    </dt>
+                    <dt>{user.organisation?.emailAddress}</dt>
+                    <dt><hr className="my-16 border-0 border-t border-grey-darkest" /></dt>
+                    <div className="text-red font-bold">
+                      <dt>A/C NAME: OMEGA FUNERAL HOMES</dt>
+                      <dt>GTBank 0174644878</dt>
+                      <dt>Polaris Bank 1771874077</dt>
+                    </div>
+                  </div>
+                  <div className="text-gray-600">
+                    <dt>{moment(invoice?.invoice_date).format("dddd, MMMM Do, YYYY")}</dt>
+                    <dt>{invoice?.invoice_number}</dt>
+                  </div>
+                </dl>
+              </div>
+              
             </div>
+
+            <div className="text-center">
+              <h1 className='text-xl leading-6 uppercase font-bold italic text-gray-900'>
+                Invoice (#{invoice?.invoice_number})
+              </h1>
+              <dl>
+                <div className="text-center">
+                  <dt>Customer Name</dt>
+                  {invoice?.customer
+                    ? <dt>{invoice?.customer?.firstName} {invoice?.customer?.lastName} ({invoice?.customer?.otherName})</dt>
+                    : <Skeleton variant="text" width="200px" className="mx-auto" />
+                  }
+                </div>
+              </dl>
+            </div>
+
             <div className='border-t border-gray-200'>
-              <Table className='min-w-xl' size='small'>
+              <Table className='' size='small'>
                 <TableHead>
                   <TableRow>
-                    <TableCell />
-                    <TableCell className='text-lg font-bold'>Bill to</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell className='text-sm font-medium'>Bill to</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <TableRow className='h-64'>
-                    <TableCell component='th' scope='row'>
+                    <TableCell component='td' scope='row'>
                       <dl>
-                        <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-                          <dt className='text-sm font-medium text-gray-500'>
+                        <div className='bg-gray-100 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                          <dt className='text-sm font-bold text-gray-600'>
                             Invoice Number
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            INV/2093746382
+                            #{invoice?.invoice_number}
                           </dd>
                         </div>
-                        <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-                          <dt className='text-sm font-medium text-gray-500'>
+                        <div className='bg-white px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                          <dt className='text-sm font-bold text-gray-600'>
                             Invoice date
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            5th April 2021
+                            {moment(invoice?.invoice_date).format("Do MMMM, YYYY")}
                           </dd>
                         </div>
-                        <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-                          <dt className='text-sm font-medium text-gray-500'>
+                        <div className='bg-gray-100 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                          <dt className='text-sm font-bold text-gray-600'>
                             Due date
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            5th April 2021
+                            {moment(invoice?.invoice_date).format("Do MMMM, YYYY")}
                           </dd>
                         </div>
                       </dl>
                     </TableCell>
-                    <TableCell component='th' scope='row'>
+                    <TableCell component='td' scope='row'>
                       <dl>
-                        <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-                          <dt className='text-sm font-medium text-gray-500'>
+                        <div className='bg-gray-100 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                          <dt className='text-sm font-bold text-gray-600'>
                             Name
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            John Well
+                            {invoice?.customer?.firstName} {invoice?.customer?.lastName}
                           </dd>
                         </div>
-                        <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-                          <dt className='text-sm font-medium text-gray-500'>
-                            Company
-                          </dt>
-                          <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            Holder’s Limited
-                          </dd>
-                        </div>
-                        <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-                          <dt className='text-sm font-medium text-gray-500'>
+                        <div className='bg-white px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                          <dt className='text-sm font-bold text-gray-600'>
                             Address
                           </dt>
                           <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                            3a Idowu Martins Victoria Island Lagos
+                            {invoice?.bill_to}
                           </dd>
                         </div>
                       </dl>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan='2'>
-                      <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-0'>
-                        <h3 className='text-sm font-medium text-gray-500'>
-                          Notes
-                        </h3>
-                        <p className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit, sed do eiusmod tempor incididunt ut labore
-                        </p>
-                      </div>
                     </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
+
+              <FuseScrollbars className='flex-grow overflow-x-auto mt-16'>
+                <Table className='' aria-labelledby='tableTitle'>
+                  <InvoiceTableHead
+                    numSelected={selected.length}
+                    onSelectAllClick={handleSelectAllClick}
+                    rowCount={data.length}
+                  />
+                  <TableBody>
+                    {data
+                      .map((n) => {
+                        return (
+                          <TableRow
+                            className='h-48 cursor-pointer'
+                            hover
+                            tabIndex={-1}
+                            key={n.id}
+                          >
+                            <TableCell component='th' scope='row'>
+                              {_.find(services, {id: n.serviceId})?.service_name}
+                            </TableCell>
+
+                            <TableCell className='truncate' component='th' scope='row'>
+                              {n.discountAmount}%
+                              ({FuseUtils.formatCurrency(n.rate * n.qty * (n.discountAmount/100) || 0)})
+                            </TableCell>
+
+                            <TableCell component='th' scope='row' align='left'>
+                              {n.qty}
+                            </TableCell>
+
+                            <TableCell component='th' scope='row' align='left'>
+                              {FuseUtils.formatCurrency(n.rate)}
+                            </TableCell>
+
+                            <TableCell component='th' scope='row' align='right'>
+                              {FuseUtils.formatCurrency((n.rate * n.qty) || 0)}
+                            </TableCell>
+
+                            <TableCell component='th' scope='row' align='right'>
+                              {FuseUtils.formatCurrency((n.rate * n.qty) - (n.rate * n.qty * (n.discountAmount/100)) || 0)}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                      <TableRow className='h-48'>
+                        <TableCell colSpan={4} />
+                        <TableCell className="bg-blue-lightest font-bold">Total</TableCell>
+                        <TableCell className="bg-blue-lightest" align="right">{FuseUtils.formatCurrency(invoice?.total_amount || 0)}</TableCell>
+                      </TableRow>
+                      <TableRow className='h-48'>
+                        <TableCell colSpan={4} />
+                        <TableCell colSpan={2}>
+                          <span className="text-xs">
+                            ({invoice?.total_amount
+                              ? _.startCase(converter.toWords(invoice?.total_amount)) 
+                              : 0
+                            } naira only)
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow className='h-48'>
+                        <TableCell colSpan={3} />
+                        <TableCell colSpan={3} className="p-0">
+                          <Table>
+                            <TableHead>
+                              <TableRow className='h-48'>
+                                <TableCell colSpan={3} className="text-center bg-blue text-white">Deposits</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              <TableRow className='h-48'>
+                                <TableCell>S/N</TableCell>
+                                <TableCell align="right">Date</TableCell>
+                                <TableCell align="right">Amount</TableCell>
+                              </TableRow>
+                              {invoice?.deposit.map((dpt, i) => 
+                                <TableRow key={dpt.id} className='h-48'>
+                                  <TableCell>{i + 1}</TableCell>
+                                  <TableCell align="right">{moment(dpt.paymentDate).format("DD/MM/YYYY")}</TableCell>
+                                  <TableCell align="right">{FuseUtils.formatCurrency(dpt?.amountPaid || 0)}</TableCell>
+                                </TableRow>
+                              )}
+                              
+                              <TableRow className="h-48 bg-blue-lightest">
+                                <TableCell className="font-bold">Deficit</TableCell>
+                                <TableCell colSpan={2} align="right">{FuseUtils.formatCurrency(invoice?.amount_due || 0)}</TableCell>
+                              </TableRow>
+                            </TableBody>
+                          </Table>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={6}>
+                          <div className="flex flex-col space-y-1 text-red font-bold uppercase text-xs">
+                            <span>No cash payment accepted</span>
+                            <span>We never accept payment for our products & services via our employees personal account numbers. </span>
+                            <span>All payment must be made to Omega Funeral Home</span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                  </TableBody>
+                </Table>
+              </FuseScrollbars>
             </div>
           </div>
         </div>
       </FuseAnimate>
-
-      <FuseScrollbars className='flex-grow overflow-x-auto'>
-        <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <InvoiceTableHead
-            numSelected={selected.length}
-            order={order}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={data.length}
-          />
-
-          <TableBody>
-            {_.orderBy(
-              data,
-              [
-                (o) => {
-                  switch (order.id) {
-                    case 'categories': {
-                      return o.categories[0];
-                    }
-                    default: {
-                      return o[order.id];
-                    }
-                  }
-                },
-              ],
-              [order.direction]
-            )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
-                return (
-                  <TableRow
-                    className='h-64 cursor-pointer'
-                    hover
-                    role='checkbox'
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
-                    onClick={(event) => handleClick(n)}
-                  >
-                    <TableCell
-                      className='w-48 px-4 sm:px-12'
-                      padding='checkbox'
-                    >
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
-
-                    <TableCell component='th' scope='row'>
-                      {n.services}
-                    </TableCell>
-
-                    <TableCell className='truncate' component='th' scope='row'>
-                      {n.discount}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.days}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.rate}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.amount}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </FuseScrollbars>
-
-      <TablePagination
-        component='div'
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        backIconButtonProps={{
-          'aria-label': 'Previous Page',
-        }}
-        nextIconButtonProps={{
-          'aria-label': 'Next Page',
-        }}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
     </div>
   );
 }
 
-export default withRouter(InvoiceList);
+const mapStateToProps = ({invoicesApp, auth}) => {
+  const { invoices, services } = invoicesApp
+  return {
+    searchText: invoices.searchText,
+    invoice: invoices.invoice,
+    services: services.services.services,
+    user: auth.user.data,
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(InvoiceList));

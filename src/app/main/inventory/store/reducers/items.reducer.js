@@ -2,6 +2,7 @@ import * as Actions from '../actions';
 
 const initialState = {
   loading: false,
+  searchText: "",
   items: [],
   item: null,
   message: null,
@@ -46,6 +47,13 @@ const itemsReducer = function (state = initialState, action) {
         ...state,
         loading: false,
         message: action.payload,
+      };
+    }
+    case Actions.SET_SEARCH_TEXT: {
+      return {
+        ...state,
+        loading: false,
+        searchText: action.searchText,
       };
     }
     case Actions.OPEN_ITEM_DIALOG: {

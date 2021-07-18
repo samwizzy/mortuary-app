@@ -1,76 +1,161 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useDispatch } from "react-redux"
-import _ from 'lodash';
+import { connect, useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import qs from "qs"
+import _ from '@lodash';
 import moment from 'moment';
-import { FusePageCarded, FuseUtils } from '@fuse';
-import { Tab, Tabs } from '@material-ui/core';
+import { FusePageCarded, FuseUtils, FuseAnimate } from '@fuse';
+import { Typography } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
 import withReducer from 'app/store/withReducer';
 import reducer from '../store/reducers';
 import * as Actions from '../store/actions';
 import CreateCustomerHeader from './CreateCustomerHeader';
 import CustomerInfo from './tabs/CustomerInfo';
+import RelativesInfo from './tabs/RelativesInfo';
 import SelectServices from './tabs/SelectServices';
 import CustomerImages from './tabs/CustomerImages';
 import DeceasedImages from './tabs/DeceasedImages';
 import DeceasedInfo from './tabs/DeceasedInfo';
 
+const deceased = {
+  first_name: '',
+  last_name: '',
+  other_name: '',
+  gender: '',
+  age: '',
+  address: '',
+  place_of_death: '',
+  dateof_assertion: null,
+  time_of_death:  null,
+  cause_of_death: '',
+  how_was_death_assertained: "",
+  name_of_hospital: '',
+  medical_attendant_name: '',
+  hospital_address: '',
+  status: 'ADMIT',
+  deceased_image: '',
+  record_of_death_from_hospital: '',
+  supporting_document: '',
+};
+
+const defaultReturningform = {
+  service: [
+    { service_id: '', rate: '', qty: '', discount: null },
+  ],
+  relative: [],
+  deceased: { ...deceased },
+}
+
 function CreateCustomer(props) {
-  const { discounts } = props
+  const { services, branches } = props
   const [tabValue, setTabValue] = useState(0);
+  const [errors, setErrors] = useState({})
   const dispatch = useDispatch();
+  const location = useLocation();
+  const type = qs.parse(location.search, { ignoreQueryPrefix: true }).type
+  const customerId = qs.parse(location.search, { ignoreQueryPrefix: true }).customerId
+
   const { form, handleChange, setForm } = useForm({
     first_name: '',
     last_name: '',
     other_name: '',
     address: '',
     email: '',
+    branch_id: '',
     phone_number: '',
     relationship_with_deceased: '',
     customer_image: '',
     signature: '',
-    age: '',
     service: [
-      { service_id: '', rate: '', discount_type_id: '', discount_amount: '' },
+      { service_id: '', rate: '', qty: 1, discount: null },
     ],
-    relative: {
-      first_name: "",
-      last_name: "",
-      other_name: "",
-      address: "", 
-      email: "",
-      phone_number: "", 
-      age: "",
-      relationship_with_deceased: "" 
-    },
-    deceased: {
-      first_name: '',
-      last_name: '',
-      other_name: '',
-      gender: '',
-      age: '',
-      address: '',
-      place_of_death: '',
-      dateof_assertion: moment().format("YYYY-MM-DDTHH:mm:ss"),
-      time_of_Death: '',
-      cause_of_death: '',
-      how_was_death_assertained: "",
-      name_of_hospital: '',
-      medical_attendant_name: '',
-      hospital_address: '',
-      status: 'DEFAULT',
-      deceased_image: null,
-      record_of_death_from_hospital: '',
-      supporting_document: '',
-    },
+    relative: [],
+    deceased: { ...deceased },
   });
 
-  function handleChipChange(value, name) {
-    setForm(_.set({ ...form }, name, value.value));
+  const serviceIds = form.service.map(s => s.service_id);
+  const selectedServices = _.findByValues(services, "id", serviceIds)
+
+  const slides = ["Customer Info", "Select Services", "Customer Images", "Deceasesd Info", "Deceased Document", "Relatives info"];
+
+  const validate = () => {
+    let temp = { relative: [] }
+    temp.phone_number = FuseUtils.validatePhone(form.phone_number) ? "" : "Phone is not valid"
+    temp.email = FuseUtils.validateEmail(form.email) ? "" : "Email is not valid"
+    setErrors({ ...temp })
+    
+    return _.every(temp, _.isEmpty)
+  }
+
+  const validateField = (field) => (e) => {
+    let temp = { relative: [] }
+    if(_.get(form, field)){
+      if(field === "email") {
+        temp[field] = FuseUtils.validateEmail(form[field]) ? "" : "Email is not valid"
+      }
+      if(field === "phone_number"){
+        temp[field] = FuseUtils.validatePhone(form[field]) ? "" : "Phone is not valid"
+      }
+      if(field === "relative"){
+        form.relative.forEach((r, i) => {
+          if(!FuseUtils.validateEmail(r.email)){
+            temp.relative[i] = {...temp.relative[i], email: "Relative email is not valid" }
+          }
+          if(!FuseUtils.validatePhone(r.phone_number)){
+            temp.relative[i] = {...temp.relative[i], phone_number: "Relative phone number is not valid" }
+          }
+          if(FuseUtils.validateEmail(r.email) || FuseUtils.validatePhone(r.phone_number)){
+            temp.relative = temp.relative.filter((d, k) => d !== i)
+          }
+        })
+      }
+    }
+    setErrors((state) => ({...state, ...temp }))
+  }
+
+  console.log(errors, "errors validate")
+
+  useEffect(() => {
+    if(type === "returning"){
+      setTabValue(1)
+      setForm({...defaultReturningform})
+    }
+  }, [type, setForm])
+  
+  useEffect(() => {
+    if(_.some(selectedServices, {is_admisson: true})){
+      if(!form.deceased){
+        form.deceased = { ...deceased }
+        setForm(form)
+      }
+    }else{
+      form.deceased = null
+      setForm(form)
+    }
+  }, [form, setForm, selectedServices])
+
+  useEffect(() => {
+    dispatch(Actions.getServices())
+    dispatch(Actions.getDiscounts())
+  }, [dispatch]);
+
+  function handleChipChange(value, name, i) {
+    if(name === "discount"){
+      setForm(_.set({ ...form }, name, value));
+    }else{
+      setForm(_.set({ ...form }, name, value.value));
+    }
+  }
+
+  function handleSelectChange(value, name, i) {
+    const { service } = form
+    service[i][name] = value 
+    setForm({ ...form, service });
   }
 
   function addServiceRow() {
-    const newRole = { service_id: '', rate: '', discount_type_id: '', discount_amount: '' }
+    const newRole = { service_id: '', rate: '', qty: '', discount: null }
     setForm({...form, service: [ ...form.service, newRole ]});
   }
 
@@ -78,42 +163,77 @@ function CreateCustomer(props) {
     setForm({ ...form, service: form.service.filter((s, k) => k !== i)});
   }
 
+  function addRelativeRow() {
+    const newRole = { first_name: "", last_name: "", other_name: "", address: "", email: "", phone_number: "", age: "", relationship_with_deceased: ""}
+    setForm({...form, relative: [ ...form.relative, newRole ]});
+  }
+
+  const removeRelativeRow = (i) => () => {
+    setForm({ ...form, relative: form.relative.filter((s, k) => k !== i)});
+  }
+
   const handleImageUpload = (name, files) => {
     FuseUtils.toBase64(files[0]).then(data => {
-      // setForm({ ...form, [name]: data});
       setForm(_.set({ ...form }, name, data));
     })
+  }
+
+  const deleteImage = (name) => (e) => {
+    setForm(_.set({ ...form }, name, ""));
   }
 
   const handleMultiChange = i => event => {
     const { name, value } = event.target
     const { service } = form
-    if(name === "discount_type_id"){
-      const discount = discounts.find(d => d.id === value)
-      service[i][name] =  discount.id
-      service[i].discount_amount = discount.amount
+    if(name === "service_id"){
+      const serv = services.find(s => s.id === value)
+      service[i][name] = serv.id
+      service[i].rate = serv.amount || ""
+      if(_.find(services, {id: service[i].service_id})?.service_type === "2"){
+        service[i].qty = 1;
+      }
     }else{
       service[i][name] = value
     }
     setForm({ ...form, service });
   }
 
-  useEffect(() => {
-    dispatch(Actions.getServices())
-    dispatch(Actions.getDiscounts())
-    // setForm();
-  }, [setForm, dispatch]);
+  const handleRowChange = i => event => {
+    const { name, value } = event.target
+    const { relative } = form
+    relative[i][name] = value
+    setForm({ ...form, relative });
+  }
 
   const handleDateChange = (name) => (date) => {
-    setForm(_.set({ ...form }, name, moment(date).format("YYYY-MM-DDTHH:mm:ss")));
+    setForm(_.set({ ...form }, name, moment(date).format("YYYY-MM-DD")));
   };
 
-  function handleChangeTab(event, tabValue) {
-    setTabValue(tabValue);
+  const handleTimeChange = (name) => (date) => {
+    setForm(_.set({ ...form }, name, moment(date).format("YYYY HH:mm:ss")));
+  };
+
+  const handleNext = () => {
+    if(tabValue < 5 && tabValue >= 0) 
+      setTabValue(state => state + 1)
+  }
+
+  const handlePrev = () => {
+    if(tabValue <= 5 && tabValue > 0) 
+      setTabValue(state => state - 1)
+  }
+
+  const handleSubmit = () => {
+    if(type === "returning" && customerId){
+      dispatch(Actions.createReturningCustomer(form, customerId))
+    }else{
+      if(validate()){
+        dispatch(Actions.createCustomer(form))
+      }
+    }
   }
 
   console.log(form, "form create customer")
-  console.log(discounts, "discounts")
 
   return (
     <FusePageCarded
@@ -121,32 +241,30 @@ function CreateCustomer(props) {
         content: 'flex',
         header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
       }}
-      header={<CreateCustomerHeader form={form} />}
+      header={<CreateCustomerHeader form={form} handleSubmit={handleSubmit} />}
       contentToolbar={
-        <Tabs
-          value={tabValue}
-          onChange={handleChangeTab}
-          indicatorColor='secondary'
-          textColor='secondary'
-          variant='scrollable'
-          scrollButtons='auto'
-          classes={{ root: 'w-full h-64' }}
-        >
-          <Tab className='h-64 normal-case' label='Customer Info' />
-          <Tab className='h-64 normal-case' label='Select Services' />
-          <Tab className='h-64 normal-case' label='Images & Signature' />
-          <Tab className='h-64 normal-case' label='Deceased Info' />
-          <Tab className='h-64 normal-case' label='Deceased Documents' />
-        </Tabs>
+        <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-20 px-24'>
+          <FuseAnimate animation='transition.slideRightIn' delay={300}>
+           <Typography variant="subtitle1" className="font-600">{slides[tabValue]}</Typography>
+          </FuseAnimate>
+        </div>
       }
       content={
-        <div className='p-16 sm:p-24 w-full'>
-          {' '}
+        <form onSubmit={handleSubmit} className='p-16 sm:p-24 w-full'>
           {/* max-w-2xl */}
           {tabValue === 0 && (
             <CustomerInfo
               form={form}
+              errors={errors}
+              validate={validate}
+              handleNext={handleNext}
+              handlePrev={handlePrev}
+              tabValue={tabValue}
+              validateField={validateField}
+              type={type}
+              branches={branches}
               handleChange={handleChange}
+              handleRowChange={handleRowChange}
               handleChipChange={handleChipChange}
             />
           )}
@@ -154,34 +272,75 @@ function CreateCustomer(props) {
             <SelectServices
               form={form}
               handleChange={handleChange}
+              handleNext={handleNext}
+              handlePrev={handlePrev}
+              tabValue={tabValue}
               handleMultiChange={handleMultiChange}
+              handleSelectChange={handleSelectChange}
               addServiceRow={addServiceRow}
               removeServiceRow={removeServiceRow}
             />
           )}
           {tabValue === 2 && (
-            <CustomerImages form={form} handleImageUpload={handleImageUpload} />
+            <CustomerImages 
+              form={form} 
+              deleteImage={deleteImage}
+              handleImageUpload={handleImageUpload} 
+              type={type} 
+              handleNext={handleNext}
+              handlePrev={handlePrev}
+              tabValue={tabValue}
+            />
           )}
           {tabValue === 3 && (
             <DeceasedInfo
               form={form}
+              type={type}
+              handleNext={handleNext}
+              handlePrev={handlePrev}
+              tabValue={tabValue}
               handleChange={handleChange}
               handleDateChange={handleDateChange}
+              handleTimeChange={handleTimeChange}
             />
           )}
           {tabValue === 4 && (
-            <DeceasedImages form={form} handleImageUpload={handleImageUpload} />
+            <DeceasedImages 
+              form={form} 
+              deleteImage={deleteImage}
+              handleImageUpload={handleImageUpload} 
+              type={type} 
+              handleNext={handleNext}
+              handlePrev={handlePrev}
+              tabValue={tabValue}
+            />
           )}
-        </div>
+          {tabValue === 5 && (
+            <RelativesInfo 
+              form={form} 
+              errors={errors}
+              validate={validate}
+              validateField={validateField}
+              handleNext={handleNext}
+              handlePrev={handlePrev}
+              tabValue={tabValue}
+              handleRowChange={handleRowChange} 
+              addRelativeRow={addRelativeRow}
+              removeRelativeRow={removeRelativeRow}
+            />
+          )}
+        </form>
       }
       innerScroll
     />
   );
 }
 
-const mapStateToProps = ({customerApp}) => {
+const mapStateToProps = ({customerApp, ezone}) => {
   return {
-    discounts: customerApp.discounts.discounts
+    discounts: customerApp.discounts.discounts,
+    services: customerApp.services.services.services,
+    branches: ezone.branches.branches
   }
 }
 

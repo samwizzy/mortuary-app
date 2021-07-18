@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from "react-redux"
+import moment from "moment";
 import {
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -7,51 +10,32 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
-import { FuseScrollbars } from '@fuse';
+import { FuseScrollbars, FuseUtils } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import InvoicesTableHead from './InvoicesTableHead';
-// import * as Actions from '../store/actions';
-import { useDispatch } from 'react-redux';
+import TableRowSkeleton from './TableRowSkeleton';
+import * as Actions from '../store/actions';
 
 function InvoicesList(props) {
   const dispatch = useDispatch();
-  const invoices = [
-    {
-      id: '5725a680b3249760ea21de52',
-      noOfItems: 8,
-      billTo: 'Thompson',
-      invoiceDate: '2021-04-22',
-      totalAmount: 500000,
-      amountDue: 500000,
-    },
-    {
-      id: '5725a680606588342058356d',
-      noOfItems: 8,
-      billTo: 'Thompson',
-      invoiceDate: '2021-04-22',
-      totalAmount: 500000,
-      amountDue: 500000,
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      noOfItems: 8,
-      billTo: 'Thompson',
-      invoiceDate: '2021-04-22',
-      totalAmount: 500000,
-      amountDue: 500000,
-    },
-  ];
+  const invoicesReducer = useSelector(({invoicesApp}) => invoicesApp.invoices);
+  const invoiceData = invoicesReducer.invoices
+  const invoices = invoiceData.invoices
+  const totalItems = invoiceData.totalItems
+  const currentPage = invoiceData.currentPage
+
   const searchText = '';
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(invoices);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
+  console.log(invoices, "invoices")
+
   useEffect(() => {
-    // dispatch(Actions.getProducts());
+    dispatch(Actions.getInvoices());
   }, [dispatch]);
 
   useEffect(() => {
@@ -59,7 +43,7 @@ function InvoicesList(props) {
       searchText.length === 0
         ? invoices
         : _.filter(invoices, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.invoice_number.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [invoices, searchText]);
@@ -84,7 +68,12 @@ function InvoicesList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/invoices/' + item.id + '/' + item.handle);
+    props.history.push('/invoices/' + item.id);
+  }
+
+  function handleRoute(e, customer) {
+    e.stopPropagation()
+    props.history.push('/customers/' + customer.id);
   }
 
   function handleCheck(event, id) {
@@ -108,11 +97,12 @@ function InvoicesList(props) {
   }
 
   function handleChangePage(event, page) {
-    setPage(page);
+    dispatch(Actions.getInvoices(page))
   }
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getInvoices(0, event.target.value))
   }
 
   return (
@@ -144,7 +134,6 @@ function InvoicesList(props) {
               ],
               [order.direction]
             )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
@@ -170,40 +159,49 @@ function InvoicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.id}
+                      {n.invoice_number}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.noOfItems}
+                      {n.service?.length}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.invoiceDate}
+                      {moment(n.invoice_date).format("Do MMMM, YYYY")}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.billTo}
+                      <Link onClick={(e) => handleRoute(e, n.customer)}>{n.customer?.email}</Link>
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.totalAmount}
+                      {n.status}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.amountDue}
+                    <TableCell component='th' scope='row' align='left'>
+                      {FuseUtils.formatCurrency(n.total_amount)}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {FuseUtils.formatCurrency(n.amount_due)}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+              {data.length === 0 && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
           </TableBody>
         </Table>
       </FuseScrollbars>
 
       <TablePagination
         component='div'
-        count={data.length}
+        count={totalItems}
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={currentPage}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}

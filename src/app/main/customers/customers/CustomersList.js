@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from "react-redux"
+import { connect, useSelector } from "react-redux"
 import {
   Table,
   TableBody,
@@ -12,24 +12,26 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import CustomersTableHead from './CustomersTableHead';
-// import * as Actions from '../store/actions';
+import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
+import TableRowSkeleton from './TableRowSkeleton';
 
 function CustomersList(props) {
+  const { searchText } = props
   const dispatch = useDispatch();
   const customerReducer = useSelector(({customerApp}) => customerApp.customer);
-  const customers = customerReducer.customers
+  const customersData = customerReducer.customers
+  const customers = customersData.customers
+  const count = customersData.count
+  const currentPage = customersData.currentPage
   console.log(customers, "customers")
-  const searchText = '';
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(customers);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
   }, [dispatch]);
 
   useEffect(() => {
@@ -37,7 +39,9 @@ function CustomersList(props) {
       searchText.length === 0
         ? customers
         : _.filter(customers, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.other_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.email.toLowerCase().includes(searchText.toLowerCase()) 
           )
     );
   }, [customers, searchText]);
@@ -86,11 +90,12 @@ function CustomersList(props) {
   }
 
   function handleChangePage(event, page) {
-    setPage(page);
+    dispatch(Actions.getCustomers(page))
   }
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getCustomers(0, event.target.value))
   }
 
   return (
@@ -122,7 +127,6 @@ function CustomersList(props) {
               ],
               [order.direction]
             )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
@@ -156,28 +160,36 @@ function CustomersList(props) {
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.id}
+                      {n.customer_number}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
                       {n.email}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
+                    <TableCell component='th' scope='row' align='left'>
                       {n.phone_number}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+            {data.length === 0 && 
+              _.range(6).map(k => 
+                <TableRowSkeleton key={k} />
+            )}
           </TableBody>
         </Table>
+
+        
       </FuseScrollbars>
 
       <TablePagination
         component='div'
-        count={data.length}
+        count={count}
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={currentPage}
+        rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -191,4 +203,11 @@ function CustomersList(props) {
   );
 }
 
-export default withRouter(CustomersList);
+const mapStateToProps = ({customerApp}) => {
+  const { customer } = customerApp
+  return {
+    searchText: customer.searchText
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(CustomersList));

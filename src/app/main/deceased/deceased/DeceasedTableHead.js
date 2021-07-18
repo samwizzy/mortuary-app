@@ -26,10 +26,10 @@ const rows = [
     sort: true,
   },
   {
-    id: 'id',
+    id: 'gender',
     align: 'left',
     disablePadding: false,
-    label: 'Reference ID',
+    label: 'Gender',
     sort: true,
   },
   {
@@ -55,7 +55,7 @@ const rows = [
   },
   {
     id: 'status',
-    align: 'right',
+    align: 'left',
     disablePadding: false,
     label: 'Status',
     sort: true,

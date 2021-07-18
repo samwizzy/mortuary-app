@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-// import withReducer from 'app/store/withReducer';
+import withReducer from 'app/store/withReducer';
+import reducers from "./store/reducers"
 import { FusePageCarded } from '@fuse';
+import ReceiptsHeader from './receipts/ReceiptsHeader';
 import ReceiptHeader from './receipt/ReceiptHeader';
 import ReceiptsList from './receipts/ReceiptsList';
 import ReceiptList from './receipt/ReceiptList';
@@ -21,12 +23,14 @@ class ReceiptApp extends Component {
           content: 'flex',
           header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
         }}
-        header={<ReceiptHeader />}
+        header={
+          this.props.match.params.id ? <ReceiptHeader /> : <ReceiptsHeader />
+        }
         contentToolbar={
-          this.props.match.params.id ? <ReceiptToolbar /> : <ReceiptToolbar />
+          this.props.match.params.id ? <ReceiptToolbar /> : null
         }
         content={
-          <div className='w-full p-24'>
+          <div className='w-full'>
             {this.props.match.params.id ? <ReceiptList /> : <ReceiptsList />}
           </div>
         }
@@ -36,4 +40,4 @@ class ReceiptApp extends Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(ReceiptApp);
+export default withReducer("receiptsApp", reducers)(withStyles(styles, { withTheme: true })(ReceiptApp));

@@ -9,7 +9,8 @@ function InvoiceUploadImage(props) {
         className='hidden'
         id='button-file'
         type='file'
-        onChange={props.onChange}
+        name="file"
+        onChange={props.handleImageUpload}
       />
       <label htmlFor='button-file'>
         <Button className='' component='span' variant='outlined'>

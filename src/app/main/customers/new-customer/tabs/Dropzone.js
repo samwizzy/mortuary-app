@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Icon } from "@material-ui/core"
+import { Icon, IconButton } from "@material-ui/core"
 import _ from "lodash"
 
 const baseStyle = {
@@ -32,7 +32,7 @@ const rejectStyle = {
 };
 
 function ImageDropzone(props) {
-  const { name, title, icon, form, handleImageUpload } = props;
+  const { name, title, icon, form, format, disabled, deleteImage, handleImageUpload } = props;
   const {
     getRootProps,
     getInputProps,
@@ -40,8 +40,9 @@ function ImageDropzone(props) {
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    accept: 'image/jpeg, image/png',
+    accept: format === 'image'? 'image/jpeg, image/png' : '.pdf, .doc, image/jpeg, image/png',
     multiple: false,
+    disabled: !disabled,
     onDrop: (acceptedFiles) => {
       const files = acceptedFiles.map((file) =>
         Object.assign(file, {
@@ -56,7 +57,7 @@ function ImageDropzone(props) {
     _.get(form, name) && (
       <li className="flex items-center space-x-2">
         <img src={`data:image/jpg;base64,${_.get(form, name)}`} alt='' className='h-40' />
-        <Icon>close</Icon>
+        <IconButton onClick={deleteImage(name)}><Icon>close</Icon></IconButton>
       </li>
     )
 
@@ -66,12 +67,13 @@ function ImageDropzone(props) {
       ...(isDragActive ? activeStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
+      borderColor: !disabled ? '#eee' : '#9ac876',
     }),
-    [isDragActive, isDragReject, isDragAccept]
+    [isDragActive, isDragReject, isDragAccept, disabled]
   );
 
   return (
-    <div className='flex flex-col space-y-4'>
+    <div className='flex flex-col'>
       <section className='container'>
         <div {...getRootProps({ style })} className='space-y-2'>
           <input {...getInputProps()} />
@@ -79,7 +81,7 @@ function ImageDropzone(props) {
           <p>
             <span className='text-green'>Click here or Drop</span> Your {_.startCase(title)}
           </p>
-          <span className='text-xs text-gray-600'>JPG Format Only</span>
+          <span className='text-xs text-gray-600'>{format.split(",").join(" and ")} format only</span>
         </div>
 
         <aside>

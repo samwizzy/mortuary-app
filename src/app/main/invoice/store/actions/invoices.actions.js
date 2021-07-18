@@ -1,14 +1,25 @@
 import axios from 'axios';
+import * as Actions from "./"
+import { showMessage } from '../../../../../app/store/actions/fuse';
+import history from "../../../../../@history"
 
 export const GET_INVOICES = '[INVOICES APP] GET INVOICES';
+export const GET_INVOICE_BY_ID = '[INVOICES APP] GET INVOICE BY ID';
 export const SET_SEARCH_TEXT = '[INVOICES APP] SET SEARCH TEXT';
+export const SEND_INVOICE = '[INVOICES APP] SEND INVOICE';
+
+export const INITIALIZE_INVOICE_PAYMENT = '[INVOICES APP] INITIALIZE INVOICE PAYMENT';
+export const RECORD_INVOICE_PAYMENT = '[INVOICES APP] RECORD INVOICE PAYMENT';
 
 export const SELECT_ALL_INVOICES = '[INVOICES APP] SELECT ALL INVOICES';
 export const DESELECT_ALL_INVOICES = '[INVOICES APP] DESELECT ALL INVOICES';
-export const OPEN_NEW_INVOICE_DIALOG = '[INVOICES APP] OPEN NEW INVOICE DIALOG';
-export const CLOSE_NEW_INVOICE_DIALOG = '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
+export const OPEN_INVOICE_PAYMENT_DIALOG = '[INVOICES APP] OPEN NEW INVOICE DIALOG';
+export const CLOSE_INVOICE_PAYMENT_DIALOG = '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
 export const OPEN_EDIT_INVOICE_DIALOG = '[INVOICES APP] OPEN EDIT INVOICE DIALOG';
 export const CLOSE_EDIT_INVOICE_DIALOG = '[INVOICES APP] CLOSE EDIT INVOICE DIALOG';
+
+export const OPEN_SEND_INVOICE_DIALOG = '[INVOICES APP] OPEN SEND INVOICE DIALOG';
+export const CLOSE_SEND_INVOICE_DIALOG = '[INVOICES APP] CLOSE SEND INVOICE DIALOG';
 
 export const OPEN_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] OPEN NEW RECORD PAYMENT DIALOG';
 export const CLOSE_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] CLOSE NEW RECORD PAYMENT DIALOG';
@@ -20,17 +31,117 @@ export const REMOVE_INVOICE = '[INVOICES APP] REMOVE INVOICE';
 export const REMOVE_INVOICES = '[INVOICES APP] REMOVE INVOICES';
 export const GET_PAYMENT_ADVICE = '[INVOICES APP] GET PAYMENT ADVICE';
 
-export function getInvoices(routeParams) {
-  const request = axios.get('/api/invoices', {
-    params: routeParams,
-  });
+export function addInvoice(data) {
+  const { customer_id: id } = data
+  const request = axios.post(`/api/v1/invoices/customer_id/${id}/add_invoice`, data);
+  console.log(request, 'creating Invoice request');
+
+  return (dispatch) => {
+    request.then((response) => {
+      dispatch(showMessage({ message: 'Invoice created successfully' }));
+
+      Promise.all([
+        dispatch({
+          type: ADD_INVOICE,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.getInvoices());
+        history.push("/invoices")
+      });
+    })
+    .catch(err => {
+      dispatch(showMessage({ message: 'Invoice creation failed' }));
+    });
+  };
+}
+
+export function sendInvoice(data, id) {
+  const request = axios.post(`/api/v1/invoices/customer_id/${id}/send_invoice`, data);
+  console.log(request, 'sending Invoice request');
+
+  return (dispatch) => {
+    request.then((response) => {
+      dispatch(showMessage({ message: 'Invoice sent successfully' }));
+
+      Promise.all([
+        dispatch({
+          type: SEND_INVOICE,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.getInvoices());
+        history.push("/invoices")
+      });
+    });
+  };
+}
+
+export function initializeInvoicePayment(id) {
+  const request = axios.get(`/api/v1/payments/invoice_id/${id}/init_payment`);
+
+  return (dispatch) => {
+    request.then((response) => {
+      Promise.all([
+        dispatch({
+          type: INITIALIZE_INVOICE_PAYMENT,
+          payload: response.data.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.openNewRecordPaymentDialog(response.data.data));
+      });
+    });
+  };
+}
+
+export function recordInvoicePayment(data, id) {
+  const request = axios.post(`/api/v1/payments/invoice_id/${id}/pay`, data);
+  console.log(request, 'record Invoice payment request');
+
+  return (dispatch) => {
+    request.then((response) => {
+      dispatch(showMessage({ message: 'Payment recorded successfully' }));
+
+      Promise.all([
+        dispatch({
+          type: RECORD_INVOICE_PAYMENT,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.closeNewRecordPaymentDialog());
+        history.push(`/invoices/${id}`)
+        window.location.reload()
+      });
+    })
+    .catch(err => {
+      console.log(err.response, "err response")
+      if(err.response && err.response.data){
+        dispatch(showMessage({ message: err.response.data.message }));
+      }
+    });
+  };
+}
+
+export function getInvoices(page=0, size=10) {
+  const request = axios.get('/api/v1/invoices', { params: { page, size } });
 
   return (dispatch) =>
     request.then((response) =>
       dispatch({
         type: GET_INVOICES,
-        payload: response.data,
-        routeParams,
+        payload: response.data.data
+      })
+    );
+}
+
+export function getInvoiceById(id) {
+  const request = axios.get('/api/v1/invoices/' + id);
+
+  return (dispatch) =>
+    request.then((response) =>
+      dispatch({
+        type: GET_INVOICE_BY_ID,
+        payload: response.data.data
       })
     );
 }
@@ -43,7 +154,6 @@ export function getPaymentAdvice(id) {
       dispatch({
         type: GET_PAYMENT_ADVICE,
         payload: response.data,
-        routeParams: { id },
       })
     );
 }
@@ -55,27 +165,35 @@ export function setSearchText(event) {
   };
 }
 
-export function selectAllInvoices() {
-  return {
-    type: SELECT_ALL_INVOICES,
-  };
-}
-
 export function deSelectAllInvoices() {
   return {
     type: DESELECT_ALL_INVOICES,
   };
 }
 
-export function openNewInvoiceDialog() {
+export function openInvoicePaymentDialog(payload) {
   return {
-    type: OPEN_NEW_INVOICE_DIALOG,
+    type: OPEN_INVOICE_PAYMENT_DIALOG,
+    payload
   };
 }
 
-export function closeNewInvoiceDialog() {
+export function closeInvoicePaymentDialog() {
   return {
-    type: CLOSE_NEW_INVOICE_DIALOG,
+    type: CLOSE_INVOICE_PAYMENT_DIALOG,
+  };
+}
+
+export function openSendInvoiceDialog(payload) {
+  return {
+    type: OPEN_SEND_INVOICE_DIALOG,
+    payload
+  };
+}
+
+export function closeSendInvoiceDialog() {
+  return {
+    type: CLOSE_SEND_INVOICE_DIALOG,
   };
 }
 
@@ -92,33 +210,16 @@ export function closeEditInvoiceDialog() {
   };
 }
 
-export function openNewRecordPaymentDialog() {
+export function openNewRecordPaymentDialog(payload) {
   return {
     type: OPEN_NEW_RECORD_PAYMENT_DIALOG,
+    payload
   };
 }
 
 export function closeNewRecordPaymentDialog() {
   return {
     type: CLOSE_NEW_RECORD_PAYMENT_DIALOG,
-  };
-}
-
-export function addInvoice(newInvoice) {
-  return (dispatch, getState) => {
-    const { routeParams } = getState().invoiceApp.invoices;
-
-    const request = axios.post('/api/add-invoice', {
-      newInvoice,
-    });
-
-    return request.then((response) =>
-      Promise.all([
-        dispatch({
-          type: ADD_INVOICE,
-        }),
-      ]).then(() => dispatch(getInvoices(routeParams)))
-    );
   };
 }
 

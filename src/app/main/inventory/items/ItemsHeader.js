@@ -67,7 +67,7 @@ function ItemsHeader(props) {
             className='whitespace-no-wrap'
             variant='contained'
           >
-            <span className='hidden sm:flex'>Add New Item</span>
+            <span className='hidden sm:flex'>Add Item</span>
             <span className='flex sm:hidden'>Update</span>
           </Button>
         }

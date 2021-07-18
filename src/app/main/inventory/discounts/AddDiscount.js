@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import _ from "lodash";
-import { FusePageSimple, FuseScrollbars, FuseChipSelect } from '@fuse';
+import { FusePageSimple, FuseScrollbars } from '@fuse';
 import { withStyles } from '@material-ui/core/styles';
 import withReducer from 'app/store/withReducer';
 import reducer from '../store/reducers';
@@ -13,10 +12,10 @@ const styles = (theme) => ({
   layoutRoot: {},
 });
 
-const discounts = ["FIXED", "RECURRENT"].map(type => ({
-  label: _.startCase(type),
-  value: type,
-}));
+// const discounts = ["FIXED", "RECURRENT"].map(type => ({
+//   label: _.startCase(type),
+//   value: type,
+// }));
 
 function AddDiscounts(props) {
   const { classes, createDiscount } = props;
@@ -24,7 +23,7 @@ function AddDiscounts(props) {
   const [form, setForm] = useState({
     amount: "",
     discount_name: "",
-    discount_type: "FIXED",
+    // discount_type: "FIXED",
     created_by: "Optisoft",
     org_key: "ORG-1593451692921"
   });
@@ -37,9 +36,9 @@ function AddDiscounts(props) {
     createDiscount(form);
   };
 
-  const handleChipChange = (value, name) => {
-    setForm({...form, [name]: value.value})
-  };
+  // const handleChipChange = (value, name) => {
+  //   setForm({...form, [name]: value.value})
+  // };
 
   console.log(form, "form")
 
@@ -70,7 +69,7 @@ function AddDiscounts(props) {
                 fullWidth
               />
 
-              <FuseChipSelect
+              {/* <FuseChipSelect
                 className='mt-8 mb-24'
                 value={discounts.find(type => type.value === form.discount_type)}
                 onChange={(value) => handleChipChange(value, 'discount_type')}
@@ -83,7 +82,7 @@ function AddDiscounts(props) {
                   variant: 'outlined',
                 }}
                 options={discounts}
-              />
+              /> */}
 
               <TextField
                 className='mt-8 mb-16'

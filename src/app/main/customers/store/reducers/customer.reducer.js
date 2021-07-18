@@ -2,9 +2,19 @@ import * as Actions from '../actions';
 
 const initialState = {
   loading: false,
-  customers: [],
+  searchText: "",
+  customers: {
+    count: 0,
+    customers: [],
+    totalPages: 0,
+    currentPage: 0
+  },
   customer: null,
   message: null,
+  customerDialog: {
+    props: { open: false },
+    data: null
+  }
 };
 
 const customerReducer = function (state = initialState, action) {
@@ -13,6 +23,25 @@ const customerReducer = function (state = initialState, action) {
       return {
         ...state,
         customers: action.payload,
+      };
+    }
+    case Actions.CREATE_RETURNING_CUSTOMER: {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
+      };
+    }
+    case Actions.CREATE_CUSTOMER_PROGRESS: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case Actions.CREATE_CUSTOMER_ERROR: {
+      return {
+        ...state,
+        loading: false,
       };
     }
     case Actions.GET_CUSTOMER_BY_ID: {
@@ -34,6 +63,37 @@ const customerReducer = function (state = initialState, action) {
         ...state,
         loading: false,
         message: action.payload,
+      };
+    }
+    case Actions.UPDATE_CUSTOMER_ERROR: {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
+      };
+    }
+    case Actions.SET_SEARCH_TEXT: {
+      return {
+        ...state,
+        searchText: action.searchText,
+      };
+    }
+    case Actions.OPEN_EDIT_CUSTOMER_DIALOG: {
+      return {
+        ...state,
+        customerDialog: {
+          props: { open: true },
+          data: action.payload
+        },
+      };
+    }
+    case Actions.CLOSE_EDIT_CUSTOMER_DIALOG: {
+      return {
+        ...state,
+        customerDialog: {
+          props: { open: false },
+          data: null
+        }
       };
     }
     default: {

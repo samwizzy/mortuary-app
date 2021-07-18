@@ -4,34 +4,44 @@ import * as Actions from './';
 import history from "../../../../../@history"
 
 export const CREATE_DISCOUNT = '[INVENTORY APP] CREATE DISCOUNT';
+export const CREATE_DISCOUNT_PROGRESS = '[INVENTORY APP] CREATE DISCOUNT PROGRESS';
+export const CREATE_DISCOUNT_ERROR = '[INVENTORY APP] CREATE DISCOUNT ERROR';
+
 export const UPDATE_DISCOUNT = '[INVENTORY APP] UPDATE DISCOUNT';
 export const DELETE_DISCOUNT = '[INVENTORY APP] DELETE DISCOUNT';
 export const GET_DISCOUNTS = '[INVENTORY APP] GET DISCOUNTS';
 export const GET_DISCOUNT_BY_ID = '[INVENTORY APP] GET DISCOUNT BY ID';
 
-export const OPEN_DISCOUNT_DIALOG = '[INVENTORY APP] OPEN_DISCOUNT_DIALOG';
-export const CLOSE_DISCOUNT_DIALOG = '[INVENTORY APP] CLOSE_DISCOUNT_DIALOG';
+export const OPEN_DISCOUNT_DIALOG = '[INVENTORY APP] OPEN DISCOUNT DIALOG';
+export const CLOSE_DISCOUNT_DIALOG = '[INVENTORY APP] CLOSE DISCOUNT DIALOG';
+
+export const OPEN_EDIT_DISCOUNT_DIALOG = '[INVENTORY APP] OPEN EDIT DISCOUNT DIALOG';
+export const CLOSE_EDIT_DISCOUNT_DIALOG = '[INVENTORY APP] CLOSE EDIT DISCOUNT DIALOG';
+
+export const SET_SEARCH_TEXT = '[INVENTORY DISCOUNT APP] SET SEARCH TEXT';
 
 export function createDiscount(data) {
   const request = axios.post('/api/v1/discounts', data);
-  console.log(request, 'creating discount request');
 
   return (dispatch) => {
+    dispatch({ type: CREATE_DISCOUNT_PROGRESS })
     request.then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: 'Discount created successfully' }));
+      dispatch(showMessage({ message: 'Discount created successfully' }));
 
-        Promise.all([
-          dispatch({
-            type: CREATE_DISCOUNT,
-            payload: response.data,
-          }),
-        ]).then(() => {
-          dispatch(Actions.getDiscounts());
-          history.push("/inventory/discounts");
-        });
-      } else {
+      Promise.all([
+        dispatch({
+          type: CREATE_DISCOUNT,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.getDiscounts());
+        history.push("/inventory/discounts");
+      });  
+    })
+    .catch(err => {
+      if(err.response && err.response.data){
         dispatch(showMessage({ message: 'Discount creation failed' }));
+        dispatch({ type: CREATE_DISCOUNT_ERROR })
       }
     });
   };
@@ -42,7 +52,6 @@ export function getDiscounts() {
 
   return (dispatch) =>
     request.then((response) => {
-      console.log(response, "response")
       dispatch({
         type: GET_DISCOUNTS,
         payload: response.data.data,
@@ -123,4 +132,24 @@ export function closeDiscountDialog() {
   return {
     type: CLOSE_DISCOUNT_DIALOG,
   }
+}
+
+export function openEditDiscountDialog(payload) {
+  return {
+    type: OPEN_EDIT_DISCOUNT_DIALOG,
+    payload
+  }
+}
+
+export function closeEditDiscountDialog() {
+  return {
+    type: CLOSE_EDIT_DISCOUNT_DIALOG,
+  }
+}
+
+export function setSearchText(event) {
+  return {
+    type: SET_SEARCH_TEXT,
+    searchText: event.target.value,
+  };
 }

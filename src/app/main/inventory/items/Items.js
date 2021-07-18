@@ -40,7 +40,7 @@ function Items(props) {
         }}
         header={<ItemsHeader />}
         contentToolbar={
-          props.match.params.id ? <ItemsToolbar /> : <ItemsToolbar />
+          props.match.params.id ? <ItemsToolbar /> : null
         }
         content={
           <div className='p-24'>

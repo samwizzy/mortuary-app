@@ -1,17 +1,18 @@
 import React, { useEffect, useCallback } from 'react';
+import _ from "lodash";
 import {
   TextField,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
+  MenuItem,
   Typography,
   Toolbar,
   AppBar,
+  CircularProgress,
 } from '@material-ui/core';
-import { FuseChipSelect } from '@fuse';
 import { useForm } from '@fuse/hooks';
-import FuseUtils from '@fuse/FuseUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
 
@@ -19,19 +20,12 @@ const defaultFormState = {
   id: '',
   amount: "",
   discount_name: "",
-  discount_type: "DEFAULT",
 };
-
-const discounts = ["DEFAULT"].map(type => ({
-  label: type.toLowerCase(),
-  value: type,
-}));
 
 function DiscountDialog(props) {
   const dispatch = useDispatch();
-  const discountDialog = useSelector(
-    ({ inventoryApp }) => inventoryApp.discounts.discountDialog
-  );
+  const discountDialog = useSelector(({ inventoryApp }) => inventoryApp.discounts.discountDialog);
+  const loading = useSelector(({ inventoryApp }) => inventoryApp.discounts.loading);
 
   const { form, handleChange, setForm } = useForm(defaultFormState);
 
@@ -48,9 +42,8 @@ function DiscountDialog(props) {
      */
     if (discountDialog.type === 'new') {
       setForm({
-        ...defaultFormState,
+        ..._.omit(defaultFormState, ["id"]),
         ...discountDialog.data,
-        id: FuseUtils.generateGUID(),
       });
     }
   }, [discountDialog.data, discountDialog.type, setForm]);
@@ -66,12 +59,15 @@ function DiscountDialog(props) {
 
   function closeComposeDialog() {
     discountDialog.type === 'edit'
-      ? dispatch(Actions.closeServiceDialog())
-      : dispatch(Actions.closeServiceDialog());
+      ? dispatch(Actions.closeEditDiscountDialog())
+      : dispatch(Actions.closeDiscountDialog());
   }
 
   function canBeSubmitted() {
-    return form.discount_name.length > 0;
+    return (
+      form.discount_name.length > 0 &&
+      form.amount
+    )
   }
 
   function onSubmit(event) {
@@ -98,9 +94,9 @@ function DiscountDialog(props) {
       maxWidth='xs'
     >
       <AppBar position='static' elevation={1}>
-        <Toolbar className='flex w-full'>
+        <Toolbar className='flex'>
           <Typography variant='subtitle1' color='inherit'>
-            {discountDialog.type === 'edit' ? 'Update Discount' : ''}
+            {discountDialog.type === 'edit' ? 'Update Discount' : 'New Discount'}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -110,13 +106,9 @@ function DiscountDialog(props) {
         className='flex flex-col overflow-hidden'
       >
         <DialogContent classes={{ root: 'p-24' }}>
-          <div className='flex flex-col space-y-2'>
-            <div className='min-w-48 pt-20'>
-              <Typography>Discount name</Typography>
-            </div>
-
+          <div className='flex flex-col'>
             <TextField
-              className='mb-24'
+              className='mb-24 mt-16'
               label='Discount name'
               autoFocus
               id='discount_name'
@@ -129,55 +121,52 @@ function DiscountDialog(props) {
             />
           </div>
 
-          <div className='flex flex-col space-y-2'>
-            <div className='min-w-48 pt-20'>
-              <Typography>Discount type</Typography>
-            </div>
-            <FuseChipSelect
-              className='mt-8 mb-24'
-              value={discounts.find(type => type.value === form.discount_type)}
-              onChange={(value) => handleChipChange(value, 'discount_type')}
-              placeholder='Select discount type'
-              textFieldProps={{
-                label: 'Discount Type',
-                InputLabelProps: {
-                  shrink: true,
-                },
-                variant: 'outlined',
-              }}
-              options={discounts}
-            />
-          </div>
-
-          <div className='flex flex-col space-y-2'>
-            <div className='min-w-48 pt-20'>
-              <Typography>Amount</Typography>
-            </div>
+          <div className='flex flex-col'>
             <TextField
-              className='mb-24'
+              className='mb-8'
+              select
               label='Amount'
               id='amount'
               name='amount'
               value={form.amount}
               onChange={handleChange}
               variant='outlined'
+              InputProps={{
+                endAdornment: (<Typography className="pr-16">%</Typography>)
+              }}
               fullWidth
-            />
+            >
+              {_.range(5, 100, 5).map(r => 
+                <MenuItem key={r} value={r}>{r}</MenuItem>
+              )}
+            </TextField>  
           </div>
         </DialogContent>
-
-        {discountDialog.type === 'edit' ? (
-          <DialogActions className='justify-between pl-16'>
+        
+        <DialogActions className='justify-end pr-24 pb-16'>
+          {discountDialog.type === 'edit' ? 
+          (
             <Button
               variant='contained'
               color='primary'
               type='submit'
               disabled={!canBeSubmitted()}
+              endIcon={loading && <CircularProgress size={16} />}
             >
               Update
             </Button>
-          </DialogActions>
-        ) : ( null )}
+          ) : (
+            <Button
+              variant='contained'
+              color='primary'
+              type='submit'
+              disabled={!canBeSubmitted()}
+              endIcon={loading && <CircularProgress size={16} />}
+            >
+              Save
+            </Button>
+          )}
+        </DialogActions>
       </form>
     </Dialog>
   );

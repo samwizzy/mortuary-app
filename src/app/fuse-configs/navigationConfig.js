@@ -7,13 +7,6 @@ const navigationConfig = [
     type: 'group',
     icon: 'apps',
     children: [
-      // {
-      //   id: 'example-component',
-      //   title: 'Example',
-      //   type: 'item',
-      //   icon: 'whatshot',
-      //   url: '/example',
-      // },
       {
         id: 'dashboard-component',
         title: 'Dashboard',
@@ -35,14 +28,8 @@ const navigationConfig = [
         icon: 'store',
         children: [
           {
-            id: 'inventory-items',
-            title: 'Items',
-            type: 'item',
-            url: '/inventory/items',
-          },
-          {
             id: 'inventory-services',
-            title: 'Services',
+            title: 'Products & Services',
             type: 'item',
             url: '/inventory/services',
           },
@@ -55,32 +42,113 @@ const navigationConfig = [
         ],
       },
       {
-        id: 'deceased-component',
-        title: 'Deceased',
-        type: 'item',
-        icon: 'timelapse',
-        url: '/deceased',
+        id: 'deceased-mgt-component',
+        title: 'Deceased Management',
+        type: 'collapse',
+        icon: 'people_outline',
+        children: [
+          {
+            id: 'deceased-component',
+            title: 'Deceased',
+            type: 'item',
+            icon: 'timelapse',
+            url: '/deceased',
+          },
+          {
+            id: 'vaults-component',
+            title: 'Vaults',
+            type: 'item',
+            icon: 'receipt',
+            url: '/vaults',
+          },
+        ]
       },
       {
-        id: 'invoice-component',
-        title: 'Profomer Invoices',
-        type: 'item',
-        icon: 'receipt',
-        url: '/invoices',
+        id: 'payment-component',
+        title: 'Payment Management',
+        type: 'collapse',
+        icon: 'payment',
+        children: [
+          {
+            id: 'proforma-component',
+            title: 'Proforma Invoices',
+            type: 'item',
+            icon: 'receipt',
+            url: '/proforma',
+          },
+          {
+            id: 'invoice-component',
+            title: 'Invoices',
+            type: 'item',
+            icon: 'receipt',
+            url: '/invoices',
+          },
+          {
+            id: 'receipts-component',
+            title: 'Receipts',
+            type: 'item',
+            icon: 'receipt',
+            url: '/receipts',
+          },
+        ]
       },
       {
-        id: 'receipts-component',
-        title: 'Receipts',
-        type: 'item',
-        icon: 'receipt',
-        url: '/receipts',
+        id: 'funeral-component',
+        title: 'Funeral Management',
+        type: 'collapse',
+        icon: 'layers',
+        children: [
+          {
+            id: 'vouchers-component',
+            title: 'Vouchers',
+            type: 'item',
+            icon: 'receipt',
+            url: '/vouchers',
+          },
+        ]
       },
       {
         id: 'reports-component',
         title: 'Reports',
-        type: 'item',
+        type: 'collapse',
         icon: 'assessment',
-        url: '/reports',
+        children: [
+          {
+            id: 'admission-component',
+            title: 'Admissions',
+            type: 'item',
+            icon: 'receipt',
+            url: '/reports/admissions',
+          },
+          {
+            id: 'cremation-component',
+            title: 'Cremation',
+            type: 'item',
+            icon: 'receipt',
+            url: '/reports/cremations',
+          },
+          {
+            id: 'release-component',
+            title: 'Releases',
+            type: 'item',
+            icon: 'receipt',
+            url: '/reports/releases',
+          },
+          {
+            id: 'vaults-component',
+            title: 'Vaults',
+            type: 'item',
+            icon: 'receipt',
+            url: '/reports/vaults',
+          },
+          {
+            id: 'vouchers-component',
+            title: 'Vouchers',
+            type: 'item',
+            icon: 'receipt',
+            url: '/reports/vouchers',
+          },
+        ]
       },
     ],
   },

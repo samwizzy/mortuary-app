@@ -2,14 +2,14 @@ import React from 'react';
 import { Paper, Button, Input, Icon, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
-import { /*useDispatch,*/ useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import * as Actions from '../store/actions';
+import * as Actions from '../store/actions';
 
 function CustomersHeader(props) {
-  // const dispatch = useDispatch();
-  const searchText = '';
+  const dispatch = useDispatch();
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
+  const searchText = useSelector(({ customerApp }) => customerApp.customer.searchText);
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
@@ -44,7 +44,7 @@ function CustomersHeader(props) {
                 inputProps={{
                   'aria-label': 'Search',
                 }}
-                // onChange={ev => dispatch(Actions.setProductsSearchText(ev))}
+                onChange={ev => dispatch(Actions.setSearchText(ev))}
               />
             </Paper>
           </FuseAnimate>
@@ -57,7 +57,7 @@ function CustomersHeader(props) {
           className='whitespace-no-wrap'
           variant='contained'
         >
-          <span className='hidden sm:flex'>Add New Customer</span>
+          <span className='hidden sm:flex'>Add Customer</span>
           <span className='flex sm:hidden'>New</span>
         </Button>
       </FuseAnimate>

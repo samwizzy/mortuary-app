@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import * as Actions from '../store/actions';
 import {
   Table,
   TableBody,
@@ -7,62 +10,41 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
-import { FuseScrollbars } from '@fuse';
-import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from "moment";
+import { FuseScrollbars, FuseUtils } from '@fuse';
 import InvoicesTableHead from './ReceiptsTableHead';
-// import * as Actions from '../store/actions';
-import { useDispatch } from 'react-redux';
+import TableRowSkeleton from './TableRowSkeleton';
 
 function ReceiptsList(props) {
+  const { searchText } = props
   const dispatch = useDispatch();
-  const invoices = [
-    {
-      id: '5725a680b3249760ea21de52',
-      noOfItems: 8,
-      billTo: 'Thompson',
-      invoiceDate: '2021-04-22',
-      totalAmount: 500000,
-      amountDue: 500000,
-    },
-    {
-      id: '5725a680606588342058356d',
-      noOfItems: 8,
-      billTo: 'Thompson',
-      invoiceDate: '2021-04-22',
-      totalAmount: 500000,
-      amountDue: 500000,
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      noOfItems: 8,
-      billTo: 'Thompson',
-      invoiceDate: '2021-04-22',
-      totalAmount: 500000,
-      amountDue: 500000,
-    },
-  ];
-  const searchText = '';
+  const receiptsReducer = useSelector(({receiptsApp}) => receiptsApp.receipts);
+  const receiptData = receiptsReducer.receipts
+  const receipts = receiptData.receipts
+  const totalItems = receiptData.totalItems
+  const currentPage = receiptData.currentPage
+
+  console.log(receipts, "receipts")
 
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(invoices);
-  const [page, setPage] = useState(0);
+  const [data, setData] = useState(receipts);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
+    dispatch(Actions.getReceipts())
   }, [dispatch]);
 
   useEffect(() => {
     setData(
       searchText.length === 0
-        ? invoices
-        : _.filter(invoices, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+        ? receipts
+        : _.filter(receipts, (item) =>
+            item.invoiceNumber.toLowerCase().includes(searchText.toLowerCase())
           )
     );
-  }, [invoices, searchText]);
+  }, [receipts, searchText]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -84,7 +66,7 @@ function ReceiptsList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/receipts/' + item.id + '/' + item.handle);
+    props.history.push('/receipts/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -108,7 +90,7 @@ function ReceiptsList(props) {
   }
 
   function handleChangePage(event, page) {
-    setPage(page);
+    dispatch(Actions.getReceipts(page))
   }
 
   function handleChangeRowsPerPage(event) {
@@ -124,7 +106,7 @@ function ReceiptsList(props) {
             order={order}
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
-            rowCount={data.length}
+            rowCount={totalItems}
           />
 
           <TableBody>
@@ -144,7 +126,6 @@ function ReceiptsList(props) {
               ],
               [order.direction]
             )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
@@ -170,40 +151,45 @@ function ReceiptsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.id}
+                      {n.receiptNumber}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.noOfItems}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.invoiceDate}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
                       {n.billTo}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.totalAmount}
+                      {n.invoiceNumber}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.amountDue}
+                    <TableCell component='th' scope='row' align='left'>
+                      {moment(n.invoiceDate).isValid() ? moment(n.invoiceDate).format("Do MMM, yyyy") : null}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {FuseUtils.formatCurrency(n.invoiceAmount)}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row'>
+                      {FuseUtils.formatCurrency(n.paymentAmount)}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+              {data.length === 0 && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
           </TableBody>
         </Table>
       </FuseScrollbars>
 
       <TablePagination
         component='div'
-        count={data.length}
+        count={totalItems}
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={currentPage}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -217,4 +203,10 @@ function ReceiptsList(props) {
   );
 }
 
-export default withRouter(ReceiptsList);
+const mapStateToProps = ({receiptsApp}) => {
+  return {
+    searchText: receiptsApp.receipts.searchText
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(ReceiptsList));

@@ -7,7 +7,6 @@ import withReducer from 'app/store/withReducer';
 import reducer from '../store/reducers';
 import * as Actions from '../store/actions';
 import DiscountsList from './DiscountsList';
-import DiscountDetails from './DiscountDetails';
 import DiscountsHeader from './DiscountsHeader';
 import DiscountsToolbar from './DiscountsToolbar';
 import AddDiscount from './AddDiscount';
@@ -37,11 +36,11 @@ function Discounts(props) {
       }}
       header={<DiscountsHeader />}
       contentToolbar={
-        props.match.params.id ? <DiscountsToolbar /> : <DiscountsToolbar />
+        props.match.params.id ? <DiscountsToolbar /> : null
       }
       content={
-        <div className='p-24 w-full'>
-          {props.match.params.id ? <DiscountDetails /> : <DiscountsList />}
+        <div className='w-full'>
+          <DiscountsList />
         </div>
       }
       innerScroll
