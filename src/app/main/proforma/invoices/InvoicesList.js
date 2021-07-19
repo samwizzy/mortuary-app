@@ -17,7 +17,7 @@ import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../store/actions';
 
 function InvoicesList(props) {
-  const { searchText } = props
+  const { searchText, loading } = props
   const dispatch = useDispatch();
   const invoicesReducer = useSelector(({proformaApp}) => proformaApp.invoices);
   const invoiceData = invoicesReducer.proformaInvoices
@@ -175,10 +175,15 @@ function InvoicesList(props) {
                 );
               })}
 
-              {data.length === 0 && 
+              {loading && 
                 _.range(6).map(k => 
                   <TableRowSkeleton key={k} />
               )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={6}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -204,7 +209,8 @@ function InvoicesList(props) {
 const mapStateToProps = ({proformaApp}) => {
   const { invoices } = proformaApp
   return {
-    searchText: invoices.searchText
+    loading: invoices.loading,
+    searchText: invoices.searchText,
   }
 }
 

@@ -3,16 +3,19 @@ import { showMessage } from '../../../../store/actions/fuse';
 import * as Actions from '.';
 import history from "../../../../../@history"
 
-export const CREATE_DECEASED = '[CUSTOMER APP] CREATE DECEASED';
-export const UPDATE_DECEASED = '[CUSTOMER APP] UPDATE DECEASED';
-export const GET_ALL_DECEASED = '[CUSTOMER APP] GET ALL DECEASED';
-export const GET_DECEASED_BY_ID = '[CUSTOMER APP] GET DECEASED BY ID';
+export const CREATE_DECEASED = '[DECEASED APP] CREATE DECEASED';
+export const UPDATE_DECEASED = '[DECEASED APP] UPDATE DECEASED';
+export const GET_ALL_DECEASED = '[DECEASED APP] GET ALL DECEASED';
+export const GET_DECEASED_BY_ID = '[DECEASED APP] GET DECEASED BY ID';
 
-export const PRINT_ADMISSION_FORM = '[CUSTOMER APP] PRINT ADMISSION FORM';
-export const ADD_RELEASE_FORM = '[CUSTOMER APP] ADD RELEASE FORM';
-export const GET_RELEASED_FORMS = '[CUSTOMER APP] GET RELEASED FORMS';
+export const PRINT_ADMISSION_FORM = '[DECEASED APP] PRINT ADMISSION FORM';
+export const PRINT_EMBALMMENT_CERTIFICATE = '[DECEASED APP] PRINT EMBALMMENT CERTIFICATE';
+export const PRINT_CREMATION_CERTIFICATE = '[DECEASED APP] PRINT CREMATION CERTIFICATE';
 
-export const SET_SEARCH_TEXT = '[CUSTOMER APP] SET SEARCH TEXT';
+export const ADD_RELEASE_FORM = '[DECEASED APP] ADD RELEASE FORM';
+export const GET_RELEASED_FORMS = '[DECEASED APP] GET RELEASED FORMS';
+
+export const SET_SEARCH_TEXT = '[DECEASED APP] SET SEARCH TEXT';
 
 export function createDeceased(data) {
   const request = axios.post('/api/v1/deceased', data);
@@ -95,6 +98,30 @@ export function printAdmissionForm(id) {
     request.then((response) =>
       dispatch({
         type: PRINT_ADMISSION_FORM,
+        payload: response.data.data,
+      })
+    );
+}
+
+export function printEmbalmmentCertificate(id) {
+  const request = axios.get(`/api/v1/forms/deceased_id/${id}/print_embalming_certificate`);
+
+  return (dispatch) =>
+    request.then((response) =>
+      dispatch({
+        type: PRINT_EMBALMMENT_CERTIFICATE,
+        payload: response.data.data,
+      })
+    );
+}
+
+export function printCremationCertificate(id) {
+  const request = axios.get(`/api/v1/forms/deceased_id/${id}/print_cremation_certificate`);
+
+  return (dispatch) =>
+    request.then((response) =>
+      dispatch({
+        type: PRINT_CREMATION_CERTIFICATE,
         payload: response.data.data,
       })
     );

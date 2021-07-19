@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect, useSelector, useDispatch } from "react-redux"
-import moment from "moment";
 import {
-  Link,
   Table,
   TableBody,
   TableCell,
@@ -10,42 +7,59 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
-import { FuseScrollbars, FuseUtils } from '@fuse';
+import { useDispatch } from 'react-redux';
+import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
-import InvoicesTableHead from './InvoicesTableHead';
-import TableRowSkeleton from './TableRowSkeleton';
-import * as Actions from '../store/actions';
+import ReportsTableHead from './ReportsTableHead';
+// import * as Actions from '../store/actions';
 
-function InvoicesList(props) {
+function ReportsList(props) {
   const dispatch = useDispatch();
-  const { searchText, loading } = props
-  const invoicesReducer = useSelector(({invoicesApp}) => invoicesApp.invoices);
-  const invoiceData = invoicesReducer.invoices
-  const invoices = invoiceData.invoices
-  const totalItems = invoiceData.totalItems
-  const currentPage = invoiceData.currentPage
+  const reports = [
+    {
+      id: '5725a680b3249760ea21de52',
+      accountId: '0009035',
+      accountType: 'Cash & cash equivalent',
+      dateReceived: '2021-04-22',
+      status: 'active',
+    },
+    {
+      id: '5725a680606588342058356d',
+      accountId: '0009035',
+      accountType: 'Cash & cash equivalent',
+      dateReceived: '2021-04-22',
+      status: 'inactive',
+    },
+    {
+      id: '5725a68009e20d0a9e9acf2a',
+      accountId: '0009035',
+      accountType: 'Cash & cash equivalent',
+      dateReceived: '2021-04-22',
+      status: 'active',
+    },
+  ];
+  const searchText = '';
 
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(invoices);
+  const [data, setData] = useState(reports);
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
-  console.log(invoices, "invoices")
-
   useEffect(() => {
-    dispatch(Actions.getInvoices());
+    // dispatch(Actions.getProducts());
   }, [dispatch]);
 
   useEffect(() => {
     setData(
       searchText.length === 0
-        ? invoices
-        : _.filter(invoices, (item) =>
-            item.invoice_number.toLowerCase().includes(searchText.toLowerCase())
+        ? reports
+        : _.filter(reports, (item) =>
+            item.name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
-  }, [invoices, searchText]);
+  }, [reports, searchText]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -67,12 +81,7 @@ function InvoicesList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/invoices/' + item.id);
-  }
-
-  function handleRoute(e, customer) {
-    e.stopPropagation()
-    props.history.push('/customers/' + customer.id);
+    props.history.push('/reports/' + item.id + '/' + item.handle);
   }
 
   function handleCheck(event, id) {
@@ -96,19 +105,35 @@ function InvoicesList(props) {
   }
 
   function handleChangePage(event, page) {
-    dispatch(Actions.getInvoices(page))
+    setPage(page);
   }
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
-    dispatch(Actions.getInvoices(0, event.target.value))
   }
 
   return (
     <div className='w-full flex flex-col'>
+      <FuseAnimate delay={100}>
+        <div className='flex justify-center flex-wrap mt-8 mb-24'>
+          <div className='px-4 py-5 sm:px-6 text-center'>
+            <h1>
+              <img
+                className='h-72'
+                src='/assets/images/profile/omega-homes.svg'
+                alt=''
+              />
+            </h1>
+            <h3 className='text-xl leading-6 font-bold text-gray-900'>
+              Daily Morgue Report
+            </h3>
+            <p className='text-lg'>As of 20th Jul, 2020</p>
+          </div>
+        </div>
+      </FuseAnimate>
       <FuseScrollbars className='flex-grow overflow-x-auto'>
         <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <InvoicesTableHead
+          <ReportsTableHead
             numSelected={selected.length}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -133,6 +158,7 @@ function InvoicesList(props) {
               ],
               [order.direction]
             )
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.id) !== -1;
                 return (
@@ -158,54 +184,32 @@ function InvoicesList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.invoice_number}
+                      {n.dateReceived}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.service?.length}
+                      {n.accountId}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {moment(n.invoice_date).format("Do MMMM, YYYY")}
+                      {n.accountype}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      <Link onClick={(e) => handleRoute(e, n.customer)}>{n.customer?.email}</Link>
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
+                    <TableCell component='th' scope='row' align='right'>
                       {n.status}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {FuseUtils.formatCurrency(n.total_amount)}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {FuseUtils.formatCurrency(n.amount_due)}
                     </TableCell>
                   </TableRow>
                 );
               })}
-
-              {(data.length === 0 && loading) ? 
-                _.range(6).map(k => 
-                  <TableRowSkeleton key={k} />
-              )
-              : 
-              <TableRow>
-                <TableCell colSpan={6}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
-              </TableRow>
-              }
           </TableBody>
         </Table>
       </FuseScrollbars>
 
       <TablePagination
         component='div'
-        count={totalItems}
+        count={data.length}
         rowsPerPage={rowsPerPage}
-        page={currentPage}
+        page={page}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -219,12 +223,4 @@ function InvoicesList(props) {
   );
 }
 
-const mapStateToProps = ({invoicesApp}) => {
-  const { invoices } = invoicesApp
-  return {
-    loading: invoices.loading,
-    searchText: invoices.searchText,
-  }
-}
-
-export default withRouter(connect(mapStateToProps)(InvoicesList));
+export default withRouter(ReportsList);

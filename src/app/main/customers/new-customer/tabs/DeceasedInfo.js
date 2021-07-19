@@ -37,7 +37,15 @@ function DeceasedInfo(props) {
       form.deceased?.first_name?.length > 0 &&
       form.deceased?.last_name?.length > 0 &&
       form.deceased?.address?.length > 0 &&
-      form.deceased?.gender?.length > 0 
+      form.deceased?.gender?.length > 0 &&
+      form.deceased?.place_of_death?.length > 0 &&
+      form.deceased?.dateof_assertion?.length > 0 &&
+      form.deceased?.time_of_death?.length > 0 &&
+      form.deceased?.name_of_hospital?.length > 0 &&
+      form.deceased?.how_was_death_assertained?.length > 0 &&
+      form.deceased?.medical_attendant_name?.length > 0 &&
+      form.deceased?.hospital_address?.length > 0 &&
+      form.deceased?.cause_of_death?.length > 0 
     ) || !_.some(selectedServices, {is_admisson: true})
   }
 

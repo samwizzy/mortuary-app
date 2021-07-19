@@ -40,7 +40,7 @@ const defaultFormState = {
   funeralLocation: "",
   duration: "",
   voucherItems: [
-    { branch_id: "", org_key: "", service_type: '', description: '', qty: 0, cost: 0, total: 0 }
+    { branchId: "", orgKey: "", serviceType: '', description: '', qty: 0, cost: 0, total: 0 }
   ],
   branchId: "",
   orgKey: "",
@@ -116,7 +116,7 @@ function AddVoucher(props) {
   };
 
   function addServiceRow() {
-    const newRole = { service_type: '', description: '', qty: '', cost: '', total: '' }
+    const newRole = { serviceType: '', description: '', qty: '', cost: '', total: '' }
     setForm({...form, voucherItems: [ ...form.voucherItems, newRole ]});
   }
 
@@ -342,9 +342,9 @@ function AddVoucher(props) {
                             className='mt-8 mb-16'
                             required
                             label='Service type'
-                            id={`service_type-${i}`}
-                            name='service_type'
-                            value={n.service_type}
+                            id={`serviceType-${i}`}
+                            name='serviceType'
+                            value={n.serviceType}
                             onChange={handleMultiChange(i)}
                             variant='outlined'
                             fullWidth

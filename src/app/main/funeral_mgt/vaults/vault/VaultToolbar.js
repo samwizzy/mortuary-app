@@ -21,7 +21,7 @@ function VaultToolbar(props) {
 
       <div className='flex items-center justify-start' aria-label='Toggle star'>
         <FuseAnimate animation='transition.expandIn' delay={100}>
-          <IconButton disabled={true} onClick={() => dispatch(Actions.openEditVaultDialog(vault))}>
+          <IconButton disabled={!vault} onClick={() => dispatch(Actions.openEditVaultDialog(vault))}>
             <Icon>edit</Icon>
           </IconButton>
         </FuseAnimate>

@@ -65,7 +65,6 @@ function CustomerInfo(props) {
 
             <TextField
               className='mt-8 mb-16'
-              required
               label='Email'
               type="email"
               id='email'
@@ -80,7 +79,7 @@ function CustomerInfo(props) {
             />
 
             <TextField
-              className='mb-16'
+              className='mt-8 mb-16'
               select
               label='Branch'
               id='branch_id'

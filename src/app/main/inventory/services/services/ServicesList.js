@@ -19,7 +19,7 @@ import * as Actions from '../../store/actions';
 import { types } from "./../Services"
 
 function ServicesList(props) {
-  const { searchText } = props
+  const { searchText, loading } = props
   const dispatch = useDispatch();
   const serviceReducer = useSelector(({inventoryApp}) => inventoryApp.services)
   const servicesData = serviceReducer.services;
@@ -184,10 +184,15 @@ function ServicesList(props) {
                 );
               })}
               
-              {data.length === 0 && 
+              {loading && 
                 _.range(6).map(k => 
                   <TableRowSkeleton key={k} />
               )}
+              {(data.length === 0 && !loading) && 
+                <TableRow>
+                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -214,6 +219,7 @@ function ServicesList(props) {
 const mapStateToProps = ({inventoryApp}) => {
   const { services } = inventoryApp
   return {
+    loading: services.loading,
     searchText: services.searchText
   }
 }

@@ -28,6 +28,16 @@ export const DeceasedConfig = {
       component: React.lazy(() => import('./details/forms/release/Release')),
     },
     {
+      path: '/deceased/:id/embalmment-certificate',
+      exact: true,
+      component: React.lazy(() => import('./details/forms/embalmment/Embalmment')),
+    },
+    {
+      path: '/deceased/:id/cremation-certificate',
+      exact: true,
+      component: React.lazy(() => import('./details/forms/cremation/Cremation')),
+    },
+    {
       path: '/deceased/:id/relatives',
       exact: true,
       component: React.lazy(() => import('./relatives/Relatives')),

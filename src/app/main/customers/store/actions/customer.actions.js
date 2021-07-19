@@ -43,8 +43,8 @@ export function createCustomer(data) {
       console.dir(err.response.data, "err")
       if(err?.response && err.response?.data){
         dispatch(showMessage({ message: err?.response?.data?.message }));
-        dispatch({type: CREATE_CUSTOMER_ERROR, payload: err?.response})
       }
+      dispatch({type: CREATE_CUSTOMER_ERROR, payload: err?.response})
     });
   };
 }

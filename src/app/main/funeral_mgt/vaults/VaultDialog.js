@@ -107,7 +107,7 @@ function VaultDialog(props) {
     if (vaultDialog.type === 'new') {
       dispatch(Actions.createVault(form));
     } else {
-      dispatch(Actions.createVault(form));
+      dispatch(Actions.updateVault(form, form.id));
     }
     closeComposeDialog();
   }
@@ -331,7 +331,7 @@ function VaultDialog(props) {
             disabled={!canBeSubmitted()}
             endIcon={loading && <CircularProgress size={16} />}
           >
-            Save
+            Update
           </Button>
         )}
         </DialogActions>

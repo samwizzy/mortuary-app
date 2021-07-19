@@ -25,7 +25,9 @@ function RelativesInfo(props) {
   };
 
   function canBeSubmitted() {
-    return form.relative.length > 0  
+    return (
+      form.relative.length > 0 
+    )
   }
 
   return (
@@ -89,7 +91,6 @@ function RelativesInfo(props) {
 
               <TextField
                 className='mt-8 mb-16'
-                required
                 type="email"
                 label='Email'
                 id='relative-email'
@@ -145,19 +146,6 @@ function RelativesInfo(props) {
                 onKeyUp={validateField("relative")}
                 error={Boolean(errors?.relative && errors?.relative[i]?.phone_number)}
                 helperText={errors?.relative && errors?.relative[i]?.phone_number}
-                variant='outlined'
-                fullWidth
-              />
-
-              <TextField
-                className='mt-8 mb-16'
-                required
-                type="number"
-                label='Age'
-                id='relative-age'
-                name='age'
-                value={r.age}
-                onChange={handleRowChange(i)}
                 variant='outlined'
                 fullWidth
               />

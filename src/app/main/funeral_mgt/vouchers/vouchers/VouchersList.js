@@ -17,7 +17,7 @@ import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../../store/actions';
 
 function VouchersList(props) {
-  const { searchText, vouchersData } = props
+  const { loading, searchText, vouchersData } = props
   const dispatch = useDispatch();
   const vouchers = vouchersData.vouchers
   const count = vouchersData.count
@@ -182,10 +182,15 @@ function VouchersList(props) {
                 );
               })}
 
-              {data.length === 0 && 
+              {loading && 
                 _.range(6).map(k => 
                   <TableRowSkeleton key={k} />
               )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -211,6 +216,7 @@ function VouchersList(props) {
 const mapStateToProps = ({vouchersApp}) => {
   const { vouchers } = vouchersApp
   return {
+    loading: vouchers.loading,
     searchText: vouchers.searchText,
     vouchersData: vouchers.vouchers,
   }
