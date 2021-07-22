@@ -8,6 +8,7 @@ import {
   Typography,
   Toolbar,
   AppBar,
+  MenuItem,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
@@ -15,6 +16,7 @@ import { useForm } from '@fuse/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
 import moment from 'moment';
+import InvoiceUploadImage from "./InvoiceUploadImage"
 
 const defaultFormState = {
   account_to_deposit: "",
@@ -87,7 +89,7 @@ function PaymentDialog(props) {
       <AppBar position='static' elevation={1}>
         <Toolbar className='flex w-full'>
           <Typography variant='subtitle1' color='inherit'>
-            Send Invoice
+            Invoice Payment
           </Typography>
         </Toolbar>
       </AppBar>
@@ -139,31 +141,42 @@ function PaymentDialog(props) {
           </div>
 
           <div className='flex space-x-2'>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin='normal'
+                format="dd/MM/yyyy"
+                inputVariant='outlined'
+                id='payment_date'
+                label='Payment Date'
+                value={form.payment_date}
+                onChange={handleDateChange("payment_date")}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          </div>
+
+          <div className='flex space-x-2'>
             <TextField
               className='mb-24'
-              label='Subject'
-              id='subject'
-              name='subject'
-              value={form.subject}
+              label='Payment Method'
+              id='payment_method'
+              name='payment_method'
+              value={form.payment_method}
               onChange={handleChange}
               variant='outlined'
               fullWidth
-            />
+            >
+              <MenuItem value="">Select payment method</MenuItem>
+              {["Cash", "Bank"].map(m => 
+                <MenuItem key={m} value={m}>{m}</MenuItem>
+              )}
+            </TextField>
           </div>
 
           <div className='flex flex-col'>
-            <TextField
-              className='mb-24'
-              label='Message'
-              id='message'
-              name='message'
-              value={form.message}
-              onChange={handleChange}
-              variant='outlined'
-              multiline
-              rows={5}
-              fullWidth
-            />
+            <InvoiceUploadImage />
           </div>
         </DialogContent>
 
@@ -175,7 +188,7 @@ function PaymentDialog(props) {
             type='submit'
             disabled={!canBeSubmitted()}
           >
-            Add
+            Pay
           </Button>
         </DialogActions>
       </form>

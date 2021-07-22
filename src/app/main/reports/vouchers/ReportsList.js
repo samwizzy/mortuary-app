@@ -7,7 +7,7 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
@@ -15,51 +15,30 @@ import ReportsTableHead from './ReportsTableHead';
 // import * as Actions from '../store/actions';
 
 function ReportsList(props) {
-  const dispatch = useDispatch();
-  const reports = [
-    {
-      id: '5725a680b3249760ea21de52',
-      accountId: '0009035',
-      accountType: 'Cash & cash equivalent',
-      dateReceived: '2021-04-22',
-      status: 'active',
-    },
-    {
-      id: '5725a680606588342058356d',
-      accountId: '0009035',
-      accountType: 'Cash & cash equivalent',
-      dateReceived: '2021-04-22',
-      status: 'inactive',
-    },
-    {
-      id: '5725a68009e20d0a9e9acf2a',
-      accountId: '0009035',
-      accountType: 'Cash & cash equivalent',
-      dateReceived: '2021-04-22',
-      status: 'active',
-    },
-  ];
   const searchText = '';
 
+  const voucherData = useSelector(({reportsApp}) => reportsApp.reports.vouchers)
+  const vouchers = voucherData.voucherList;
+  const totalItems = voucherData.totalItems;
+  const currentPage = voucherData.currentPage;
+
+  console.log(voucherData, "voucherData")
+
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState(reports);
+  const [data, setData] = useState(vouchers);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
   useEffect(() => {
-    // dispatch(Actions.getProducts());
-  }, [dispatch]);
-
-  useEffect(() => {
     setData(
       searchText.length === 0
-        ? reports
-        : _.filter(reports, (item) =>
+        ? vouchers
+        : _.filter(vouchers, (item) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
           )
     );
-  }, [reports, searchText]);
+  }, [vouchers, searchText]);
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -81,7 +60,7 @@ function ReportsList(props) {
   }
 
   function handleClick(item) {
-    props.history.push('/reports/' + item.id + '/' + item.handle);
+    // props.history.push('/reports/vouchers/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -115,19 +94,17 @@ function ReportsList(props) {
   return (
     <div className='w-full flex flex-col'>
       <FuseAnimate delay={100}>
-        <div className='flex justify-center flex-wrap mt-8 mb-24'>
-          <div className='px-4 py-5 sm:px-6 text-center'>
-            <h1>
-              <img
-                className='h-72'
-                src='/assets/images/profile/omega-homes.svg'
-                alt=''
-              />
-            </h1>
-            <h3 className='text-xl leading-6 font-bold text-gray-900'>
+        <div className='flex justify-center flex-wrap mt-4 mb-16'>
+          <div className='px-4 pb-5 sm:px-6 text-center'>
+            <img
+              className='h-72'
+              src='/assets/images/profile/omega-homes.svg'
+              alt=''
+            />
+            <h3 className='text-base leading-4 font-bold text-gray-900'>
               Daily Morgue Report
             </h3>
-            <p className='text-lg'>As of 20th Jul, 2020</p>
+            <p className='text-sm'>As of 20th Jul, 2020</p>
           </div>
         </div>
       </FuseAnimate>
@@ -207,9 +184,9 @@ function ReportsList(props) {
 
       <TablePagination
         component='div'
-        count={data.length}
+        count={totalItems}
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={currentPage}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}

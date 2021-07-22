@@ -41,7 +41,7 @@ function EmbalmmentForm(props){
 			setForm(state => ({
 				...state,
 				...embalmmentCert,
-				address: deceased.address
+				address: deceased?.address
 			}))
 		}
 	}, [embalmmentCert, deceased, setForm])
@@ -74,7 +74,7 @@ function EmbalmmentForm(props){
 
 						<div className="text-center mb-8">
 							<h1 className='text-3xl leading-6 uppercase font-bold text-gray-900'>
-								Embalmment Certificate
+								Embalming Certificate
 							</h1>
 							<p className="text-sm text-gray-600">This is to certify that the remain of</p>
 						</div>

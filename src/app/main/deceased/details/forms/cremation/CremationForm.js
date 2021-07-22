@@ -17,10 +17,9 @@ const defaultFormState = {
 	age: "",
 	address: "",
 	signature: null,
-	deceased_full_name: "",
-	date_of_death: null,
-	year_of_death: null,
-	date_of_embalming: null
+	deceasedFullName: "",
+	dateOfDeath: null,
+	dateOfCremation: null
 }
 
 function CremationForm(props){
@@ -63,7 +62,7 @@ function CremationForm(props){
 			<FuseAnimate delay={100}>
 				<div className='flex flex-col flex-wrap mt-0 mb-24 relative'>
 					<div className="absolute right-0 top-0 bg-orange-lighter">
-						<ReactToPdf targetRef={ref} filename={`${cremationCert?.deceased_full_name}.pdf`} options={options} x={.4} y={.4} scale={0.92}>
+						<ReactToPdf targetRef={ref} filename={`${cremationCert?.deceasedFullName}.pdf`} options={options} x={.4} y={.4} scale={0.92}>
 							{({toPdf}) => (
 								<IconButton disabled={!cremationCert} onClick={toPdf}>
 									<Icon>cloud_download</Icon>
@@ -84,8 +83,8 @@ function CremationForm(props){
 						<div className='border-t border-gray-200'>
 							<div className='bg-gray-100 flex px-1 py-8 sm:px-0'>
 								<TextField 
-									name="deceased_full_name" 
-									value={form.deceased_full_name} 
+									name="deceasedFullName" 
+									value={form.deceasedFullName} 
 									inputProps={{min: 0, style: { textAlign: 'center' }}}
 									fullWidth 
 								/>
@@ -123,7 +122,7 @@ function CremationForm(props){
 										<KeyboardDatePicker
 											format="MMMM"
 											id='who-died-on'
-											value={form.date_of_death}
+											value={form.dateOfDeath}
 											inputProps={{min: 0, style: { textAlign: 'center' }}}
 											KeyboardButtonProps={{
 												'aria-label': 'change date',
@@ -141,7 +140,7 @@ function CremationForm(props){
 										<KeyboardDatePicker
 											format="dd"
 											id='day-of'
-											value={form.date_of_death}
+											value={form.dateOfDeath}
 											inputProps={{min: 0, style: { textAlign: 'center' }}}
 											KeyboardButtonProps={{
 												'aria-label': 'change date',
@@ -159,7 +158,7 @@ function CremationForm(props){
 										<KeyboardDatePicker
 											format="yyyy"
 											id='in-the-year'
-											value={form.year_of_death}
+											value={form.dateOfDeath}
 											inputProps={{min: 0, style: { textAlign: 'center' }}}
 											KeyboardButtonProps={{
 												'aria-label': 'change date',
@@ -196,8 +195,8 @@ function CremationForm(props){
 										<KeyboardDatePicker
 											className="mb-8"
 											format="dd/MM/yyyy"
-											id='date_of_cremation'
-											value={form.date_of_cremation}
+											id='dateOfCremation'
+											value={form.dateOfCremation}
 											inputProps={{min: 0, style: { textAlign: 'center' }}}
 											KeyboardButtonProps={{
 												'aria-label': 'change date',

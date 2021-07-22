@@ -188,14 +188,14 @@ function InvoicesList(props) {
                 );
               })}
 
-              {(data.length === 0 && loading) ? 
+              {loading &&
                 _.range(6).map(k => 
                   <TableRowSkeleton key={k} />
-              )
-              : 
-              <TableRow>
-                <TableCell colSpan={6}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
-              </TableRow>
+              )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
               }
           </TableBody>
         </Table>

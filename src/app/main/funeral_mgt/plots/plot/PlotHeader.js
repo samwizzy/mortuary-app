@@ -7,25 +7,25 @@ function PlotHeader(props) {
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
       <div className="flex flex-col">
-      <FuseAnimate animation='transition.slideRightIn' delay={300}>
-        <Typography
-          className='normal-case flex items-center sm:mb-12'
-          component={Link}
-          role='button'
-          to='/plots'
-          color='inherit'
-        >
-          <Icon className='mr-4 text-20'>arrow_back</Icon>
-          Plots
-        </Typography>
-      </FuseAnimate>
+        <FuseAnimate animation='transition.slideRightIn' delay={300}>
+          <Typography
+            className='normal-case flex items-center sm:mb-12'
+            component={Link}
+            role='button'
+            to='/plots'
+            color='inherit'
+          >
+            <Icon className='mr-4 text-20'>arrow_back</Icon>
+            Plots
+          </Typography>
+        </FuseAnimate>
 
-      <FuseAnimate animation='transition.slideLeftIn' delay={300}>
-        <Typography className='hidden sm:flex' variant='h6'>
-          <Icon className='text-32 mr-0 sm:mr-12'>receipt</Icon>
-          Plot Details
-        </Typography>
-      </FuseAnimate>
+        <FuseAnimate animation='transition.slideLeftIn' delay={300}>
+          <Typography className='hidden sm:flex' variant='h6'>
+            <Icon className='text-32 mr-0 sm:mr-12'>receipt</Icon>
+            Plot Details
+          </Typography>
+        </FuseAnimate>
       </div>
     </div>
   );

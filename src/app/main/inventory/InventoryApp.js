@@ -14,6 +14,7 @@ const styles = (theme) => ({
 class InventoryApp extends Component {
   render() {
     const { classes } = this.props;
+    
     return (
       <FusePageCarded
         classes={{

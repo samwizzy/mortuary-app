@@ -9,8 +9,7 @@ import {
   TableCell,
   TableRow,
   TextField,
-  IconButton,
-  MenuItem,
+  IconButton
 } from '@material-ui/core';
 import {Autocomplete} from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
@@ -63,24 +62,16 @@ function SelectServices(props) {
                   onClick={() => {}}
                 >
                   <TableCell component='th' scope='row'>
-                    <TextField
+                    <Autocomplete
                       className='min-w-192'
-                      select
-                      required
-                      label='Services'
-                      autoFocus
                       id={`service_id-${i}`}
-                      name='service_id'
-                      value={n.service_id}
-                      onChange={handleMultiChange(i)}
-                      variant='outlined'
-                      fullWidth
-                    >
-                      <MenuItem value="">Select Services</MenuItem>
-                      {services.map(s => 
-                        <MenuItem key={s.id} value={s.id}>{s.service_name}</MenuItem>
-                      )}
-                    </TextField>  
+                      value={n.service_id ? _.find(services, {id: n.service_id}) : null}
+                      onChange={(ev, value) => handleSelectChange(value, 'service_id', i)}
+                      placeholder='Select services'
+                      options={services}
+                      getOptionLabel={(option) => option.service_name}
+                      renderInput={(params) => <TextField {...params} label="Services" variant="outlined" />}
+                    />
                   </TableCell>
 
                   <TableCell className='truncate' component='th' scope='row'>
