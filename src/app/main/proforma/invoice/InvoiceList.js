@@ -203,7 +203,14 @@ function InvoiceList(props) {
                           </TableRow>
                         );
                       })}
-                       
+                       <TableRow className='h-48'>
+                          <TableCell component='th' scope='row' align='left'>
+                            <strong>Grand Total</strong>
+                          </TableCell>
+                          <TableCell component='th' scope='row' align='right' colSpan={4}>
+                            {FuseUtils.formatCurrency(data.reduce((store, row) => store + (Number(row.rate) * Number(row.qty)), 0))}
+                          </TableCell>
+                       </TableRow>
                   </TableBody>
                 </Table>
               </FuseScrollbars>
@@ -222,12 +229,13 @@ function InvoiceList(props) {
   );
 }
 
-const mapStateToProps = ({proformaApp, auth}) => {
+const mapStateToProps = ({proformaApp, auth, ezone}) => {
   const { invoices, services } = proformaApp
   return {
     searchText: invoices.searchText,
     invoice: invoices.proformaInvoice,
     services: services.services.services,
+    branches: ezone.branches.branches,
     user: auth.user.data,
   }
 }

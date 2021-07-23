@@ -100,38 +100,35 @@ function AdmissionForm(props){
 								The undersigned represents to OMEGA FUNERAL HOME that he/she is the surviving spouse, next of kin,<br/>
 								the legal representative and/or authorized family representative of the Deceased</p>
 							<dl>
-								<div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-									<dt className='text-sm font-bold text-gray-600'>
+								<div className='bg-gray-50 px-1 py-8 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+									<dt className='text-sm font-bold text-gray-600 mt-2'>
 										Name of deceased
 									</dt>
-									<dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+									<dd className='text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
 										<TextField name="name" fullWidth />
 									</dd>
 								</div>
-								<div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-									<dt className='text-sm font-bold text-gray-600'>
+								<div className='bg-gray-50 px-1 py-8 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+									<dt className='text-sm font-bold text-gray-600 mt-2'>
 										Address of deceased
 									</dt>
 									<dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
 										<TextField name="address" fullWidth />
 									</dd>
 								</div>
-								<div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0'>
-									<div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-										<dt className='text-sm font-bold text-gray-600'>
-											Age of deceased
-										</dt>
-										<dd className='mt-1 text-sm text-gray-900 sm:mt-0'>
-											<TextField name="age" fullWidth />
-										</dd>
-									</div>
-									<div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-										<dt className='text-sm font-bold text-gray-600'>
-											Sex
-										</dt>
-										<dd className='mt-1 text-sm text-gray-900 sm:mt-0'>
+								<div className='bg-gray-50 px-1 py-8 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+									<dt className='text-sm font-bold text-gray-600 mt-2'>
+										Age of deceased
+									</dt>
+									<dd className='mt-1 flex justify-between text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+										<TextField name="age" />
+										<div className='bg-gray-50 px-1 py-1 flex items-end sm:gap-4 sm:px-0'>
+											<span className='text-sm font-bold text-gray-600'>
+												Sex
+											</span>
 											<TextField 
 												select
+												className="min-w-128"
 												name="sex" 
 												fullWidth 
 											>
@@ -140,8 +137,8 @@ function AdmissionForm(props){
 													<MenuItem key={sex} value={sex}>{sex}</MenuItem>
 												)}
 											</TextField>	
-										</dd>
-									</div>
+										</div>
+									</dd>
 								</div>
 							</dl>
 

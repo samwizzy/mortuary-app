@@ -57,10 +57,17 @@ function DeceasedToolbar(props) {
             <MenuItem component={Link} to={`/deceased/${match.params.id}/relatives`}>View relatives</MenuItem>
             <MenuItem component={Link} to={`/customers/${deceased?.customer?.id}`}>View deceased's customer</MenuItem>
             <MenuItem component={Link} to={`/deceased/${match.params.id}/admission-form`}>Print admission form</MenuItem>
-            <MenuItem component={Link} to={`/deceased`} disabled>View embalmming report</MenuItem>
-            <MenuItem component={Link} to={`/deceased`} disabled>Fill embalmming report</MenuItem>
-            <MenuItem component={Link} to={`/deceased`} disabled>Print embalmming report</MenuItem>
-            <MenuItem component={Link} to={`/deceased/${match.params.id}/release-form`}>Release corpse</MenuItem>
+            <MenuItem component={Link} to={`/deceased`} disabled>View embalming report</MenuItem>
+            <MenuItem component={Link} to={`/deceased`} disabled>Fill embalming report</MenuItem>
+            <MenuItem component={Link} to={`/deceased/${match.params.id}/embalmment-certificate`}>Print embalming certificate</MenuItem>
+            <MenuItem component={Link} to={`/deceased/${match.params.id}/cremation-certificate`}>Print cremation certificate</MenuItem>
+            <MenuItem 
+              disabled={!(deceased?.deceasedInvoiceStatus === 1)} 
+              component={Link} 
+              to={`/deceased/${match.params.id}/release-form`}
+            >
+              Release corpse
+            </MenuItem>
           </Popover>
           </>
         </FuseAnimate>

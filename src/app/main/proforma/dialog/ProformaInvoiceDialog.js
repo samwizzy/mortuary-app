@@ -179,7 +179,7 @@ function ProformaInvoiceDialog(props) {
                         <TableCell>Product/Service</TableCell>
                         <TableCell>Rate</TableCell>
                         <TableCell>Qty</TableCell>
-                        <TableCell>Total</TableCell>
+                        <TableCell>SubTotal</TableCell>
                       </TableRow>
                     </TableHead>
 
@@ -217,6 +217,15 @@ function ProformaInvoiceDialog(props) {
                             </TableRow>
                           );
                         })}
+                        <TableRow className='h-48'>
+                          <TableCell component='th' scope='row' align='left'>
+                            <strong>Grand Total</strong>
+                          </TableCell>
+                          <TableCell component='th' scope='row' align='right' colSpan={4}>
+                            {FuseUtils.formatCurrency(invoiceDialog?.data?.service.reduce((store, row) => store + (Number(row.rate) * Number(row.qty)), 0))}
+                          </TableCell>
+                       </TableRow>
+
                     </TableBody>
                   </Table>
                 </FuseScrollbars>

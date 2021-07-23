@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom"
 import moment from "moment"
 import * as Actions from "../../store/actions"
 import VaultDetailsSkeleton from "./VaultSkeleton"
+import VaultDialog from "../VaultDialog"
 
 function VaultDetails(props) {
 	const { match, vault } = props
@@ -26,38 +27,38 @@ function VaultDetails(props) {
             <dl>
               <div className="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-600">Vault Number</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.vaultNumber}</dd>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.vault_number}</dd>
               </div>
               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-600">Vault type</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.vaultType}</dd>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.vault_type}</dd>
               </div>
               <div className="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-600">Name of deceased</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.nameOfDeceased}</dd>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.name_of_deceased}</dd>
               </div>
               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-600">Email address</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.emailAddress}</dd>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.email_address}</dd>
               </div>
               <div className="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-600">Phone number</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.phoneNumber}</dd>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{vault?.phone_number}</dd>
               </div>
               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-600">Date Buried</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{moment(vault?.dateBuried).format("Do MMM, YYYY")}</dd>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{moment(vault?.date_buried).format("Do MMM, YYYY")}</dd>
               </div>
               <div className="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-600">Purchaser one</dt>
                 <div className="flex space-x-24">
                   <dd className="mt-1 flex flex-col justify-center text-sm text-gray-900 text-left sm:mt-0 sm:col-span-2">
                     <span className="text-xs font-bold">Name</span>
-                    {vault?.purchaserOne?.name}
+                    {vault?.purchaser_one?.name || "-"}
                   </dd>
                   <dd className="mt-1 flex flex-col justify-center text-sm text-left text-gray-900 sm:mt-0 sm:col-span-2">
                     <span className="text-xs font-bold">Email</span>
-                    {vault?.purchaserOne?.email}
+                    {vault?.purchaser_one?.email || "-"}
                   </dd>
                 </div>
               </div>
@@ -66,11 +67,11 @@ function VaultDetails(props) {
                 <div className="flex space-x-24">
                   <dd className="mt-1 flex flex-col justify-center text-sm text-gray-900 text-left sm:mt-0 sm:col-span-2">
                     <span className="text-xs font-bold">Name</span>
-                    {vault?.purchaserTwo?.name}
+                    {vault?.purchaser_two?.name || "-"}
                   </dd>
                   <dd className="mt-1 flex flex-col justify-center text-sm text-left text-gray-900 sm:mt-0 sm:col-span-2">
                     <span className="text-xs font-bold">Email</span>
-                    {vault?.purchaserTwo?.email}
+                    {vault?.purchaser_two?.email || "-"}
                   </dd>
                 </div>
               </div>
@@ -85,6 +86,8 @@ function VaultDetails(props) {
         )
         : <VaultDetailsSkeleton />
       }
+
+      <VaultDialog />
     </div>
   )
 }

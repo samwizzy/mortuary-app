@@ -1,7 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   TextField,
   Button,
+  Divider,
+  IconButton,
+  Icon,
   Dialog,
   DialogActions,
   DialogContent,
@@ -10,7 +13,6 @@ import {
   AppBar,
   CircularProgress,
 } from '@material-ui/core';
-import { useForm } from '@fuse/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   KeyboardDatePicker,
@@ -18,28 +20,32 @@ import {
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import moment from 'moment';
+import _ from "@lodash"
 import * as Actions from '../store/actions';
 import { MenuItem } from '@material-ui/core';
 
 const defaultFormState = {
   address: "",
   branch_id: "",
-  date_buried: null,
+  // date_buried: null,
   email_address: "",
-  name_of_deceased: "",
+  // name_of_deceased: "",
   phone_number: "",
   purchaser_one: {name: "", email: ""},
   purchaser_two: {name: "", email: ""},
   vault_number: "",
-  vault_type: ""
+  vault_type: "",
+  deceased: []
 };
 
 const vaultTypes = [
-  { label: 'SINGLE VAULT', value: 'SINGLE_VAULT'}, 
-  { label: 'DOUBLE VAULT', value: 'DOUBLE_VAULT'}, 
-  { label: 'TRIPLE VAULT', value: 'TRIPLE_VAULT'}, 
-  { label: 'FAMILY VAULT', value: 'FAMILY_VAULT'}
-].map(plot => 
+  { label: 'SINGLE', value: 'SINGLE_VAULT', num: 1}, 
+  { label: 'DOUBLE', value: 'DOUBLE_VAULT', num: 2}, 
+  { label: 'TRIPLE', value: 'TRIPLE_VAULT', num: 3}, 
+  { label: 'FAMILY', value: 'FAMILY_VAULT', num: 4}
+]
+
+const vaultTypeDropdown = vaultTypes.map(plot => 
   <MenuItem key={plot.value} value={plot.label}>
     {plot.label}
   </MenuItem>
@@ -51,7 +57,33 @@ function VaultDialog(props) {
   const loading = useSelector(({ vaultsApp }) => vaultsApp.vaults.loading);
   const branches = useSelector(({ vaultsApp }) => vaultsApp.branches.branches);
 
-  const { form, handleChange, setForm } = useForm(defaultFormState);
+  const [ form, setForm ] = useState(defaultFormState);
+
+  const handleChange = (event) => {
+    if(event.target.name === "vault_type"){
+      let deceased = []
+      let num = _.find(vaultTypes, {label: event.target.value})?.num;
+
+      deceased = _.fillArray({name_of_deceased: "", date_buried: null}, num)
+      setForm({ ...form, [event.target.name]: event.target.value, deceased })
+    }else{
+      setForm(
+        form => _.set( { ...form }, event.target.name, event.target.value )
+      )
+    }
+  };
+
+  const handleMultiChange = (i) => (event) => {
+    const prevDeceased = [ ...form.deceased ]
+    prevDeceased[i][event.target.name] = event.target.value
+    setForm({ ...form, deceased: prevDeceased })
+  }
+
+  const handleDateChange = (name, index) => (date) => {
+    const nextDeceased = [ ...form.deceased ]
+    nextDeceased[index][name] = moment(date).format("YYYY-MM-DDTHH:mm:ss")
+    setForm({ ...form, deceased: nextDeceased }) 
+  };
 
   console.log(form, "form vaults")
   console.log(branches, "branches vaults")
@@ -92,14 +124,22 @@ function VaultDialog(props) {
   function canBeSubmitted() {
     return (
       form.vault_type &&
-      form.name_of_deceased &&
+      form.deceased.length > 0 &&
       form.email_address 
     );
   }
 
-  const handleDateChange = (name) => (date) => {
-    setForm({...form, [name]: moment(date).format("YYYY-MM-DDTHH:mm:ss")})
-  };
+  const addDeceased = () => {
+    const deceasedObject = {name_of_deceased: "", date_buried: null}
+
+    setForm({ ...form, deceased: [...form.deceased, deceasedObject] })
+  }
+
+  const removeDeceased = (i) => () => {
+    const newDeceased = [ ...form.deceased ]
+    newDeceased.splice(i, 1)
+    setForm({ ...form, deceased: newDeceased})
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -107,7 +147,7 @@ function VaultDialog(props) {
     if (vaultDialog.type === 'new') {
       dispatch(Actions.createVault(form));
     } else {
-      dispatch(Actions.createVault(form));
+      dispatch(Actions.updateVault(form, form.id));
     }
     closeComposeDialog();
   }
@@ -120,7 +160,7 @@ function VaultDialog(props) {
       {...vaultDialog.props}
       onClose={closeComposeDialog}
       fullWidth
-      maxWidth='xs'
+      maxWidth='sm'
     >
       <AppBar position='static' elevation={1}>
         <Toolbar className='flex'>
@@ -137,67 +177,7 @@ function VaultDialog(props) {
         className='flex flex-col overflow-hidden'
       >
         <DialogContent classes={{ root: 'p-24' }}>
-          <div className='flex'>
-            <TextField
-              className='mb-24'
-              select
-              label='Vault type'
-              autoFocus
-              id='vault_type'
-              name='vault_type'
-              value={form.vault_type}
-              onChange={handleChange}
-              variant='outlined'
-              required
-              fullWidth
-            >
-              <MenuItem value="">Select plot type</MenuItem>
-              {vaultTypes}
-            </TextField>      
-          </div>
-
-          <div className='flex'>
-            <TextField
-              className='mb-24'
-              label='Email address'
-              id='email_address'
-              type="email"
-              name='email_address'
-              value={form.email_address}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
-            />
-          </div>
-
-          <div className='flex'>
-            <TextField
-              className='mb-24'
-              label='Name of deceased'
-              id='name_of_deceased'
-              name='name_of_deceased'
-              value={form.name_of_deceased}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
-            />
-          </div>
-
-          <div className='flex'>
-            <TextField
-              className='mb-24'
-              label='Phone number'
-              id='phone_number'
-              name='phone_number'
-              value={form.phone_number}
-              type="number"
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
-            />
-          </div>
-
-          <div className='flex'>
+          <div className='flex space-x-4'>
             <TextField
               className='mb-16'
               select
@@ -215,7 +195,97 @@ function VaultDialog(props) {
                   {b.name}
                 </MenuItem>
               )}
-            </TextField>  
+            </TextField> 
+
+            <TextField
+              className='mb-24'
+              select
+              label='Vault type'
+              autoFocus
+              id='vault_type'
+              name='vault_type'
+              value={form.vault_type}
+              onChange={handleChange}
+              variant='outlined'
+              required
+              fullWidth
+            >
+              <MenuItem value="">Select plot type</MenuItem>
+              {vaultTypeDropdown}
+            </TextField>      
+          </div>
+
+          {form.deceased.length > 0 && <label className="block text-sm font-bold mb-8">Deceased</label>}
+          {form.deceased.map((n, i) => (
+          <div key={i} className='flex items-center space-x-8'>
+            <TextField
+              className='mb-16'
+              label='Name of deceased'
+              id={`name_of_deceased-${i}`}
+              name='name_of_deceased'
+              value={n.name_of_deceased}
+              onChange={handleMultiChange(i)}
+              variant='outlined'
+              fullWidth
+            />
+
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                disableToolbar
+                className='mb-16'
+                inputVariant='outlined'
+                format='MM/dd/yyyy'
+                id={`date_buried-${i}`}
+                label='Date buried'
+                fullWidth
+                value={n.date_buried}
+                onChange={handleDateChange("date_buried", i)}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
+            {form.vault_type === "FAMILY" && <IconButton onClick={removeDeceased(i)}><Icon>close</Icon></IconButton>}
+          </div>
+          ))}
+          {form.vault_type === "FAMILY" && 
+            <Button 
+              className="mb-24"
+              variant="contained" 
+              disableElevation 
+              onClick={addDeceased}
+              startIcon={<Icon>add</Icon>}
+            >
+              Add
+            </Button>
+          }
+
+          {form.deceased.length > 0 && <Divider className="mb-24 mt-8" />}
+
+          <div className='flex space-x-4'>
+            <TextField
+              className='mb-24'
+              label='Email address'
+              id='email_address'
+              type="email"
+              name='email_address'
+              value={form.email_address}
+              onChange={handleChange}
+              variant='outlined'
+              fullWidth
+            />
+
+            <TextField
+              className='mb-24'
+              label='Phone number'
+              id='phone_number'
+              name='phone_number'
+              value={form.phone_number}
+              type="number"
+              onChange={handleChange}
+              variant='outlined'
+              fullWidth
+            />
           </div>
 
           <div className="flex flex-col">
@@ -272,25 +342,6 @@ function VaultDialog(props) {
             </div>
           </div>
 
-          <div className='flex'>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                disableToolbar
-                className='mb-16'
-                inputVariant='outlined'
-                format='MM/dd/yyyy'
-                id='date_buried'
-                label='Date buried'
-                fullWidth
-                value={form.date_buried}
-                onChange={handleDateChange("date_buried")}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </div>
-
           <div className='flex flex-col'>
             <div className='min-w-48 pt-0 mb-8'>
               <Typography>Address</Typography>
@@ -310,7 +361,7 @@ function VaultDialog(props) {
           </div>
         </DialogContent>
 
-        <DialogActions className='justify-end pr-32 py-16'>
+        <DialogActions className='justify-end pr-24 pb-16'>
         {vaultDialog.type === 'new' ? (
           <Button
             variant='contained'
@@ -331,7 +382,7 @@ function VaultDialog(props) {
             disabled={!canBeSubmitted()}
             endIcon={loading && <CircularProgress size={16} />}
           >
-            Save
+            Update
           </Button>
         )}
         </DialogActions>

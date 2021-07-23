@@ -6,12 +6,12 @@ import withReducer from 'app/store/withReducer';
 import reducers from './store/reducers';
 // import * as Actions from './store/actions';
 import { FusePageCarded } from '@fuse';
-import VouchersHeader from './vouchers/VouchersHeader';
+import VouchersHeader from './vouchers/vouchers/VouchersHeader';
 import VoucherHeader from './voucher/VoucherHeader';
 import VoucherList from './voucher/VoucherList';
-import VouchersList from './vouchers/VouchersList';
+import VouchersList from './vouchers/vouchers/VouchersList';
 import VoucherToolbar from './voucher/VoucherToolbar';
-import NewVoucher from './new-voucher/AddVoucher';
+import NewVoucher from './vouchers/new-voucher/AddVoucher';
 import NewVoucherDialog from "./dialog/NewVoucher"
 
 const styles = (theme) => ({

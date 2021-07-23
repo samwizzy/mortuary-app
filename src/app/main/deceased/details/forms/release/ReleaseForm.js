@@ -377,11 +377,18 @@ function ReleaseForm(props){
 								</div>
 							</dl>
 							
-							<div className="flex justify-end">
+							<div className="flex justify-end items-center space-x-8">
+								<p className="text-xs italic text-orange-darker">
+									{deceased?.deceasedInvoiceStatus !== 1 && 
+										<span>Deceased can only be released after<br/> payment have been made fully</span>
+									}
+								</p>
+								
 								<Button
 									variant="contained"
 									color="primary" 
 									onClick={handleSubmit}
+									disabled={!(deceased?.deceasedInvoiceStatus === 1)}
 								>
 									Save
 								</Button>

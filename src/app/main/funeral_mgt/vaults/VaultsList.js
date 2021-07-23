@@ -18,7 +18,7 @@ import * as Actions from '../store/actions';
 import VaultDialog from "./VaultDialog"
 
 function VaultsList(props) {
-  const { searchText, vaultsData } = props
+  const { loading, searchText, vaultsData } = props
   const dispatch = useDispatch();
   const vaults = vaultsData.vaults
   const count = vaultsData.count
@@ -38,7 +38,7 @@ function VaultsList(props) {
       searchText.length === 0
         ? vaults
         : _.filter(vaults, (item) =>
-            item.vaultNumber.toLowerCase().includes(searchText.toLowerCase())
+            item.vault_number.toString().toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [vaults, searchText]);
@@ -149,15 +149,15 @@ function VaultsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.vaultNumber}
+                      {n.vault_number}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.vaultType}
+                      {n.vault_type}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.nameOfDeceased}
+                      {n.name_of_deceased}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
@@ -167,10 +167,15 @@ function VaultsList(props) {
                 );
               })}
 
-              {data.length === 0 && 
+              {loading && 
                 _.range(6).map(k => 
                   <TableRowSkeleton key={k} />
               )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={7}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -198,6 +203,7 @@ function VaultsList(props) {
 const mapStateToProps = ({ vaultsApp }) => {
   const { vaults } = vaultsApp
   return {
+    loading: vaults.loading,
     searchText: vaults.searchText,
     vaultsData: vaults.vaults,
   }

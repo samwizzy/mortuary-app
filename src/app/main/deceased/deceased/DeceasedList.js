@@ -22,6 +22,7 @@ const statuses = ['RELEASED', 'ADMITTED']
 function DeceasedList(props) {
   const dispatch = useDispatch();
   const deceasedReducer = useSelector(({deceasedApp}) => deceasedApp.deceased);
+  const loading = deceasedReducer.loading
   const searchText = deceasedReducer.searchText
   const deceasedData = deceasedReducer.allDeceased
   const deceased = deceasedData.deceased
@@ -181,10 +182,15 @@ function DeceasedList(props) {
                 );
               })}
 
-              {data.length === 0 && 
+              {loading && 
                 _.range(6).map(k => 
                   <TableRowSkeleton key={k} />
               )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={7}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>

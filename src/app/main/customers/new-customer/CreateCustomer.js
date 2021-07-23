@@ -149,9 +149,18 @@ function CreateCustomer(props) {
   }
 
   function handleSelectChange(value, name, i) {
-    const { service } = form
-    service[i][name] = value 
-    setForm({ ...form, service });
+    const newService = [...form.service]
+    if(name === "service_id"){
+      newService[i][name] = value? value.id : null
+      newService[i].rate = value? value.amount : ""
+      if(value?.service_type === "2"){
+        newService[i].qty = 1;
+      }
+    }else{
+      newService[i][name] = value;
+    }
+
+    setForm({ ...form, service: newService });
   }
 
   function addServiceRow() {
@@ -251,7 +260,6 @@ function CreateCustomer(props) {
       }
       content={
         <form onSubmit={handleSubmit} className='p-16 sm:p-24 w-full'>
-          {/* max-w-2xl */}
           {tabValue === 0 && (
             <CustomerInfo
               form={form}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from "react-redux"
+import { connect, useSelector, useDispatch } from "react-redux"
 import moment from "moment";
 import {
   Link,
@@ -19,13 +19,12 @@ import * as Actions from '../store/actions';
 
 function InvoicesList(props) {
   const dispatch = useDispatch();
+  const { searchText, loading } = props
   const invoicesReducer = useSelector(({invoicesApp}) => invoicesApp.invoices);
   const invoiceData = invoicesReducer.invoices
   const invoices = invoiceData.invoices
   const totalItems = invoiceData.totalItems
   const currentPage = invoiceData.currentPage
-
-  const searchText = '';
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(invoices);
@@ -189,10 +188,15 @@ function InvoicesList(props) {
                 );
               })}
 
-              {data.length === 0 && 
+              {loading &&
                 _.range(6).map(k => 
                   <TableRowSkeleton key={k} />
               )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -215,4 +219,12 @@ function InvoicesList(props) {
   );
 }
 
-export default withRouter(InvoicesList);
+const mapStateToProps = ({invoicesApp}) => {
+  const { invoices } = invoicesApp
+  return {
+    loading: invoices.loading,
+    searchText: invoices.searchText,
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(InvoicesList));

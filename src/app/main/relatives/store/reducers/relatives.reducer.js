@@ -2,6 +2,7 @@ import * as Actions from '../actions';
 
 const initialState = {
   loading: false,
+  searchText: "",
   relatives: [],
   relative: null,
   message: null,

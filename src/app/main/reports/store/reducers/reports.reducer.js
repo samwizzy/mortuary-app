@@ -3,40 +3,73 @@ import * as Actions from '../actions';
 const initialState = {
   loading: false,
   searchText: "",
-  reports: {
-    totalItems: 0,
-    receipts: [],
-    totalPages: 0,
-    currentPage: 0
-  },
   admissions: {
     totalItems: 0,
-    receipts: [],
+    admissions: [],
     totalPages: 0,
     currentPage: 0
   },
-  releases: {
+  cremations: {
     totalItems: 0,
-    receipts: [],
+    cremations: [],
     totalPages: 0,
     currentPage: 0
   },
-  report: null,
+  vaults: {
+    totalItems: 0,
+    cremations: [],
+    totalPages: 0,
+    currentPage: 0
+  },
+  vouchers: {
+    totalItems: 0,
+    voucherList: [],
+    totalPages: 0,
+    currentPage: 0
+  },
   message: null,
 };
 
 const reportsReducer = function (state = initialState, action) {
   switch (action.type) {
-    case Actions.GET_RECEIPTS: {
+    case Actions.GET_ADMISSION_REPORT: {
       return {
         ...state,
-        reports: action.payload,
+        loading: false,
+        admissions: action.payload,
       };
     }
-    case Actions.GET_RECEIPT_BY_ID: {
+    case Actions.GET_CREMATION_REPORT: {
       return {
         ...state,
-        report: action.payload,
+        loading: false,
+        cremations: action.payload,
+      };
+    }
+    case Actions.GET_VAULT_REPORT: {
+      return {
+        ...state,
+        loading: false,
+        vaults: action.payload,
+      };
+    }
+    case Actions.GET_VOUCHER_REPORT: {
+      return {
+        ...state,
+        loading: false,
+        vouchers: action.payload,
+      };
+    }
+    case Actions.FETCH_PROGRESS: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case Actions.FETCH_REPORT_ERROR: {
+      return {
+        ...state,
+        loading: false,
       };
     }
     case Actions.SET_SEARCH_TEXT: {

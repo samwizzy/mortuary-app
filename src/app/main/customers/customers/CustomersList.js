@@ -17,7 +17,7 @@ import { useDispatch } from 'react-redux';
 import TableRowSkeleton from './TableRowSkeleton';
 
 function CustomersList(props) {
-  const { searchText } = props
+  const { searchText, loading } = props
   const dispatch = useDispatch();
   const customerReducer = useSelector(({customerApp}) => customerApp.customer);
   const customersData = customerReducer.customers
@@ -41,7 +41,8 @@ function CustomersList(props) {
         : _.filter(customers, (item) =>
             item.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
             item.other_name.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchText.toLowerCase()) 
+            item.email.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.customer_number.toLowerCase().includes(searchText.toLowerCase()) 
           )
     );
   }, [customers, searchText]);
@@ -174,10 +175,15 @@ function CustomersList(props) {
                 );
               })}
 
-            {data.length === 0 && 
+            {loading &&
               _.range(6).map(k => 
                 <TableRowSkeleton key={k} />
             )}
+            {data.length === 0 && 
+              <TableRow>
+                <TableCell colSpan={6}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+              </TableRow>
+            }
           </TableBody>
         </Table>
 
@@ -206,7 +212,8 @@ function CustomersList(props) {
 const mapStateToProps = ({customerApp}) => {
   const { customer } = customerApp
   return {
-    searchText: customer.searchText
+    loading: customer.loading,
+    searchText: customer.searchText,
   }
 }
 

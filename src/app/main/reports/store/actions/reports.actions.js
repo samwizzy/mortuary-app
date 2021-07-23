@@ -1,34 +1,91 @@
 import axios from 'axios';
 
-export const GET_RECEIPTS = '[CUSTOMER APP] GET RECEIPTS';
-export const GET_RECEIPT_BY_ID = '[CUSTOMER APP] GET RECEIPT BY ID';
+export const GET_ADMISSION_REPORT = '[CUSTOMER APP] GET ADMISSION REPORT';
+export const GET_CREMATION_REPORT = '[CUSTOMER APP] GET CREMATION REPORT';
+export const GET_VAULT_REPORT = '[CUSTOMER APP] GET VAULT REPORT';
+export const GET_VOUCHER_REPORT = '[CUSTOMER APP] GET VOUCHER REPORT';
+
+export const FETCH_PROGRESS = '[CUSTOMER APP] FETCH PROGRESS';
+export const FETCH_REPORT_ERROR = '[CUSTOMER APP] FETCH REPORT ERROR';
+
 export const SET_SEARCH_TEXT = '[CUSTOMER APP] SET SEARCH TEXT';
 
-export function getReceipts(page=0, size=10) {
-  const request = axios.get('/api/v1/receipts', { params: { page, size } });
+export function getAdmissionReports(data) {
+  const request = axios.post('/api/v1/reports/admission-form', data);
 
-  return (dispatch) =>
+  return (dispatch) => {
+    dispatch({ type: FETCH_PROGRESS })
+
     request.then((response) => {
-      console.log(response, "receipts response")
+      console.log(response, "admission reports response")
       dispatch({
-        type: GET_RECEIPTS,
+        type: GET_ADMISSION_REPORT,
         payload: response.data.data,
       })
+    })
+    .catch(err => {
+      dispatch({ type: FETCH_REPORT_ERROR })
     });
+  }
 }
 
-export function getReceiptById(id) {
-  const request = axios.get('/api/v1/receipts/' + id);
-  console.log(request, "receipt BY ID response")
+export function getCremationReports(data) {
+  const request = axios.post('/api/v1/reports/cremation-form', data);
 
-  return (dispatch) =>
+  return (dispatch) => {
+    dispatch({ type: FETCH_PROGRESS })
+
     request.then((response) => {
+      console.log(response, "cremation reports response")
       dispatch({
-        type: GET_RECEIPT_BY_ID,
+        type: GET_CREMATION_REPORT,
         payload: response.data.data,
       })
+    })
+    .catch(err => {
+      dispatch({ type: FETCH_REPORT_ERROR })
     });
+  }
 }
+
+export function getVaultReports(data) {
+  const request = axios.post('/api/v1/reports/vault-form', data);
+
+  return (dispatch) => {
+    dispatch({ type: FETCH_PROGRESS })
+
+    request.then((response) => {
+      console.log(response, "vault reports response")
+      dispatch({
+        type: GET_VAULT_REPORT,
+        payload: response.data.data,
+      })
+    })
+    .catch(err => {
+      dispatch({ type: FETCH_REPORT_ERROR })
+    });
+  }
+}
+
+export function getVoucherReports(data) {
+  const request = axios.post('/api/v1/reports/voucher-form', data);
+
+  return (dispatch) => {
+    dispatch({ type: FETCH_PROGRESS }) 
+
+    request.then((response) => {
+      console.log(response, "voucher reports response")
+      dispatch({
+        type: GET_VOUCHER_REPORT,
+        payload: response.data.data,
+      })
+    })
+    .catch(err => {
+      dispatch({ type: FETCH_REPORT_ERROR })
+    });
+  }
+}
+
 
 export function setSearchText(event) {
   return {
