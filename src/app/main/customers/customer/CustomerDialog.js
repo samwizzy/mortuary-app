@@ -10,6 +10,7 @@ import {
   MenuItem,
   Typography,
   Toolbar,
+  CircularProgress,
 } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,6 +42,7 @@ const blacklist = ['customer_image', 'customer_number', 'document', 'deceased', 
 function CustomerDialog(props) {
   const dispatch = useDispatch();
   const branches = useSelector(({ ezone }) => ezone.branches.branches);
+  const loading = useSelector(({ customerApp }) => customerApp.customer.loading);
   const customerDialog = useSelector(({ customerApp }) => customerApp.customer.customerDialog);
 
   const { form, handleChange, setForm } = useForm(defaultFormState);
@@ -247,6 +249,7 @@ function CustomerDialog(props) {
             color='primary'
             type='submit'
             disabled={!canBeSubmitted()}
+            endIcon={loading && <CircularProgress size={16} />}
           >
             Update
           </Button>

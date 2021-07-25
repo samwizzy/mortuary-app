@@ -209,6 +209,14 @@ function VoucherList(props) {
                           </TableRow>
                         );
                       })}
+                      <TableRow className='h-48'>
+                        <TableCell component='th' scope='row' align='left'>
+                          <strong>Grand Total</strong>
+                        </TableCell>
+                        <TableCell component='th' scope='row' align='right' colSpan={5}>
+                          {FuseUtils.formatCurrency(data.reduce((store, row) => store + (Number(row.total) * Number(row.qty)), 0))}
+                        </TableCell>
+                      </TableRow>
                        
                   </TableBody>
                 </Table>

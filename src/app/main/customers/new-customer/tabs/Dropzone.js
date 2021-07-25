@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
+import {FuseUtils} from "@fuse"
 import { Icon, IconButton } from "@material-ui/core"
 import _ from "lodash"
 
@@ -60,6 +61,8 @@ function ImageDropzone(props) {
         <IconButton onClick={deleteImage(name)}><Icon>close</Icon></IconButton>
       </li>
     )
+
+    _.get(form, name) && console.log(FuseUtils.getFileExtension(_.get(form, name)))  
 
   const style = useMemo(
     () => ({
