@@ -3,20 +3,20 @@ import { withRouter } from 'react-router-dom';
 import { Paper, Input, Icon, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
-import { useSelector } from 'react-redux';
-// import * as Actions from '../store/actions';
+import { useSelector, useDispatch } from 'react-redux';
+import * as Actions from '../store/actions';
 
 function InvoicesHeader(props) {
   const { match } = props;
-  // const dispatch = useDispatch();
-  const searchText = '';
+  const dispatch = useDispatch();
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
+  const searchText = useSelector(({ invoicesApp }) => invoicesApp.invoices.searchText);
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
       <div className='flex items-center'>
         <FuseAnimate animation='transition.expandIn' delay={300}>
-          <Icon className='text-32 mr-0 sm:mr-12'>person</Icon>
+          <Icon className='text-32 mr-0 sm:mr-12'>receipt</Icon>
         </FuseAnimate>
         <FuseAnimate animation='transition.slideLeftIn' delay={300}>
           <Typography className='hidden sm:flex' variant='h6'>
@@ -45,15 +45,11 @@ function InvoicesHeader(props) {
                 inputProps={{
                   'aria-label': 'Search',
                 }}
-                // onChange={ev => dispatch(Actions.setProductsSearchText(ev))}
+                onChange={ev => dispatch(Actions.setSearchText(ev))}
               />
             </Paper>
           </FuseAnimate>
         </ThemeProvider>
-      </div>
-      
-      <div>
-        
       </div>
     </div>
   );

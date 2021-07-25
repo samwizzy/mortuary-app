@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import withReducer from 'app/store/withReducer';
 import reducer from "./store/reducers";
 import * as Actions from "./store/actions";
+import * as appActions from "app/store/actions";
 import { FusePageCarded } from '@fuse';
 import CustomersHeader from './customers/CustomersHeader';
 import CustomerHeader from './customer/CustomerHeader';
@@ -21,6 +22,7 @@ class CustomerApp extends Component {
 
   componentDidMount() {
     this.props.getCustomers()
+    this.props.getBranches()
   }
 
   render() {
@@ -39,7 +41,7 @@ class CustomerApp extends Component {
         header={match.params.id ? <CustomerHeader /> : <CustomersHeader />}
         contentToolbar={match.params.id ? <CustomerToolbar /> : null}
         content={
-          <div className='p-16 sm:p-24 w-full'>
+          <div className='w-full'>
             {match.params.id ? <CustomerDetails /> : <CustomersList />}
           </div>
         }
@@ -51,7 +53,8 @@ class CustomerApp extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getCustomers: Actions.getCustomers
+    getCustomers: Actions.getCustomers,
+    getBranches: appActions.getBranches,
   }, dispatch)
 }
 

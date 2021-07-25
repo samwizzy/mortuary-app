@@ -33,10 +33,10 @@ const rows = [
     sort: true,
   },
   {
-    id: 'id',
+    id: 'deceased',
     align: 'left',
     disablePadding: false,
-    label: 'Customer ID',
+    label: 'Deceased',
     sort: true,
   },
   {

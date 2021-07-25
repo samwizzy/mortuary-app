@@ -38,7 +38,6 @@ class Auth extends Component {
 
     jwtCheck = () => {
         jwtService.on('onAutoLogin', () => {
-            console.log("I am auto loggging")
 
             this.props.showMessage({message: 'Logging in...'});
 

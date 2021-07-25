@@ -53,6 +53,18 @@ const invoicesReducer = function (state = initialState, action) {
         loading: false
       };
     }
+    case Actions.INITIALIZE_INVOICE_PAYMENT: {
+      return {
+        ...state,
+        loading: false
+      };
+    }
+    case Actions.RECORD_INVOICE_PAYMENT: {
+      return {
+        ...state,
+        loading: false
+      };
+    }
     case Actions.GET_PAYMENT_ADVICE: {
       return {
         ...state,
@@ -129,11 +141,10 @@ const invoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         recordPaymentDialog: {
-          type: 'new',
           props: {
             open: true,
           },
-          data: null,
+          data: action.payload,
         },
       };
     }
@@ -141,7 +152,6 @@ const invoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         recordPaymentDialog: {
-          type: 'new',
           props: {
             open: false,
           },

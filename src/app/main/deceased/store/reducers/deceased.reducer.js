@@ -10,6 +10,8 @@ const initialState = {
     totalPages: 0,
   },
   deceased: null,
+  embalmmentCert: null,
+  cremationCert: null,
   message: null,
 };
 
@@ -40,6 +42,27 @@ const deceasedReducer = function (state = initialState, action) {
         ...state,
         loading: false,
         message: action.payload,
+      };
+    }
+    case Actions.PRINT_ADMISSION_FORM: {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
+      };
+    }
+    case Actions.PRINT_EMBALMMENT_CERTIFICATE: {
+      return {
+        ...state,
+        loading: false,
+        embalmmentCert: action.payload,
+      };
+    }
+    case Actions.PRINT_CREMATION_CERTIFICATE: {
+      return {
+        ...state,
+        loading: false,
+        cremationCert: action.payload,
       };
     }
     case Actions.SET_SEARCH_TEXT: {

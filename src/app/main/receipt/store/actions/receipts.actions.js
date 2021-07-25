@@ -19,10 +19,10 @@ export function getReceipts(page=0, size=10) {
 
 export function getReceiptById(id) {
   const request = axios.get('/api/v1/receipts/' + id);
+  console.log(request, "receipt BY ID response")
 
   return (dispatch) =>
     request.then((response) => {
-      console.log(response, "receipt BY ID response")
       dispatch({
         type: GET_RECEIPT_BY_ID,
         payload: response.data.data,

@@ -4,6 +4,9 @@ import * as Actions from './';
 import history from "../../../../../@history"
 
 export const CREATE_SERVICE = '[INVENTORY APP] CREATE SERVICE';
+export const CREATE_SERVICE_PROGRESS = '[INVENTORY APP] CREATE SERVICE PROGRESS';
+export const CREATE_SERVICE_ERROR = '[INVENTORY APP] CREATE SERVICE ERROR';
+
 export const UPDATE_SERVICE = '[INVENTORY APP] UPDATE SERVICE';
 export const DELETE_SERVICE = '[INVENTORY APP] DELETE SERVICE';
 export const GET_SERVICES = '[INVENTORY APP] GET SERVICES';
@@ -29,21 +32,24 @@ export function createService(data) {
   const request = axios.post('/api/v1/services', data);
 
   return (dispatch) => {
+    dispatch({ type: CREATE_SERVICE_PROGRESS })
     request.then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: 'Service created successfully' }));
+      dispatch(showMessage({ message: 'Service created successfully' }));
 
-        Promise.all([
-          dispatch({
-            type: CREATE_SERVICE,
-            payload: response.data.data,
-          }),
-        ]).then(() => {
-          dispatch(Actions.getServices());
-          history.push("/inventory/services")
-        });
-      } else {
+      Promise.all([
+        dispatch({
+          type: CREATE_SERVICE,
+          payload: response.data.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.getServices());
+        history.push("/inventory/services")
+      });
+    })
+    .catch(err => {
+      if(err.response && err.response.data){
         dispatch(showMessage({ message: 'Service creation failed' }));
+        dispatch({ type: CREATE_SERVICE_ERROR })
       }
     });
   };

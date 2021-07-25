@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FuseAnimate, FuseScrollbars, FusePageCarded, FuseChipSelect } from '@fuse';
-import { Icon, Typography } from '@material-ui/core';
+import { CircularProgress, Icon, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import withReducer from 'app/store/withReducer';
 import reducer from '../store/reducers';
@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormControlLabel,
   FormGroup,
+  MenuItem
 } from '@material-ui/core';
 import { types } from "./Services"
 
@@ -24,11 +25,12 @@ const styles = (theme) => ({
 });
 
 function AddServices(props) {
-  const { classes, createService } = props;
+  const { classes, branches, createService, loading } = props;
 
   const [form, setForm] = useState({
     service_name: "",
     service_type: null,
+    branch_id: "",
     amount: "",
     is_admisson: false,
     is_customer_image: false,
@@ -38,6 +40,14 @@ function AddServices(props) {
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
+
+  const canBeSubmitted = () => {
+    return (
+      form.service_name.length > 0 &&
+      form.service_type &&
+      form.amount.length > 0
+    )
+  }
 
   const handleSubmit = () => {
     createService(form);
@@ -55,6 +65,7 @@ function AddServices(props) {
   };
 
   console.log(form, "form")
+  console.log(loading, "loading")
 
   return (
     <FusePageCarded
@@ -141,6 +152,25 @@ function AddServices(props) {
                 fullWidth
               />
 
+              <TextField
+                className='mt-8 mb-16'
+                select
+                label='Branch'
+                id='branch_id'
+                name='branch_id'
+                value={form.branch_id}
+                onChange={handleChange}
+                variant='outlined'
+                fullWidth
+              >
+                <MenuItem value="">Select branch</MenuItem>
+                {branches.map(b => 
+                  <MenuItem key={b.id} value={b.id}>
+                    {b.name}
+                  </MenuItem>
+                )}
+              </TextField>  
+
               <FormControl
                 required
                 error={false}
@@ -182,7 +212,14 @@ function AddServices(props) {
                 </FormGroup>
               </FormControl>
             </div>
-            <Button color='primary' className='float-right' variant='contained' onClick={handleSubmit}>
+            <Button 
+              color='primary' 
+              className='float-right' 
+              disabled={!canBeSubmitted()}
+              variant='contained' 
+              onClick={handleSubmit}
+              endIcon={loading && <CircularProgress color="inherit" size={16} />}
+            >
               save
             </Button>
           </FuseScrollbars>
@@ -193,10 +230,18 @@ function AddServices(props) {
   );
 }
 
+const mapStateToProps = ({inventoryApp, ezone}) => {
+  const { services } = inventoryApp
+  return {
+    loading: services.loading,
+    branches: ezone.branches.branches,
+  }
+};
+
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     createService: Actions.createService,
   }, dispatch);
 };
 
-export default withReducer('inventoryApp', reducer)(withStyles(styles, { withTheme: true })(connect(null, mapDispatchToProps)(AddServices)));
+export default withReducer('inventoryApp', reducer)(withStyles(styles, { withTheme: true })(connect(mapStateToProps, mapDispatchToProps)(AddServices)));

@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
 import { Button, Icon, IconButton, Popover, MenuItem } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useRouteMatch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions/index';
 
 function InvoiceToolbar(props){
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
+  const match = useRouteMatch()
 
   const invoice = useSelector(({invoicesApp}) => invoicesApp.invoices.invoice);
 
@@ -27,7 +28,7 @@ function InvoiceToolbar(props){
   };
 
   const handleRecordPayment = () => {
-    dispatch(Actions.openNewRecordPaymentDialog());
+    dispatch(Actions.initializeInvoicePayment(match.params.id));
     handleClose();
   };
   

@@ -47,6 +47,13 @@ const rows = [
     sort: true,
   },
   {
+    id: 'status',
+    align: 'left',
+    disablePadding: false,
+    label: 'Status',
+    sort: true,
+  },
+  {
     id: 'total',
     align: 'left',
     disablePadding: false,
@@ -55,7 +62,7 @@ const rows = [
   },
   {
     id: 'amount-due',
-    align: 'right',
+    align: 'left',
     disablePadding: false,
     label: 'Amount Due',
     sort: true,

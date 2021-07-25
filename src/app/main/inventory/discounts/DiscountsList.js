@@ -14,11 +14,12 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import DiscountsTableHead from './DiscountsTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../store/actions';
 import DiscountDialog from "./DiscountDialog"
 
 function DiscountsList(props) {
-  const { searchText } = props
+  const { searchText, loading } = props
   const dispatch = useDispatch();
   const discountReducer = useSelector(({inventoryApp}) => inventoryApp.discounts)
   const discounts = discountReducer.discounts;
@@ -37,7 +38,7 @@ function DiscountsList(props) {
       searchText.length === 0
         ? discounts
         : _.filter(discounts, (item) =>
-            item.discount_name.toLowerCase().includes(searchText.toLowerCase())
+            String(item.amount).includes(searchText)
           )
     );
   }, [discounts, searchText]);
@@ -59,10 +60,6 @@ function DiscountsList(props) {
       return;
     }
     setSelected([]);
-  }
-
-  function handleClick(item) {
-    // props.history.push('/inventory/discounts/' + item.id);
   }
 
   function handleCheck(event, id) {
@@ -128,13 +125,11 @@ function DiscountsList(props) {
                 return (
                   <TableRow
                     className='h-64 cursor-pointer'
-                    hover
                     role='checkbox'
                     aria-checked={isSelected}
                     tabIndex={-1}
                     key={n.id}
                     selected={isSelected}
-                    onClick={(event) => handleClick(n)}
                   >
                     <TableCell
                       className='w-48 px-4 sm:px-12'
@@ -147,9 +142,9 @@ function DiscountsList(props) {
                       />
                     </TableCell>
 
-                    <TableCell component='th' scope='row'>
+                    {/* <TableCell component='th' scope='row'>
                       {n.discount_name}
-                    </TableCell>
+                    </TableCell> */}
 
                     <TableCell component='th' scope='row' align='left'>
                       {n.amount || 0}%
@@ -165,6 +160,17 @@ function DiscountsList(props) {
                   </TableRow>
                 );
               })}
+
+            {loading && 
+              _.range(6).map(k => 
+                <TableRowSkeleton key={k} />
+            )}
+            {(data.length === 0 && !loading) &&
+              <TableRow>
+                <TableCell colSpan={6}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+              </TableRow>
+            }
+            
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -192,7 +198,8 @@ function DiscountsList(props) {
 const mapStateToProps = ({inventoryApp}) => {
   const { discounts } = inventoryApp
   return {
-    searchText: discounts.searchText
+    loading: discounts.loading,
+    searchText: discounts.searchText,
   }
 }
 

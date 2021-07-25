@@ -11,28 +11,34 @@ export const OPEN_PROFORMA_INVOICE_DIALOG = '[INVOICES APP] OPEN PROFORMA INVOIC
 export const CLOSE_PROFORMA_INVOICE_DIALOG = '[INVOICES APP] CLOSE PROFORMA INVOICE DIALOG';
 
 export const GENERATE_PROFORMA_INVOICE = '[INVOICES APP] GENERATE PROFORMA INVOICE';
+export const GENERATE_PROFORMA_INVOICE_PROGRESS = '[INVOICES APP] GENERATE PROFORMA INVOICE PROGRESS';
+export const GENERATE_PROFORMA_INVOICE_ERROR = '[INVOICES APP] GENERATE PROFORMA INVOICE ERROR';
 
 export function generateProformaInvoice(data) {
   const request = axios.post(`/api/v1/invoices/generate_proforma`, data);
 
   return (dispatch) => {
-    request.then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: 'Proforma Invoice generated successfully' }));
+    dispatch({ type: GENERATE_PROFORMA_INVOICE_PROGRESS })
 
-        Promise.all([
-          dispatch({
-            type: GENERATE_PROFORMA_INVOICE,
-            payload: response.data.data,
-          }),
-        ]).then(() => {
-          dispatch(Actions.openProformaInvoiceDialog(response.data.data))
-          dispatch(Actions.getProformaInvoices());
-          // history.push("/proforma")
-        });
-      } else {
+    request.then((response) => {
+      dispatch(showMessage({ message: 'Proforma Invoice generated successfully' }));
+
+      Promise.all([
+        dispatch({
+          type: GENERATE_PROFORMA_INVOICE,
+          payload: response.data.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.openProformaInvoiceDialog(response.data.data))
+        dispatch(Actions.getProformaInvoices());
+        // history.push("/proforma")
+      });    
+    })
+    .catch(err => {
+      if(err.response && err.response.data){
         dispatch(showMessage({ message: 'Proforma Invoice failed to generate' }));
       }
+      dispatch({ type: GENERATE_PROFORMA_INVOICE_ERROR })
     });
   };
 }

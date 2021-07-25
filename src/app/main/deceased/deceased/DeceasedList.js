@@ -14,18 +14,22 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import DeceasedTableHead from './DeceasedTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../store/actions';
+
+const statuses = ['RELEASED', 'ADMITTED']
 
 function DeceasedList(props) {
   const dispatch = useDispatch();
   const deceasedReducer = useSelector(({deceasedApp}) => deceasedApp.deceased);
+  const loading = deceasedReducer.loading
   const searchText = deceasedReducer.searchText
   const deceasedData = deceasedReducer.allDeceased
   const deceased = deceasedData.deceased
   const count = deceasedData.count
   const currentPage = deceasedData.currentPage
   
-  console.log(searchText, "searchText shit") 
+  console.log(deceased, "deceased list") 
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(deceased);
@@ -95,6 +99,7 @@ function DeceasedList(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getAllDeceased(0, event.target.value));
   }
 
   return (
@@ -170,12 +175,22 @@ function DeceasedList(props) {
                       {moment(n.dateof_assertion).format("Do MMM, yyyy")}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.status > 0 ? <Chip label="True" /> : <Chip label="False" />}
+                    <TableCell component='th' scope='row' align='left'>
+                      {<Chip label={statuses[n.status]} />}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+              {loading && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={7}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -185,6 +200,7 @@ function DeceasedList(props) {
         count={count}
         rowsPerPage={rowsPerPage}
         page={currentPage}
+        rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}

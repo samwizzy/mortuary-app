@@ -11,11 +11,13 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import _ from '@lodash';
-import { FuseScrollbars } from '@fuse';
+import moment from "moment";
+import { FuseScrollbars, FuseUtils } from '@fuse';
 import InvoicesTableHead from './ReceiptsTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 
 function ReceiptsList(props) {
-  const { searchText } = props
+  const { searchText, loading } = props
   const dispatch = useDispatch();
   const receiptsReducer = useSelector(({receiptsApp}) => receiptsApp.receipts);
   const receiptData = receiptsReducer.receipts
@@ -39,7 +41,8 @@ function ReceiptsList(props) {
       searchText.length === 0
         ? receipts
         : _.filter(receipts, (item) =>
-            item.invoiceNumber.toLowerCase().includes(searchText.toLowerCase())
+            item.receiptNumber.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+            item.invoiceNumber.toString().toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [receipts, searchText]);
@@ -149,31 +152,42 @@ function ReceiptsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row'>
-                      {n.id}
+                      {n.receiptNumber}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.noOfItems}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.invoiceDate}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='left'>
                       {n.billTo}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.totalAmount}
+                      {n.invoiceNumber}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.amountDue}
+                    <TableCell component='th' scope='row' align='left'>
+                      {moment(n.invoiceDate).isValid() ? moment(n.invoiceDate).format("Do MMM, yyyy") : null}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {FuseUtils.formatCurrency(n.invoiceAmount)}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row'>
+                      {FuseUtils.formatCurrency(n.paymentAmount)}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+              {loading && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
+
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -198,7 +212,8 @@ function ReceiptsList(props) {
 
 const mapStateToProps = ({receiptsApp}) => {
   return {
-    searchText: receiptsApp.receipts.searchText
+    loading: receiptsApp.receipts.loading,
+    searchText: receiptsApp.receipts.searchText,
   }
 }
 

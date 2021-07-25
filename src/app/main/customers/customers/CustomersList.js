@@ -14,9 +14,10 @@ import _ from '@lodash';
 import CustomersTableHead from './CustomersTableHead';
 import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
+import TableRowSkeleton from './TableRowSkeleton';
 
 function CustomersList(props) {
-  const { searchText } = props
+  const { searchText, loading } = props
   const dispatch = useDispatch();
   const customerReducer = useSelector(({customerApp}) => customerApp.customer);
   const customersData = customerReducer.customers
@@ -38,7 +39,10 @@ function CustomersList(props) {
       searchText.length === 0
         ? customers
         : _.filter(customers, (item) =>
-            item.first_name.toLowerCase().includes(searchText.toLowerCase())
+            item.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.other_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.email.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.customer_number.toLowerCase().includes(searchText.toLowerCase()) 
           )
     );
   }, [customers, searchText]);
@@ -92,6 +96,7 @@ function CustomersList(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getCustomers(0, event.target.value))
   }
 
   return (
@@ -156,21 +161,33 @@ function CustomersList(props) {
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.id}
+                      {n.customer_number}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
                       {n.email}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
+                    <TableCell component='th' scope='row' align='left'>
                       {n.phone_number}
                     </TableCell>
                   </TableRow>
                 );
               })}
+
+            {loading &&
+              _.range(6).map(k => 
+                <TableRowSkeleton key={k} />
+            )}
+            {data.length === 0 && 
+              <TableRow>
+                <TableCell colSpan={6}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+              </TableRow>
+            }
           </TableBody>
         </Table>
+
+        
       </FuseScrollbars>
 
       <TablePagination
@@ -178,6 +195,7 @@ function CustomersList(props) {
         count={count}
         rowsPerPage={rowsPerPage}
         page={currentPage}
+        rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -194,7 +212,8 @@ function CustomersList(props) {
 const mapStateToProps = ({customerApp}) => {
   const { customer } = customerApp
   return {
-    searchText: customer.searchText
+    loading: customer.loading,
+    searchText: customer.searchText,
   }
 }
 

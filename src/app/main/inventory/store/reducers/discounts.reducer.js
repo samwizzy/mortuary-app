@@ -35,6 +35,19 @@ const discountsReducer = function (state = initialState, action) {
         message: action.payload,
       };
     }
+    case Actions.CREATE_DISCOUNT_PROGRESS: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case Actions.CREATE_DISCOUNT_ERROR: {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload
+      };
+    }
     case Actions.UPDATE_DISCOUNT: {
       return {
         ...state,

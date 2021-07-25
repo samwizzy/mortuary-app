@@ -81,7 +81,7 @@ function SendInvoiceDialog(props) {
       maxWidth='xs'
     >
       <AppBar position='static' elevation={1}>
-        <Toolbar className='flex w-full'>
+        <Toolbar className='flex'>
           <Typography variant='subtitle1' color='inherit'>
             Send Invoice
           </Typography>
@@ -94,7 +94,7 @@ function SendInvoiceDialog(props) {
       >
         <DialogContent classes={{ root: 'p-24' }}>
           <div className='flex space-x-2'>
-            <div className='min-w-48 pt-20'>
+            <div className='min-w-48'>
               <Typography>From</Typography>
             </div>
 
@@ -113,11 +113,11 @@ function SendInvoiceDialog(props) {
           </div>
 
           <div className='flex space-x-2'>
-            <div className='min-w-48 pt-20'>
+            <div className='min-w-48'>
               <Typography>To</Typography>
             </div>
             <TextField
-              className='mb-24'
+              className='mb-16'
               label='To'
               id='to'
               InputProps={{disabled: true}}
@@ -130,7 +130,7 @@ function SendInvoiceDialog(props) {
           </div>
 
           <div className='flex flex-col space-y-2'>
-            <div className='min-w-48 pt-20'>
+            <div className='min-w-48'>
               <Typography>Subject</Typography>
             </div>
             <TextField
@@ -167,7 +167,7 @@ function SendInvoiceDialog(props) {
           </div>
         </DialogContent>
 
-        <DialogActions className='justify-between pl-16'>
+        <DialogActions className='justify-end pr-24'>
           <Button
             variant='contained'
             color='primary'
@@ -176,6 +176,13 @@ function SendInvoiceDialog(props) {
             disabled={!canBeSubmitted()}
           >
             Send invoice
+          </Button>
+          <Button
+            variant='outlined'
+            color='default'
+            onClick={closeComposeDialog}
+          >
+            Cancel
           </Button>
         </DialogActions>
       </form>

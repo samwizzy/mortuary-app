@@ -44,6 +44,19 @@ const servicesReducer = function (state = initialState, action) {
         message: action.payload,
       };
     }
+    case Actions.CREATE_SERVICE_PROGRESS: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case Actions.CREATE_SERVICE_ERROR: {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
+      };
+    }
     case Actions.UPDATE_SERVICE: {
       return {
         ...state,

@@ -4,6 +4,9 @@ import * as Actions from './';
 import history from "../../../../../@history"
 
 export const CREATE_DISCOUNT = '[INVENTORY APP] CREATE DISCOUNT';
+export const CREATE_DISCOUNT_PROGRESS = '[INVENTORY APP] CREATE DISCOUNT PROGRESS';
+export const CREATE_DISCOUNT_ERROR = '[INVENTORY APP] CREATE DISCOUNT ERROR';
+
 export const UPDATE_DISCOUNT = '[INVENTORY APP] UPDATE DISCOUNT';
 export const DELETE_DISCOUNT = '[INVENTORY APP] DELETE DISCOUNT';
 export const GET_DISCOUNTS = '[INVENTORY APP] GET DISCOUNTS';
@@ -21,21 +24,24 @@ export function createDiscount(data) {
   const request = axios.post('/api/v1/discounts', data);
 
   return (dispatch) => {
+    dispatch({ type: CREATE_DISCOUNT_PROGRESS })
     request.then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: 'Discount created successfully' }));
+      dispatch(showMessage({ message: 'Discount created successfully' }));
 
-        Promise.all([
-          dispatch({
-            type: CREATE_DISCOUNT,
-            payload: response.data,
-          }),
-        ]).then(() => {
-          dispatch(Actions.getDiscounts());
-          history.push("/inventory/discounts");
-        });
-      } else {
+      Promise.all([
+        dispatch({
+          type: CREATE_DISCOUNT,
+          payload: response.data,
+        }),
+      ]).then(() => {
+        dispatch(Actions.getDiscounts());
+        history.push("/inventory/discounts");
+      });  
+    })
+    .catch(err => {
+      if(err.response && err.response.data){
         dispatch(showMessage({ message: 'Discount creation failed' }));
+        dispatch({ type: CREATE_DISCOUNT_ERROR })
       }
     });
   };

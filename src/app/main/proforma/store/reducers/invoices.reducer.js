@@ -1,6 +1,7 @@
 import * as Actions from '../actions';
 
 const initialState = {
+  loading: false,
   searchText: '',
   proformaInvoices: {
     totalItems: 0,
@@ -29,6 +30,24 @@ const proformaInvoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         proformaInvoice: action.payload,
+      };
+    }
+    case Actions.GENERATE_PROFORMA_INVOICE: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case Actions.GENERATE_PROFORMA_INVOICE_PROGRESS: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case Actions.GENERATE_PROFORMA_INVOICE_ERROR: {
+      return {
+        ...state,
+        loading: false,
       };
     }
     case Actions.SET_SEARCH_TEXT: {

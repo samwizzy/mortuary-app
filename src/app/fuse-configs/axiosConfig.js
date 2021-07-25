@@ -1,7 +1,7 @@
 
 import axios from "axios";
 
-const baseURL = "https://dev.ezoneapps.com/gateway/mortuary-service/";
+const baseURL = "https://api.ezoneerp.com/gateway/mortuary-service/";
 
 const token = localStorage.getItem('access_token')
 

@@ -5,10 +5,12 @@ import { FusePageCarded } from '@fuse';
 import { withStyles } from '@material-ui/core/styles';
 import withReducer from 'app/store/withReducer';
 import reducer from '../store/reducers';
+import * as appActions from 'app/store/actions';
 import * as Actions from '../store/actions';
 import ServicesList from './services/ServicesList';
 import ServiceDetails from './service/ServiceDetails';
 import ServicesHeader from './services/ServicesHeader';
+import ServiceHeader from './service/ServiceHeader';
 import ServiceToolbar from './service/ServiceToolbar';
 import AddService from './AddService';
 import ServiceDialog from "./ServiceDialog"
@@ -30,6 +32,7 @@ function Services(props) {
 
   useEffect(() => {
     dispatch(Actions.getServices())
+    dispatch(appActions.getBranches())
   }, [dispatch])
 
   if(match.params.id === "new"){
@@ -44,12 +47,14 @@ function Services(props) {
           content: 'flex',
           header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
         }}
-        header={<ServicesHeader />}
+        header={
+          props.match.params.id ? <ServiceHeader /> : <ServicesHeader />
+        }
         contentToolbar={
           props.match.params.id ? <ServiceToolbar /> : ""
         }
         content={
-          <div className='p-24 w-full'>
+          <div className='w-full'>
             {props.match.params.id ? <ServiceDetails /> : <ServicesList />}
           </div>
         }

@@ -22,12 +22,6 @@ function RelativeToolbar(props) {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const relative = {};
-
-  if (!relative) {
-    return null;
-  }
-
   return (
     <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16'>
       <IconButton onClick={() => props.history.goBack()}>

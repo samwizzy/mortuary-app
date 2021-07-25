@@ -4,9 +4,9 @@ import withReducer from 'app/store/withReducer';
 import reducer from "./store/reducers";
 import { FusePageCarded } from '@fuse';
 import DeceasedHeader from './deceased/DeceasedHeader';
+import DetailsHeader from './details/DeceasedHeader';
 import DeceasedList from './deceased/DeceasedList';
 import DeceasedDetails from './details/DeceasedDetails';
-import DeceasedToolbar from './deceased/DeceasedToolbar';
 import DetailsToolbar from './details/DeceasedToolbar';
 
 const styles = (theme) => ({
@@ -23,12 +23,12 @@ class DeceasedApp extends Component {
           content: 'flex',
           header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
         }}
-        header={<DeceasedHeader />}
+        header={this.props.match.params.id ? <DetailsHeader /> : <DeceasedHeader />}
         contentToolbar={
-          this.props.match.params.id ? <DetailsToolbar /> : <DeceasedToolbar />
+          this.props.match.params.id ? <DetailsToolbar /> : null
         }
         content={
-          <div className='p-24 w-full'>
+          <div className='w-full'>
             {this.props.match.params.id ? (
               <DeceasedDetails />
             ) : (

@@ -12,15 +12,17 @@ import { FuseScrollbars } from '@fuse';
 import { withRouter, useRouteMatch } from 'react-router-dom';
 import _ from '@lodash';
 import CustomersTableHead from './RelativesTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux';
 
 function RelativesList(props) {
   const dispatch = useDispatch();
   const relativesReducer = useSelector(({relativesApp}) => relativesApp.relatives);
+  const loading = relativesReducer.loading
+  const searchText = relativesReducer.searchText
   const relatives = relativesReducer.relatives
   const match = useRouteMatch();
-  const searchText = '';
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(relatives);
@@ -171,6 +173,16 @@ function RelativesList(props) {
                   </TableRow>
                 );
               })}
+
+              {loading && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
+              {data.length === 0 &&  
+                <TableRow>
+                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>

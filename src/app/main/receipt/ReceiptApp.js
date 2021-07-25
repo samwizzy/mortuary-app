@@ -7,7 +7,6 @@ import ReceiptsHeader from './receipts/ReceiptsHeader';
 import ReceiptHeader from './receipt/ReceiptHeader';
 import ReceiptsList from './receipts/ReceiptsList';
 import ReceiptList from './receipt/ReceiptList';
-import ReceiptsToolbar from './receipts/ReceiptsToolbar';
 import ReceiptToolbar from './receipt/ReceiptToolbar';
 
 const styles = (theme) => ({
@@ -28,10 +27,10 @@ class ReceiptApp extends Component {
           this.props.match.params.id ? <ReceiptHeader /> : <ReceiptsHeader />
         }
         contentToolbar={
-          this.props.match.params.id ? <ReceiptToolbar /> : <ReceiptsToolbar />
+          this.props.match.params.id ? <ReceiptToolbar /> : null
         }
         content={
-          <div className='w-full p-24'>
+          <div className='w-full'>
             {this.props.match.params.id ? <ReceiptList /> : <ReceiptsList />}
           </div>
         }

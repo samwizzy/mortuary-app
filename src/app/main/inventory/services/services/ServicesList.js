@@ -14,11 +14,12 @@ import { FuseScrollbars, FuseUtils } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import ServicesTableHead from './ServicesTableHead';
+import TableRowSkeleton from './TableRowSkeleton';
 import * as Actions from '../../store/actions';
 import { types } from "./../Services"
 
 function ServicesList(props) {
-  const { searchText } = props
+  const { searchText, loading } = props
   const dispatch = useDispatch();
   const serviceReducer = useSelector(({inventoryApp}) => inventoryApp.services)
   const servicesData = serviceReducer.services;
@@ -96,6 +97,7 @@ function ServicesList(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+    dispatch(Actions.getServices(0, event.target.value))
   }
 
   return (
@@ -181,6 +183,16 @@ function ServicesList(props) {
                   </TableRow>
                 );
               })}
+              
+              {loading && 
+                _.range(6).map(k => 
+                  <TableRowSkeleton key={k} />
+              )}
+              {(data.length === 0 && !loading) && 
+                <TableRow>
+                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                </TableRow>
+              }
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -190,6 +202,7 @@ function ServicesList(props) {
         count={count}
         rowsPerPage={rowsPerPage}
         page={currentPage}
+        rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -206,6 +219,7 @@ function ServicesList(props) {
 const mapStateToProps = ({inventoryApp}) => {
   const { services } = inventoryApp
   return {
+    loading: services.loading,
     searchText: services.searchText
   }
 }

@@ -4,7 +4,7 @@ import { connect, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import { FuseAnimate } from '@fuse';
 import * as Actions from "./../store/actions"
-import { Card, CardMedia, CardHeader } from '@material-ui/core';
+import { Avatar, Card, CardContent, CardMedia, CardHeader } from '@material-ui/core';
 
 function DeceasedDetails(props) {
   const { getDeceasedById } = props
@@ -22,75 +22,81 @@ function DeceasedDetails(props) {
   }
 
   return (
-    <div>
+    <div className="p-24">
       <div className='flex items-center justify-between overflow-hidden'>
         <div className='flex flex-col'>
           <FuseAnimate delay={100}>
-            <div className='flex flex-wrap mt-8'>
+            <div className='flex flex-wrap mt-0'>
               <div className='w-full bg-white shadow overflow-hidden sm:rounded-lg'>
-                <div className='px-4 py-5 sm:px-6'>
-                  <h3 className='text-lg leading-6 font-medium text-gray-900'>
-                    Basic Information
+                <div className='px-4 py-0 sm:px-6'>
+                  <h3 className='text-lg leading-6 font-bold text-gray-900'>
+                    Deceased Information
                   </h3>
-                  <p className='mt-1 max-w-2xl text-sm text-gray-500'>
-                    Deceased details
-                  </p>
                 </div>
-                <div className="grid grid-cols-2 gap-x-6">
-                  <div className='border-t border-gray-200'>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className='border-t border-gray-200 col-span-2'>
                     <dl>
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                      <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           First name
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.first_name}
-                        </dd>
-                      </div>
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
-                          Last Name
-                        </dt>
-                        <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        {deceased.last_name}
-                        </dd>
-                      </div>
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
-                          Other name
-                        </dt>
-                        <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.other_name}
+                          {deceased?.first_name}
                         </dd>
                       </div>
                       <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                        <dt className='text-sm font-bold text-gray-600'>
+                          Last Name
+                        </dt>
+                        <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                        {deceased?.last_name}
+                        </dd>
+                      </div>
+                      <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>
+                          Other name
+                        </dt>
+                        <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                          {deceased?.other_name}
+                        </dd>
+                      </div>
+                      <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           Gender
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.gender}
+                          {deceased?.gender}
                         </dd>
                       </div>
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>Age</dt>
+                      <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>Age</dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.age}
+                          {deceased?.age}
                         </dd>
                       </div>
 
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                      <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           Address
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.address}
+                          {deceased?.address}
                         </dd>
                       </div>
                     </dl>
                   </div>
                   <div>
                     <Card elevation={0} className="w-192 border border-solid border-grey-lighter">
-                      <CardMedia image={deceased?.deceased_image} className="w-full h-192" />
+                      <CardContent className="flex justify-center">
+                      {deceased?.deceased_image ?
+                        ( 
+                          <a href={deceased?.deceased_image || "/"} target="_blank" alt="" rel="noopener noreferrer">
+                            <Avatar variant="rounded" src={deceased?.deceased_image} className="w-160 h-160" />
+                          </a>
+                        ) : 
+                        <Avatar src={deceased?.deceased_image} className="w-160 h-160" />
+                      } 
+                      </CardContent>
                       <CardHeader className="text-center" title="Deceased Image" titleTypographyProps={{variant: "subtitle2"}} />
                     </Card>
                   </div>
@@ -98,103 +104,133 @@ function DeceasedDetails(props) {
               </div>
 
               <div className='w-full bg-white shadow overflow-hidden sm:rounded-lg'>
-                <div className='px-4 py-5 sm:px-6'>
-                  <h3 className='text-lg leading-6 font-medium text-gray-900'>
+                <div className='px-4 pt-4 sm:px-6'>
+                  <h3 className='text-lg leading-6 font-bold text-gray-900'>
                     Date of Assertion
                   </h3>
                 </div>
-                <div className="grid grid-cols-2 gap-x-6">
-                  <div className='border-t border-gray-200'>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className='border-t border-gray-200 col-span-2'>
                     <dl>
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                      <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           Place of death
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.place_of_death}
+                          {deceased?.place_of_death}
                         </dd>
                       </div>
                       <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           Date of Assertion
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.dateof_assertion}
+                          {deceased?.dateof_assertion}
                         </dd>
                       </div>
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                      <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           Cause of death
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.cause_of_death}
+                          {deceased?.cause_of_death}
                         </dd>
                       </div>
                       <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           Time
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.time_of_death}
+                          {deceased?.time_of_death}
                         </dd>
                       </div>
-                      <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                        <dt className='text-sm font-medium text-gray-500'>
+                      <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                        <dt className='text-sm font-bold text-gray-600'>
                           How was death ascertained?
                         </dt>
                         <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          {deceased.how_was_death_assertained}
+                          {deceased?.how_was_death_assertained}
                         </dd>
                       </div>
                     </dl>
                   </div>
                   <div>
                     <Card elevation={0} className="w-192 border border-solid border-grey-lighter">
-                      <CardMedia image={deceased?.supporting_document} className="w-full h-192" />
+                      {deceased?.supporting_document.split(".").pop() === "pdf"
+                      ? (
+                      <CardContent className="text-center">
+                        <a href={deceased?.supporting_document || "/"} target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/images/icons/paper.svg" alt="" className="h-60 w-auto" />
+                        </a>
+                      </CardContent>
+                      ) :
+                      <CardMedia 
+                        component="a"
+                        target="_blank"
+                        href={deceased?.supporting_document || "/"}
+                        src={deceased?.supporting_document || '/assets/images/icons/paper.svg'} 
+                        className="w-full h-192" 
+                      />
+                      }
                       <CardHeader className="text-center" title="Supporting document" titleTypographyProps={{variant: "subtitle2"}} />
                     </Card>
                   </div>
                 </div>
               </div>
 
-              <div className='w-full bg-white shadow overflow-hidden sm:rounded-lg'>
-                <div className='px-4 py-5 sm:px-6'>
-                  <h3 className='text-lg leading-6 font-medium text-gray-900'>
+              <div className='w-full bg-white shadow overflow-hidden sm:rounded-lg pb-8'>
+                <div className='px-4 pt-4 sm:px-6'>
+                  <h3 className='text-lg leading-6 font-bold text-gray-900'>
                     Medical
                   </h3>
                 </div>
-                <div className="grid grid-cols-2 gap-x-6">
-                <div className='border-t border-gray-200'>
+                <div className="grid grid-cols-3 gap-4">
+                <div className='border-t border-gray-200 col-span-2'>
                   <dl>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
+                    <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                      <dt className='text-sm font-bold text-gray-600'>
                         Name of Hosipital
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        {deceased.name_of_hospital}
+                        {deceased?.name_of_hospital}
                       </dd>
                     </div>
                     <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
+                      <dt className='text-sm font-bold text-gray-600'>
                         Medical Attendant
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        {deceased.medical_attendant_name}
+                        {deceased?.medical_attendant_name}
                       </dd>
                     </div>
-                    <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                      <dt className='text-sm font-medium text-gray-500'>
+                    <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+                      <dt className='text-sm font-bold text-gray-600'>
                         Address
                       </dt>
                       <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                        {deceased.hospital_address}
+                        {deceased?.hospital_address}
                       </dd>
                     </div>
                   </dl>
                 </div>
                 <div>
                   <Card elevation={0} className="w-192 border border-solid border-grey-lighter">
-                    <CardMedia image={deceased?.record_of_death_from_hospital} className="w-full h-192" />
+                    {deceased?.record_of_death_from_hospital.split(".").pop() === "pdf"
+                      ? (
+                      <CardContent className="text-center">
+                        <a href={deceased?.record_of_death_from_hospital || "/"} target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/images/icons/paper.svg" alt="" className="h-60 w-auto" />
+                        </a>
+                      </CardContent>
+                      ) :
+                      <CardMedia 
+                        component="a" 
+                        target="_blank"
+                        href={deceased?.record_of_death_from_hospital || "/"} 
+                        image={deceased?.record_of_death_from_hospital || '/assets/images/icons/paper.svg'} 
+                        className="w-full h-192" 
+                      />
+                    }
                     <CardHeader className="text-center" title="Record of death certificate" titleTypographyProps={{variant: "subtitle2"}} />
                   </Card>
                 </div>

@@ -10,6 +10,7 @@ import {
   Typography,
   Toolbar,
   AppBar,
+  CircularProgress,
 } from '@material-ui/core';
 import { useForm } from '@fuse/hooks';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,9 +24,8 @@ const defaultFormState = {
 
 function DiscountDialog(props) {
   const dispatch = useDispatch();
-  const discountDialog = useSelector(
-    ({ inventoryApp }) => inventoryApp.discounts.discountDialog
-  );
+  const discountDialog = useSelector(({ inventoryApp }) => inventoryApp.discounts.discountDialog);
+  const loading = useSelector(({ inventoryApp }) => inventoryApp.discounts.loading);
 
   const { form, handleChange, setForm } = useForm(defaultFormState);
 
@@ -64,7 +64,10 @@ function DiscountDialog(props) {
   }
 
   function canBeSubmitted() {
-    return form.discount_name.length > 0;
+    return (
+      form.discount_name.length > 0 &&
+      form.amount
+    )
   }
 
   function onSubmit(event) {
@@ -91,7 +94,7 @@ function DiscountDialog(props) {
       maxWidth='xs'
     >
       <AppBar position='static' elevation={1}>
-        <Toolbar className='flex w-full'>
+        <Toolbar className='flex'>
           <Typography variant='subtitle1' color='inherit'>
             {discountDialog.type === 'edit' ? 'Update Discount' : 'New Discount'}
           </Typography>
@@ -103,13 +106,9 @@ function DiscountDialog(props) {
         className='flex flex-col overflow-hidden'
       >
         <DialogContent classes={{ root: 'p-24' }}>
-          <div className='flex flex-col space-y-2'>
-            <div className='min-w-48 pt-20'>
-              <Typography>Discount name</Typography>
-            </div>
-
+          <div className='flex flex-col'>
             <TextField
-              className='mb-24'
+              className='mb-24 mt-16'
               label='Discount name'
               autoFocus
               id='discount_name'
@@ -122,12 +121,9 @@ function DiscountDialog(props) {
             />
           </div>
 
-          <div className='flex flex-col space-y-2'>
-            <div className='min-w-48 pt-20'>
-              <Typography>Amount</Typography>
-            </div>
+          <div className='flex flex-col'>
             <TextField
-              className='mb-24'
+              className='mb-8'
               select
               label='Amount'
               id='amount'
@@ -147,7 +143,7 @@ function DiscountDialog(props) {
           </div>
         </DialogContent>
         
-        <DialogActions className='justify-between pl-16'>
+        <DialogActions className='justify-end pr-24 pb-16'>
           {discountDialog.type === 'edit' ? 
           (
             <Button
@@ -155,6 +151,7 @@ function DiscountDialog(props) {
               color='primary'
               type='submit'
               disabled={!canBeSubmitted()}
+              endIcon={loading && <CircularProgress size={16} />}
             >
               Update
             </Button>
@@ -164,6 +161,7 @@ function DiscountDialog(props) {
               color='primary'
               type='submit'
               disabled={!canBeSubmitted()}
+              endIcon={loading && <CircularProgress size={16} />}
             >
               Save
             </Button>

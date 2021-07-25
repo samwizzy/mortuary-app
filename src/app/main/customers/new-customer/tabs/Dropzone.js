@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Icon } from "@material-ui/core"
+import {FuseUtils} from "@fuse"
+import { Icon, IconButton } from "@material-ui/core"
 import _ from "lodash"
 
 const baseStyle = {
@@ -32,7 +33,7 @@ const rejectStyle = {
 };
 
 function ImageDropzone(props) {
-  const { name, title, icon, form, format, disabled, handleImageUpload } = props;
+  const { name, title, icon, form, format, disabled, deleteImage, handleImageUpload } = props;
   const {
     getRootProps,
     getInputProps,
@@ -57,9 +58,11 @@ function ImageDropzone(props) {
     _.get(form, name) && (
       <li className="flex items-center space-x-2">
         <img src={`data:image/jpg;base64,${_.get(form, name)}`} alt='' className='h-40' />
-        <Icon>close</Icon>
+        <IconButton onClick={deleteImage(name)}><Icon>close</Icon></IconButton>
       </li>
     )
+
+    _.get(form, name) && console.log(FuseUtils.getFileExtension(_.get(form, name)))  
 
   const style = useMemo(
     () => ({
@@ -73,7 +76,7 @@ function ImageDropzone(props) {
   );
 
   return (
-    <div className='flex flex-col space-y-4'>
+    <div className='flex flex-col'>
       <section className='container'>
         <div {...getRootProps({ style })} className='space-y-2'>
           <input {...getInputProps()} />

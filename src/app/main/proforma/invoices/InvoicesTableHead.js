@@ -53,13 +53,6 @@ const rows = [
     label: 'Date Created',
     sort: true,
   },
-  {
-    id: 'total',
-    align: 'left',
-    disablePadding: false,
-    label: 'Total',
-    sort: true,
-  },
 ];
 
 const useStyles = makeStyles((theme) => ({
