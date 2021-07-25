@@ -476,6 +476,12 @@ class FuseUtils {
         return re.test(phone) && phone.length === 11;
     }
 
+    static getFileExtension = (base64) => {
+        const body = {profilepic: `data:image/png;base64,${base64}`};
+        let mimeType = body.profilepic.match(/[^:/]\w+(?=;|,)/)[0];
+        return mimeType
+    }
+
 }
 
 export default FuseUtils;

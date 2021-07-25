@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { withRouter } from 'react-router-dom';
-import { Button, Grid, Paper, Input, Icon, TextField, MenuItem, Typography, CircularProgress } from '@material-ui/core';
-import { ThemeProvider, makeStyles } from '@material-ui/styles';
+import { Button, Grid, TextField, MenuItem, Typography, CircularProgress } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
 import { useSelector, useDispatch } from 'react-redux';
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
@@ -23,10 +23,8 @@ function ReportsHeader(props) {
   const { match } = props;
   const classes = useStyles()
   const dispatch = useDispatch();
-  const searchText = '';
   const branches = useSelector(({ezone}) => ezone.branches.branches)
   const loading = useSelector(({reportsApp}) => reportsApp.reports.loading)
-  const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
 
   const [form, setForm] = useState({
     branchId: "",
@@ -36,7 +34,7 @@ function ReportsHeader(props) {
   });
 
   const handleDateChange = (name) => (date) => {
-    setForm({ ...form, [name]: moment(date).format("YYYY-MM-DD") });
+    setForm({ ...form, [name]: moment(date).format("YYYY-MM-DDTHH:mm:ss") });
   };
 
   const handleChange = (event) => {
@@ -61,43 +59,13 @@ function ReportsHeader(props) {
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
-      <div className='flex items-center'>
-        <FuseAnimate animation='transition.expandIn' delay={300}>
-          <Icon className='text-32 mr-0 sm:mr-12'>person</Icon>
-        </FuseAnimate>
-        <FuseAnimate animation='transition.slideLeftIn' delay={300}>
-          <Typography className='hidden sm:flex' variant='h6'>
-            {match.params.id ? 'Release Report Details' : 'Release Reports'}
-          </Typography>
-        </FuseAnimate>
-      </div>
+      <FuseAnimate animation='transition.slideLeftIn' delay={300}>
+        <Typography className='hidden sm:flex' variant='h6'>
+          {match.params.id ? 'Release Report Details' : 'Release Reports'}
+        </Typography>
+      </FuseAnimate>
 
-      <div className='flex flex-1 items-start justify-center px-12 space-x-8'>
-        <ThemeProvider theme={mainTheme}>
-          <FuseAnimate animation='transition.slideDownIn' delay={300}>
-            <Paper
-              className='flex items-center px-8 py-4 rounded-8'
-              elevation={1}
-            >
-              <Icon className='mr-8' color='action'>
-                search
-              </Icon>
-
-              <Input
-                placeholder='Search'
-                className='flex flex-1'
-                disableUnderline
-                fullWidth
-                value={searchText}
-                inputProps={{
-                  'aria-label': 'Search',
-                }}
-                onChange={ev => dispatch(Actions.setSearchText(ev))}
-              />
-            </Paper>
-          </FuseAnimate>
-        </ThemeProvider>
-
+      <div className='flex flex-1 items-start justify-end px-12 space-x-8'>
         <FuseAnimate animation='transition.slideDownIn' delay={300}>
           <TextField
             className='min-w-128'

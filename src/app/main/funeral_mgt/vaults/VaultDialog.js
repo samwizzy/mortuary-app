@@ -41,8 +41,7 @@ const defaultFormState = {
 const vaultTypes = [
   { label: 'SINGLE', value: 'SINGLE_VAULT', num: 1}, 
   { label: 'DOUBLE', value: 'DOUBLE_VAULT', num: 2}, 
-  { label: 'TRIPLE', value: 'TRIPLE_VAULT', num: 3}, 
-  { label: 'FAMILY', value: 'FAMILY_VAULT', num: 4}
+  { label: 'TRIPLE', value: 'TRIPLE_VAULT', num: 3}
 ]
 
 const vaultTypeDropdown = vaultTypes.map(plot => 
@@ -63,8 +62,9 @@ function VaultDialog(props) {
     if(event.target.name === "vault_type"){
       let deceased = []
       let num = _.find(vaultTypes, {label: event.target.value})?.num;
-
-      deceased = _.fillArray({name_of_deceased: "", date_buried: null}, num)
+      _.range(0, num).forEach((n, i) => {
+        deceased = [...deceased, { name_of_deceased: "", date_buried: null }]
+      })
       setForm({ ...form, [event.target.name]: event.target.value, deceased })
     }else{
       setForm(

@@ -62,7 +62,7 @@ function DeceasedToolbar(props) {
             <MenuItem component={Link} to={`/deceased/${match.params.id}/embalmment-certificate`}>Print embalming certificate</MenuItem>
             <MenuItem component={Link} to={`/deceased/${match.params.id}/cremation-certificate`}>Print cremation certificate</MenuItem>
             <MenuItem 
-              disabled={!(deceased?.deceasedInvoiceStatus === 1)} 
+              disabled={(deceased?.deceasedInvoiceStatus === 1)} 
               component={Link} 
               to={`/deceased/${match.params.id}/release-form`}
             >

@@ -40,7 +40,7 @@ export function createCustomer(data) {
       });
     })
     .catch(err => {
-      console.dir(err.response.data, "err")
+      console.dir(err?.response?.data, "err")
       if(err?.response && err.response?.data){
         dispatch(showMessage({ message: err?.response?.data?.message }));
       }
@@ -104,6 +104,8 @@ export function updateCustomer(customer_id, data) {
   const request = axios.put(`/api/v1/customers/${customer_id}`, data);
 
   return (dispatch) => {
+    dispatch({ type: CREATE_CUSTOMER_PROGRESS });
+
     request.then((response) => {
       dispatch(showMessage({ message: 'Customer updated successfully' }));
 
@@ -114,6 +116,7 @@ export function updateCustomer(customer_id, data) {
         }),
       ]).then(() => {
         history.push(`/customers/${customer_id}`);
+        dispatch(Actions.closeEditCustomerDialog())
         window.location.reload();
       });      
     })

@@ -44,10 +44,10 @@ const rows = [
     sort: true,
   },
   {
-    id: 'total',
+    id: 'subtotal',
     align: 'right',
     disablePadding: false,
-    label: 'Total',
+    label: 'SubTotal',
     sort: true,
   },
 ];
