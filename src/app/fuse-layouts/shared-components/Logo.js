@@ -30,7 +30,7 @@ function Logo() {
 
     return (
         <div className={clsx(classes.root, "flex items-center")}>
-            <a href="https://dev.ezoneerp.com/"><img className="logo-icon" src="assets/images/logos/ezone.svg" alt="logo" /></a>
+            <a href="https://apps.ezoneerp.com/"><img className="logo-icon" src="assets/images/logos/ezone.svg" alt="logo" /></a>
             <Typography className="text-16 ml-32 font-light logo-text" color="textPrimary"></Typography>
             <div className={clsx(classes.reactBadge, "react-badge flex hidden items-center ml-12 mr-8 py-4 px-8 rounded")}>
                 <img
