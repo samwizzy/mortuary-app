@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import jwtDecode from 'jwt-decode';
+import {baseURL} from "app/fuse-configs/axiosConfig"
 import FuseUtils from '@fuse/FuseUtils';
 
 class jwtService extends FuseUtils.EventEmitter {
@@ -113,7 +113,7 @@ class jwtService extends FuseUtils.EventEmitter {
 
     getProfileData = () => {
         return new Promise((resolve, reject) => {
-         axios.get('https://dev.ezoneapps.com/gateway/authserv/api/v1/users/profile')
+         axios.get(`${baseURL}/authserv/api/v1/users/profile`)
             .then(response => {
                 console.log(response, "response")
                 resolve(response.data)

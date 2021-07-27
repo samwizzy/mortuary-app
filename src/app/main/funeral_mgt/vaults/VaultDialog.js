@@ -54,7 +54,7 @@ function VaultDialog(props) {
   const dispatch = useDispatch();
   const vaultDialog = useSelector(({ vaultsApp }) => vaultsApp.vaults.vaultDialog);
   const loading = useSelector(({ vaultsApp }) => vaultsApp.vaults.loading);
-  const branches = useSelector(({ vaultsApp }) => vaultsApp.branches.branches);
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
 
   const [ form, setForm ] = useState(defaultFormState);
 
