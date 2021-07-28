@@ -1,16 +1,18 @@
 import axios from 'axios';
+import { baseURL } from "app/fuse-configs/axiosConfig"
 
 export const GET_EMPLOYEES = '[VOUCHERS APP] GET EMPLOYEES';
 
 export function getEmployees() {
-  const request = axios.get('https://dev.ezoneapps.com/gateway/authserv/api/v1/users/get_by_orgid?orgId=ORG-1619171587122');
-  console.log(request, "request employees")
+  return (dispatch, getState) => {
+    const user = getState().auth.user;
+    console.log(user, "get employeees")
+    const request = axios.get(`${baseURL}/authserv/api/v1/users/get_by_orgid?orgId=${user.data.organisation.orgId}`); //ORG-1619171587122 
 
-  return (dispatch) =>
     request.then((response) => {
       dispatch({
         type: GET_EMPLOYEES,
         payload: response.data,
       })
-    });
+    });}
 }
