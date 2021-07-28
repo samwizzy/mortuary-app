@@ -7,6 +7,7 @@ import firebase from 'firebase/app';
 import firebaseService from 'app/services/firebaseService';
 import auth0Service from 'app/services/auth0Service';
 import jwtService from 'app/services/jwtService';
+import { homeUrl } from "app/fuse-configs/axiosConfig"
 
 export const SET_USER_DATA = '[USER] SET DATA';
 export const REMOVE_USER_DATA = '[USER] REMOVE DATA';
@@ -173,7 +174,7 @@ export function logoutUser()
 
         // history.push({ pathname: '/' });
 
-        window.location.replace('https://apps.ezoneerp.com')
+        window.location.replace(homeUrl)
 
         switch ( user.from )
         {
