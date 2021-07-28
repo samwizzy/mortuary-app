@@ -4,7 +4,7 @@ import {bindActionCreators} from "redux"
 import {connect} from "react-redux"
 import withReducer from 'app/store/withReducer';
 import reducers from './../store/reducers';
-import * as Actions from './../store/actions';
+import * as appActions from './../../../store/actions';
 import { FusePageCarded } from '@fuse';
 import VouchersHeader from './vouchers/VouchersHeader';
 import VoucherHeader from './voucher/VoucherHeader';
@@ -65,7 +65,7 @@ class VouchersApp extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getBranches: Actions.getBranches
+    getBranches: appActions.getBranches
   }, dispatch)
 }
 

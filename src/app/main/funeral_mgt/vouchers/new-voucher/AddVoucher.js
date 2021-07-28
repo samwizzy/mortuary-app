@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { FusePageSimple, FuseScrollbars, FuseUtils } from '@fuse';
 import { withStyles } from '@material-ui/core/styles';
 import * as Actions from '../../store/actions';
+import * as appActions from '../../../../store/actions';
 import { 
   Button, 
   CircularProgress, 
@@ -51,10 +52,11 @@ function AddVoucher(props) {
   const { 
     classes, 
     match, 
+    user,
     generateVoucher, 
     updateVoucher, 
     getVoucherById, 
-    getBranches, getEmployees, voucher, branches, employees, loading } = props;
+    getEmployees, voucher, branches, employees, loading } = props;
   const [errors, setErrors] = useState({})
 
   const [form, setForm] = useState({...defaultFormState});
@@ -62,14 +64,14 @@ function AddVoucher(props) {
   console.log(voucher, "voucher add edit")
 
   useEffect(() => {
-    getBranches()
     getEmployees()
-    getVoucherById(match.params.subId);
-  }, [getBranches, getEmployees, getVoucherById, match.params.subId])
+  }, [getEmployees, user.data])
 
-  console.log(employees, "employees")
+  useEffect(() => {
+    match.params.subId && getVoucherById(match.params.subId);
+  }, [getVoucherById, match.params.subId])
+
   console.log(branches, "branches")
-  console.log(match, "match")
 
   const initDialog = useCallback(() => {
     /**
@@ -430,13 +432,14 @@ function AddVoucher(props) {
   );
 }
 
-const mapStateToProps = ({vouchersApp}) => {
-  const { vouchers, branches, employees } = vouchersApp
+const mapStateToProps = ({vouchersApp, ezone, auth}) => {
+  const { vouchers } = vouchersApp
 
   return {
     loading: vouchers.loading,
-    branches: branches.branches,
-    employees: employees.employees,
+    user: auth.user,
+    branches: ezone.branches.branches,
+    employees: ezone.employees.employees,
     voucher: vouchers.voucher,
   }
 };
@@ -447,8 +450,7 @@ const mapDispatchToProps = (dispatch) => {
     generateVoucher: Actions.generateVoucher,
     updateVoucher: Actions.updateVoucher,
     getVoucherById: Actions.getVoucherById,
-    getBranches: Actions.getBranches,
-    getEmployees: Actions.getEmployees,
+    getEmployees: appActions.getEmployees,
   }, dispatch);
 };
 
