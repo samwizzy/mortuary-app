@@ -3,12 +3,12 @@ import { withRouter } from 'react-router-dom';
 import { Paper, Input, Icon, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
-import { useSelector } from 'react-redux';
-// import * as Actions from '../store/actions';
+import { useSelector, useDispatch } from 'react-redux';
+import * as Actions from '../store/actions';
 
 function ReceiptsHeader(props) {
-  // const dispatch = useDispatch();
-  const searchText = '';
+  const dispatch = useDispatch();
+  const searchText = useSelector(({ receiptsApp }) => receiptsApp.receipts.searchText);
   const mainTheme = useSelector(({ fuse }) => fuse.settings.mainTheme);
 
   return (
@@ -44,7 +44,7 @@ function ReceiptsHeader(props) {
                 inputProps={{
                   'aria-label': 'Search',
                 }}
-                // onChange={ev => dispatch(Actions.setProductsSearchText(ev))}
+                onChange={ev => dispatch(Actions.setSearchText(ev))}
               />
             </Paper>
           </FuseAnimate>

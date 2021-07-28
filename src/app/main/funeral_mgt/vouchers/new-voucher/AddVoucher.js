@@ -68,7 +68,7 @@ function AddVoucher(props) {
   }, [getEmployees, user.data])
 
   useEffect(() => {
-    getVoucherById(match.params.subId);
+    match.params.subId && getVoucherById(match.params.subId);
   }, [getVoucherById, match.params.subId])
 
   console.log(branches, "branches")
@@ -433,8 +433,7 @@ function AddVoucher(props) {
 }
 
 const mapStateToProps = ({vouchersApp, ezone, auth}) => {
-  const { vouchers, /*employees*/ } = vouchersApp
-  console.log(ezone, "ezone map")
+  const { vouchers } = vouchersApp
 
   return {
     loading: vouchers.loading,
@@ -451,7 +450,6 @@ const mapDispatchToProps = (dispatch) => {
     generateVoucher: Actions.generateVoucher,
     updateVoucher: Actions.updateVoucher,
     getVoucherById: Actions.getVoucherById,
-    // getEmployees: Actions.getEmployees,
     getEmployees: appActions.getEmployees,
   }, dispatch);
 };
