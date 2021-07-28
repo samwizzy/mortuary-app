@@ -173,7 +173,7 @@ export function logoutUser()
 
         // history.push({ pathname: '/' });
 
-        window.location.replace('https://dev.ezoneerp.com')
+        window.location.replace('https://apps.ezoneerp.com')
 
         switch ( user.from )
         {

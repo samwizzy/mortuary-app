@@ -54,11 +54,12 @@ function VaultDialog(props) {
   const dispatch = useDispatch();
   const vaultDialog = useSelector(({ vaultsApp }) => vaultsApp.vaults.vaultDialog);
   const loading = useSelector(({ vaultsApp }) => vaultsApp.vaults.loading);
-  const branches = useSelector(({ vaultsApp }) => vaultsApp.branches.branches);
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
 
   const [ form, setForm ] = useState(defaultFormState);
 
   const handleChange = (event) => {
+    event.persist()
     if(event.target.name === "vault_type"){
       let deceased = []
       let num = _.find(vaultTypes, {label: event.target.value})?.num;

@@ -14,6 +14,7 @@ import _ from '@lodash';
 import moment from 'moment';
 import PlotsTableHead from './PlotsTableHead';
 import TableRowSkeleton from './TableRowSkeleton';
+import * as appActions from '../../../store/actions';
 import * as Actions from '../store/actions';
 
 function PlotsList(props) {
@@ -32,7 +33,7 @@ function PlotsList(props) {
 
   useEffect(() => {
     dispatch(Actions.getVouchers());
-    dispatch(Actions.getBranches())
+    dispatch(appActions.getBranches())
   }, [dispatch]);
 
   useEffect(() => {

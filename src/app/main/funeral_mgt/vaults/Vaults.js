@@ -5,6 +5,7 @@ import {connect} from "react-redux"
 import withReducer from 'app/store/withReducer';
 import reducers from './../store/reducers';
 import * as Actions from './../store/actions';
+import * as appActions from './../../../store/actions';
 import { FusePageCarded } from '@fuse';
 import VaultsHeader from './VaultsHeader';
 import VaultHeader from './vault/VaultHeader';
@@ -57,7 +58,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     getVaults: Actions.getVaults,
     getPlots: Actions.getPlots,
-    getBranches: Actions.getBranches,
+    getBranches: appActions.getBranches,
   }, dispatch)
 }
 
