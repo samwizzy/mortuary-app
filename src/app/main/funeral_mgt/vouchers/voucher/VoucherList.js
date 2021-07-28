@@ -214,7 +214,7 @@ function VoucherList(props) {
                           <strong>Grand Total</strong>
                         </TableCell>
                         <TableCell component='th' scope='row' align='right' colSpan={5}>
-                          {FuseUtils.formatCurrency(data.reduce((store, row) => store + (Number(row.total) * Number(row.qty)), 0))}
+                          {FuseUtils.formatCurrency(data.reduce((store, row) => store + Number(row.total), 0))}
                         </TableCell>
                       </TableRow>
                        
@@ -236,12 +236,12 @@ function VoucherList(props) {
   );
 }
 
-const mapStateToProps = ({vouchersApp, auth}) => {
-  const { vouchers, branches } = vouchersApp
+const mapStateToProps = ({vouchersApp, auth, ezone}) => {
+  const { vouchers } = vouchersApp
   return {
     user: auth.user.data,
     voucher: vouchers.voucher,
-    branches: branches.branches,
+    branches: ezone.branches.branches,
   }
 }
 
