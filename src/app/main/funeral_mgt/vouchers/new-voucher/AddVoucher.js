@@ -54,7 +54,7 @@ function AddVoucher(props) {
     generateVoucher, 
     updateVoucher, 
     getVoucherById, 
-    getBranches, getEmployees, voucher, branches, employees, loading } = props;
+    getEmployees, voucher, branches, employees, loading } = props;
   const [errors, setErrors] = useState({})
 
   const [form, setForm] = useState({...defaultFormState});
@@ -62,14 +62,11 @@ function AddVoucher(props) {
   console.log(voucher, "voucher add edit")
 
   useEffect(() => {
-    getBranches()
     getEmployees()
     getVoucherById(match.params.subId);
-  }, [getBranches, getEmployees, getVoucherById, match.params.subId])
+  }, [getEmployees, getVoucherById, match.params.subId])
 
-  console.log(employees, "employees")
   console.log(branches, "branches")
-  console.log(match, "match")
 
   const initDialog = useCallback(() => {
     /**
@@ -430,12 +427,12 @@ function AddVoucher(props) {
   );
 }
 
-const mapStateToProps = ({vouchersApp}) => {
-  const { vouchers, branches, employees } = vouchersApp
+const mapStateToProps = ({vouchersApp, ezone}) => {
+  const { vouchers, employees } = vouchersApp
 
   return {
     loading: vouchers.loading,
-    branches: branches.branches,
+    branches: ezone.branches.branches,
     employees: employees.employees,
     voucher: vouchers.voucher,
   }
@@ -447,7 +444,6 @@ const mapDispatchToProps = (dispatch) => {
     generateVoucher: Actions.generateVoucher,
     updateVoucher: Actions.updateVoucher,
     getVoucherById: Actions.getVoucherById,
-    getBranches: Actions.getBranches,
     getEmployees: Actions.getEmployees,
   }, dispatch);
 };
