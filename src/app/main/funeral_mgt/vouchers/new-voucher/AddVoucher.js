@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { FusePageSimple, FuseScrollbars, FuseUtils } from '@fuse';
 import { withStyles } from '@material-ui/core/styles';
 import * as Actions from '../../store/actions';
+import * as appActions from '../../../../store/actions';
 import { 
   Button, 
   CircularProgress, 
@@ -51,6 +52,7 @@ function AddVoucher(props) {
   const { 
     classes, 
     match, 
+    user,
     generateVoucher, 
     updateVoucher, 
     getVoucherById, 
@@ -63,8 +65,11 @@ function AddVoucher(props) {
 
   useEffect(() => {
     getEmployees()
+  }, [getEmployees, user.data])
+
+  useEffect(() => {
     getVoucherById(match.params.subId);
-  }, [getEmployees, getVoucherById, match.params.subId])
+  }, [getVoucherById, match.params.subId])
 
   console.log(branches, "branches")
 
@@ -427,13 +432,15 @@ function AddVoucher(props) {
   );
 }
 
-const mapStateToProps = ({vouchersApp, ezone}) => {
-  const { vouchers, employees } = vouchersApp
+const mapStateToProps = ({vouchersApp, ezone, auth}) => {
+  const { vouchers, /*employees*/ } = vouchersApp
+  console.log(ezone, "ezone map")
 
   return {
     loading: vouchers.loading,
+    user: auth.user,
     branches: ezone.branches.branches,
-    employees: employees.employees,
+    employees: ezone.employees.employees,
     voucher: vouchers.voucher,
   }
 };
@@ -444,7 +451,8 @@ const mapDispatchToProps = (dispatch) => {
     generateVoucher: Actions.generateVoucher,
     updateVoucher: Actions.updateVoucher,
     getVoucherById: Actions.getVoucherById,
-    getEmployees: Actions.getEmployees,
+    // getEmployees: Actions.getEmployees,
+    getEmployees: appActions.getEmployees,
   }, dispatch);
 };
 
