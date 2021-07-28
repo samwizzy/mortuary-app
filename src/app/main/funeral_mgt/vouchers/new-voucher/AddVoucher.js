@@ -427,12 +427,12 @@ function AddVoucher(props) {
   );
 }
 
-const mapStateToProps = ({vouchersApp}) => {
-  const { vouchers, branches, employees } = vouchersApp
+const mapStateToProps = ({vouchersApp, ezone}) => {
+  const { vouchers, employees } = vouchersApp
 
   return {
     loading: vouchers.loading,
-    branches: branches.branches,
+    branches: ezone.branches.branches,
     employees: employees.employees,
     voucher: vouchers.voucher,
   }

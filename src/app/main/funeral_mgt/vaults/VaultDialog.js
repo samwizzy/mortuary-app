@@ -59,6 +59,7 @@ function VaultDialog(props) {
   const [ form, setForm ] = useState(defaultFormState);
 
   const handleChange = (event) => {
+    event.persist()
     if(event.target.name === "vault_type"){
       let deceased = []
       let num = _.find(vaultTypes, {label: event.target.value})?.num;
