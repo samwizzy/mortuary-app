@@ -135,7 +135,14 @@ class jwtService extends FuseUtils.EventEmitter {
     };
 
     logout = () => {
-        this.setSession(null);
+        return new Promise(async(resolve, reject) => {
+            await axios.post(`${baseURL}/authserv/api/v1/logout`)
+            .then(response => {
+                console.log(response.data, "logout response")
+                resolve(response.data)
+                this.setSession(null);
+            })
+        })
     };
 
     isAuthTokenValid = access_token => {
