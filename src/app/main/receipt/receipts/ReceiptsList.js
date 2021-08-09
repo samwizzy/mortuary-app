@@ -41,8 +41,8 @@ function ReceiptsList(props) {
       searchText.length === 0
         ? receipts
         : _.filter(receipts, (item) =>
-            item.receiptNumber.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-            item.invoiceNumber.toString().toLowerCase().includes(searchText.toLowerCase())
+              item.receiptNumber.toLowerCase().includes(searchText.toLowerCase()) ||
+              (item.invoiceNumber && item.invoiceNumber.toLowerCase().includes(searchText.toLowerCase()))
           )
     );
   }, [receipts, searchText]);

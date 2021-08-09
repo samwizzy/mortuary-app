@@ -19,7 +19,7 @@ const rows = [
     id: 'discount',
     align: 'left',
     disablePadding: false,
-    label: 'Discount (%)',
+    label: 'Discount(%)',
     sort: true,
   },
   {

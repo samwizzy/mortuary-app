@@ -19,6 +19,13 @@ import { makeStyles } from '@material-ui/styles';
 
 const rows = [
   {
+    id: 'voucher-number',
+    align: 'left',
+    disablePadding: false,
+    label: 'Voucher number',
+    sort: true,
+  },
+  {
     id: 'family-name',
     align: 'left',
     disablePadding: false,
