@@ -4,22 +4,22 @@ import { connect } from 'react-redux';
 import { FusePageCarded, FuseScrollbars, FuseUtils } from '@fuse';
 import { withStyles } from '@material-ui/core/styles';
 import * as Actions from '../store/actions';
-import { 
-  Button, 
-  CircularProgress, 
-  IconButton, 
-  MenuItem, 
-  TextField, 
-  Table, 
-  TableHead, 
-  TableBody, 
-  TableRow, 
-  TableCell 
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  MenuItem,
+  TextField,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
 } from '@material-ui/core';
-import AddIcon from "@material-ui/icons/Add"
-import DeleteIcon from "@material-ui/icons/Delete"
-import AddInvoiceHeader from "./AddInvoiceHeader"
-import AddInvoiceToolbar from "./AddInvoiceToolbar"
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddInvoiceHeader from './AddInvoiceHeader';
+import AddInvoiceToolbar from './AddInvoiceToolbar';
 import moment from 'moment';
 
 const styles = (theme) => ({
@@ -27,80 +27,84 @@ const styles = (theme) => ({
 });
 
 function AddInvoice(props) {
-  const { classes, generateProformaInvoice, services, branches, loading } = props;
-  const [errors, setErrors] = useState({})
+  const { classes, generateProformaInvoice, services, branches, loading } =
+    props;
+  const [errors, setErrors] = useState({});
 
-  console.log(loading, "loading")
+  console.log(loading, 'loading');
 
   const [form, setForm] = useState({
-    family_name: "",
-    email: "",
-    phone_number: "",
-    branch_id: "",
-    contact_person: "",
-    invoice_date: moment().format("YYYY-MM-DDTHH:mm:ss"),
-    address: "",
-    service: [
-      { service_id: '', qty: '', rate: '' }
-    ],
+    family_name: '',
+    email: '',
+    phone_number: '',
+    branch_id: '',
+    contact_person: '',
+    invoice_date: moment().format('YYYY-MM-DDTHH:mm:ss'),
+    address: '',
+    service: [{ service_id: '', qty: '', rate: '' }],
   });
 
   const validate = (field) => (e) => {
-    const temp = {}
-    if(field === "email"){
-      temp[field] = FuseUtils.validateEmail(form[field]) ? "" : "Email is not valid"
+    const temp = {};
+    if (field === 'email') {
+      temp[field] = FuseUtils.validateEmail(form[field])
+        ? ''
+        : 'Email is not valid';
     }
-    if(field === "phone_number"){
-      temp[field] = FuseUtils.validatePhone(form[field]) && form[field].length === 11 ? "" : "Phone number is not valid"
+    if (field === 'phone_number') {
+      temp[field] = FuseUtils.validatePhone(form[field])
+        ? ''
+        : 'Phone number is not valid';
     }
 
     setErrors({ ...temp });
-  }
+  };
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
 
   function addServiceRow() {
-    const newRole = { service_id: '', qty: '', rate: '' }
-    setForm({...form, service: [ ...form.service, newRole ]});
+    const newRole = { service_id: '', qty: '', rate: '' };
+    setForm({ ...form, service: [...form.service, newRole] });
   }
 
   const removeServiceRow = (i) => () => {
-    setForm({ ...form, service: form.service.filter((s, k) => k !== i)});
-  }
+    setForm({ ...form, service: form.service.filter((s, k) => k !== i) });
+  };
 
-  const handleMultiChange = i => event => {
-    const { name, value } = event.target
-    const { service } = form
-    if(name === "service_id"){
-      const serv = services.find(s => s.id === value)
-      service[i][name] = serv.id
-      service[i].rate = serv.amount
-    }else if(name === "qty"){
+  const handleMultiChange = (i) => (event) => {
+    const { name, value } = event.target;
+    const { service } = form;
+    if (name === 'service_id') {
+      const serv = services.find((s) => s.id === value);
+      service[i][name] = serv.id;
+      service[i].rate = serv.amount;
+    } else if (name === 'qty') {
       // const serv = services.find(s => s.id === service[i].service_id)
       // service[i].rate = Number(serv.amount * value)
-      service[i][name] = value
+      service[i][name] = value;
     }
     setForm({ ...form, service });
-  }
+  };
 
   const canSubmit = () => {
-    return ( 
+    return (
       form.family_name.length > 0 &&
       form.email.length > 0 &&
       form.phone_number.length > 0 &&
       form.contact_person.length > 0 &&
-      form.service.length > 0 && form.service[0]?.service_id
-    )
-  }
+      form.service.length > 0 &&
+      form.service[0]?.service_id
+    );
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     generateProformaInvoice(form);
   };
 
-  console.log(form, "form")
+  console.log(form, 'form');
 
   return (
     <FusePageCarded
@@ -109,12 +113,8 @@ function AddInvoice(props) {
         content: 'flex',
         header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
       }}
-      header={
-        <AddInvoiceHeader />
-      }
-      contentToolbar={
-        <AddInvoiceToolbar />
-      }
+      header={<AddInvoiceHeader />}
+      contentToolbar={<AddInvoiceToolbar />}
       content={
         <form className='w-full p-24' onSubmit={handleSubmit}>
           <FuseScrollbars className='flex-grow overflow-x-auto pb-24'>
@@ -147,15 +147,15 @@ function AddInvoice(props) {
               <TextField
                 className='mt-8 mb-16'
                 required
-                type="email"
+                type='email'
                 label='Email'
                 id='email'
                 name='email'
                 value={form.email}
-                onKeyUp={validate("email")}
+                onKeyUp={validate('email')}
                 onChange={handleChange}
-                error={Boolean(errors["email"])}
-                helperText={errors["email"]}
+                error={Boolean(errors['email'])}
+                helperText={errors['email']}
                 variant='outlined'
                 fullWidth
               />
@@ -167,10 +167,10 @@ function AddInvoice(props) {
                 id='phone_number'
                 name='phone_number'
                 value={form.phone_number}
-                onKeyUp={validate("phone_number")}
+                onKeyUp={validate('phone_number')}
                 onChange={handleChange}
-                error={Boolean(errors["phone_number"])}
-                helperText={errors["phone_number"]}
+                error={Boolean(errors['phone_number'])}
+                helperText={errors['phone_number']}
                 variant='outlined'
                 fullWidth
               />
@@ -186,13 +186,13 @@ function AddInvoice(props) {
                 variant='outlined'
                 fullWidth
               >
-                <MenuItem value="">Select branch</MenuItem>
-                {branches.map(b => 
+                <MenuItem value=''>Select branch</MenuItem>
+                {branches.map((b) => (
                   <MenuItem key={b.id} value={b.id}>
                     {b.name}
                   </MenuItem>
-                )}
-              </TextField>  
+                ))}
+              </TextField>
 
               <TextField
                 className='mt-8 mb-16'
@@ -210,8 +210,12 @@ function AddInvoice(props) {
               />
             </div>
 
-            <div className="mb-24">
-              <Table className='border border-grey-light border-solid' size="small" aria-labelledby='tableTitle'>
+            <div className='mb-24'>
+              <Table
+                className='border border-grey-light border-solid'
+                size='small'
+                aria-labelledby='tableTitle'
+              >
                 <TableHead>
                   <TableRow>
                     <TableCell>Services</TableCell>
@@ -237,7 +241,11 @@ function AddInvoice(props) {
                         selected={isSelected}
                         onClick={() => {}}
                       >
-                        <TableCell component='th' scope='row' className='truncate'>
+                        <TableCell
+                          component='th'
+                          scope='row'
+                          className='truncate'
+                        >
                           <TextField
                             className='min-w-288'
                             select
@@ -250,14 +258,20 @@ function AddInvoice(props) {
                             variant='outlined'
                             fullWidth
                           >
-                            <MenuItem value="">Select Services</MenuItem>
-                            {services.map(s => 
-                              <MenuItem key={s.id} value={s.id}>{s.service_name}</MenuItem>
-                            )}
-                          </TextField>  
+                            <MenuItem value=''>Select Services</MenuItem>
+                            {services.map((s) => (
+                              <MenuItem key={s.id} value={s.id}>
+                                {s.service_name}
+                              </MenuItem>
+                            ))}
+                          </TextField>
                         </TableCell>
 
-                        <TableCell className='truncate' component='th' scope='row'>
+                        <TableCell
+                          className='truncate'
+                          component='th'
+                          scope='row'
+                        >
                           <TextField
                             className=''
                             required
@@ -271,7 +285,11 @@ function AddInvoice(props) {
                           />
                         </TableCell>
 
-                        <TableCell className='truncate' component='th' scope='row'>
+                        <TableCell
+                          className='truncate'
+                          component='th'
+                          scope='row'
+                        >
                           <TextField
                             className=''
                             required
@@ -292,15 +310,17 @@ function AddInvoice(props) {
                   })}
                 </TableBody>
               </Table>
-            </div>      
+            </div>
 
-            <Button 
-              color='primary' 
-              type="submit" 
+            <Button
+              color='primary'
+              type='submit'
               disabled={!canSubmit()}
-              className='float-right' 
-              variant='contained' 
-              endIcon={loading && <CircularProgress color="inherit" size={16} />}
+              className='float-right'
+              variant='contained'
+              endIcon={
+                loading && <CircularProgress color='inherit' size={16} />
+              }
             >
               Generate
             </Button>
@@ -312,8 +332,8 @@ function AddInvoice(props) {
   );
 }
 
-const mapStateToProps = ({proformaApp, ezone}) => {
-  const { customer, services, discounts, invoices } = proformaApp
+const mapStateToProps = ({ proformaApp, ezone }) => {
+  const { customer, services, discounts, invoices } = proformaApp;
 
   return {
     loading: invoices.loading,
@@ -321,13 +341,18 @@ const mapStateToProps = ({proformaApp, ezone}) => {
     services: services.services.services,
     discounts: discounts.discounts,
     branches: ezone.branches.branches,
-  }
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    generateProformaInvoice: Actions.generateProformaInvoice,
-  }, dispatch);
+  return bindActionCreators(
+    {
+      generateProformaInvoice: Actions.generateProformaInvoice,
+    },
+    dispatch
+  );
 };
 
-export default withStyles(styles, { withTheme: true })(connect(mapStateToProps, mapDispatchToProps)(AddInvoice));
+export default withStyles(styles, { withTheme: true })(
+  connect(mapStateToProps, mapDispatchToProps)(AddInvoice)
+);
