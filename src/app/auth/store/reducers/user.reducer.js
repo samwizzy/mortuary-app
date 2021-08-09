@@ -20,6 +20,7 @@ const initialState = {
             state: "",
             country: "",
         },
+        role: "",
         shortcuts    : [
             'calendar',
             'mail',

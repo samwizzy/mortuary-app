@@ -1,18 +1,20 @@
 import React from 'react';
-import { useSelector } from "react-redux"
+import { useSelector } from 'react-redux';
 import { Button, CircularProgress, Icon, Typography } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { Link } from 'react-router-dom';
 
 function CustomersHeader(props) {
   const { form, handleSubmit } = props;
-  const loading = useSelector(({customerApp}) => customerApp.customer.loading);
+  const loading = useSelector(
+    ({ customerApp }) => customerApp.customer.loading
+  );
 
   function canBeSubmitted() {
     return form.service[0]?.service_id;
   }
 
-  console.log(loading, "loading")
+  console.log(loading, 'loading');
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>

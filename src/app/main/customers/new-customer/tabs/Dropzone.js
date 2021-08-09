@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import {FuseUtils} from "@fuse"
-import { Icon, IconButton } from "@material-ui/core"
-import _ from "lodash"
+import { FuseUtils } from '@fuse';
+import { Icon, IconButton } from '@material-ui/core';
+import _ from 'lodash';
 
 const baseStyle = {
   flex: 1,
@@ -33,7 +33,16 @@ const rejectStyle = {
 };
 
 function ImageDropzone(props) {
-  const { name, title, icon, form, format, disabled, deleteImage, handleImageUpload } = props;
+  const {
+    name,
+    title,
+    icon,
+    form,
+    format,
+    disabled,
+    deleteImage,
+    handleImageUpload,
+  } = props;
   const {
     getRootProps,
     getInputProps,
@@ -41,7 +50,7 @@ function ImageDropzone(props) {
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    accept: format === 'image'? 'image/jpeg, image/png' : '.pdf, .doc, image/jpeg, image/png',
+    accept: format === 'image' ? 'image/jpeg, image/png' : '.pdf, .doc',
     multiple: false,
     disabled: !disabled,
     onDrop: (acceptedFiles) => {
@@ -54,15 +63,21 @@ function ImageDropzone(props) {
     },
   });
 
-  const files =
-    _.get(form, name) && (
-      <li className="flex items-center space-x-2">
-        <img src={`data:image/jpg;base64,${_.get(form, name)}`} alt='' className='h-40' />
-        <IconButton onClick={deleteImage(name)}><Icon>close</Icon></IconButton>
-      </li>
-    )
+  const files = _.get(form, name) && (
+    <li className='flex items-center space-x-2'>
+      <img
+        src={`data:image/jpg;base64,${_.get(form, name)}`}
+        alt=''
+        className='h-40'
+      />
+      <IconButton onClick={deleteImage(name)}>
+        <Icon>close</Icon>
+      </IconButton>
+    </li>
+  );
 
-    _.get(form, name) && console.log(FuseUtils.getFileExtension(_.get(form, name)))  
+  _.get(form, name) &&
+    console.log(FuseUtils.getFileExtension(_.get(form, name)));
 
   const style = useMemo(
     () => ({
@@ -82,13 +97,18 @@ function ImageDropzone(props) {
           <input {...getInputProps()} />
           <img className='h-10' src={icon} alt='upload-icon' />
           <p>
-            <span className='text-green'>Click here or Drop</span> Your {_.startCase(title)}
+            <span className='text-green'>Click here or Drop</span> Your{' '}
+            {_.startCase(title)}
           </p>
-          <span className='text-xs text-gray-600'>{format.split(",").join(" and ")} format only</span>
+          <span className='text-xs text-gray-600'>
+            {format.split(',').join(' and ')} format only
+          </span>
         </div>
 
         <aside>
-          <ul className='flex py-4 list-none' style={{listStyle: "none"}}>{files}</ul>
+          <ul className='flex py-4 list-none' style={{ listStyle: 'none' }}>
+            {files}
+          </ul>
         </aside>
       </section>
     </div>
