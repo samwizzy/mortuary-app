@@ -88,7 +88,9 @@ function InvoiceList(props) {
                 <dl className='space-y-16 text-right text-xs'>
                   <div>
                     <dt className='capitalize'>
-                      {user.organisation?.city} Location
+                      {user.organisation?.city
+                        ? `${user.organisation?.city} Location`
+                        : ''}
                     </dt>
                     <dt>{user.organisation?.companyName}</dt>
                     <dt>{user.organisation?.address}</dt>
@@ -115,9 +117,11 @@ function InvoiceList(props) {
                   </div>
                   <div className='text-gray-600'>
                     <dt>
-                      {moment(invoice?.invoice_date).format(
-                        'dddd, MMMM Do, YYYY'
-                      )}
+                      {invoice?.invoice_date
+                        ? moment(invoice?.invoice_date).format(
+                            'dddd, MMMM Do, YYYY'
+                          )
+                        : ''}
                     </dt>
                     <dt>{invoice?.invoice_number}</dt>
                   </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
-import qs from "qs"
+import { connect, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import qs from 'qs';
 import _ from '@lodash';
 import moment from 'moment';
 import { FusePageCarded, FuseUtils, FuseAnimate } from '@fuse';
@@ -27,9 +27,9 @@ const deceased = {
   address: '',
   place_of_death: '',
   dateof_assertion: null,
-  time_of_death:  null,
+  time_of_death: null,
   cause_of_death: '',
-  how_was_death_assertained: "",
+  how_was_death_assertained: '',
   name_of_hospital: '',
   medical_attendant_name: '',
   hospital_address: '',
@@ -40,21 +40,21 @@ const deceased = {
 };
 
 const defaultReturningform = {
-  service: [
-    { service_id: '', rate: '', qty: '', discount: null },
-  ],
+  service: [{ service_id: '', rate: '', qty: '', discount: null }],
   relative: [],
   deceased: { ...deceased },
-}
+};
 
 function CreateCustomer(props) {
-  const { services, branches } = props
+  const { services, branches } = props;
   const [tabValue, setTabValue] = useState(0);
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const location = useLocation();
-  const type = qs.parse(location.search, { ignoreQueryPrefix: true }).type
-  const customerId = qs.parse(location.search, { ignoreQueryPrefix: true }).customerId
+  const type = qs.parse(location.search, { ignoreQueryPrefix: true }).type;
+  const customerId = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  }).customerId;
 
   const { form, handleChange, setForm } = useForm({
     first_name: '',
@@ -67,96 +67,118 @@ function CreateCustomer(props) {
     relationship_with_deceased: '',
     customer_image: '',
     signature: '',
-    service: [
-      { service_id: '', rate: '', qty: 1, discount: null },
-    ],
+    service: [{ service_id: '', rate: '', qty: 1, discount: null }],
     relative: [],
     deceased: { ...deceased },
   });
 
-  const serviceIds = form.service.map(s => s.service_id);
-  const selectedServices = _.findByValues(services, "id", serviceIds)
+  const serviceIds = form.service.map((s) => s.service_id);
+  const selectedServices = _.findByValues(services, 'id', serviceIds);
 
-  const slides = ["Customer Info", "Select Services", "Customer Images", "Deceasesd Info", "Deceased Document", "Relatives info"];
+  const slides = [
+    'Customer Info',
+    'Select Services',
+    'Customer Images',
+    'Deceasesd Info',
+    'Deceased Document',
+    'Relatives info',
+  ];
 
   const validate = () => {
-    let temp = { relative: [] }
-    temp.phone_number = FuseUtils.validatePhone(form.phone_number) ? "" : "Phone is not valid"
-    temp.email = FuseUtils.validateEmail(form.email) ? "" : "Email is not valid"
-    setErrors({ ...temp })
-    
-    return _.every(temp, _.isEmpty)
-  }
+    let temp = { relative: [] };
+    temp.phone_number = FuseUtils.validatePhone(form.phone_number)
+      ? ''
+      : 'Phone is not valid';
+    temp.email = FuseUtils.validateEmail(form.email)
+      ? ''
+      : 'Email is not valid';
+    setErrors({ ...temp });
+
+    return _.every(temp, _.isEmpty);
+  };
 
   const validateField = (field) => (e) => {
-    let temp = { relative: [] }
-    if(_.get(form, field)){
-      if(field === "email") {
-        temp[field] = FuseUtils.validateEmail(form[field]) ? "" : "Email is not valid"
+    let temp = { relative: [] };
+    if (_.get(form, field)) {
+      if (field === 'email') {
+        temp[field] = FuseUtils.validateEmail(form[field])
+          ? ''
+          : 'Email is not valid';
       }
-      if(field === "phone_number"){
-        temp[field] = FuseUtils.validatePhone(form[field]) ? "" : "Phone is not valid"
+      if (field === 'phone_number') {
+        temp[field] = FuseUtils.validatePhone(form[field])
+          ? ''
+          : 'Phone is not valid';
       }
-      if(field === "relative"){
+      if (field === 'relative') {
         form.relative.forEach((r, i) => {
-          if(!FuseUtils.validateEmail(r.email)){
-            temp.relative[i] = {...temp.relative[i], email: "Relative email is not valid" }
+          if (!FuseUtils.validateEmail(r.email)) {
+            temp.relative[i] = {
+              ...temp.relative[i],
+              email: 'Relative email is not valid',
+            };
           }
-          if(!FuseUtils.validatePhone(r.phone_number)){
-            temp.relative[i] = {...temp.relative[i], phone_number: "Relative phone number is not valid" }
+          if (!FuseUtils.validatePhone(r.phone_number)) {
+            temp.relative[i] = {
+              ...temp.relative[i],
+              phone_number: 'Relative phone number is not valid',
+            };
           }
-          if(FuseUtils.validateEmail(r.email) || FuseUtils.validatePhone(r.phone_number)){
-            temp.relative = temp.relative.filter((d, k) => d !== i)
+          if (
+            FuseUtils.validateEmail(r.email) ||
+            FuseUtils.validatePhone(r.phone_number)
+          ) {
+            temp.relative = temp.relative.filter((d, k) => d !== i);
           }
-        })
+        });
       }
     }
-    setErrors((state) => ({...state, ...temp }))
-  }
+    setErrors((state) => ({ ...state, ...temp }));
+  };
 
-  console.log(errors, "errors validate")
+  console.log(errors, 'errors validate');
 
   useEffect(() => {
-    if(type === "returning"){
-      setTabValue(1)
-      setForm({...defaultReturningform})
+    if (type === 'returning') {
+      setTabValue(1);
+      setForm({ ...defaultReturningform });
     }
-  }, [type, setForm])
-  
+  }, [type, setForm]);
+
   useEffect(() => {
-    if(_.some(selectedServices, {is_admisson: true})){
-      if(!form.deceased){
-        form.deceased = { ...deceased }
-        setForm(form)
+    if (_.some(selectedServices, { is_admisson: true })) {
+      if (!form.deceased) {
+        form.deceased = { ...deceased };
+        setForm(form);
       }
-    }else{
-      form.deceased = null
-      setForm(form)
+    } else {
+      form.deceased = null;
+      setForm(form);
     }
-  }, [form, setForm, selectedServices])
+  }, [form, setForm, selectedServices]);
 
   useEffect(() => {
-    dispatch(Actions.getServices())
-    dispatch(Actions.getDiscounts())
+    dispatch(Actions.getServices());
+    dispatch(Actions.getDiscounts());
   }, [dispatch]);
 
   function handleChipChange(value, name, i) {
-    if(name === "discount"){
+    if (name === 'discount') {
       setForm(_.set({ ...form }, name, value));
-    }else{
+    } else {
       setForm(_.set({ ...form }, name, value.value));
     }
   }
 
   function handleSelectChange(value, name, i) {
-    const newService = [...form.service]
-    if(name === "service_id"){
-      newService[i][name] = value? value.id : null
-      newService[i].rate = value? value.amount : ""
-      if(value?.service_type === "2"){
+    const newService = [...form.service];
+    if (name === 'service_id') {
+      newService[i][name] = value ? value.id : null;
+      newService[i].rate = value ? value.amount : '';
+      if (value?.service_type === '2') {
         newService[i].qty = 1;
       }
-    }else{
+    } else {
       newService[i][name] = value;
     }
 
@@ -164,85 +186,94 @@ function CreateCustomer(props) {
   }
 
   function addServiceRow() {
-    const newRole = { service_id: '', rate: '', qty: '', discount: null }
-    setForm({...form, service: [ ...form.service, newRole ]});
+    const newRole = { service_id: '', rate: '', qty: '', discount: null };
+    setForm({ ...form, service: [...form.service, newRole] });
   }
 
   const removeServiceRow = (i) => () => {
-    setForm({ ...form, service: form.service.filter((s, k) => k !== i)});
-  }
+    setForm({ ...form, service: form.service.filter((s, k) => k !== i) });
+  };
 
   function addRelativeRow() {
-    const newRole = { first_name: "", last_name: "", other_name: "", address: "", email: "", phone_number: "", age: "", relationship_with_deceased: ""}
-    setForm({...form, relative: [ ...form.relative, newRole ]});
+    const newRole = {
+      first_name: '',
+      last_name: '',
+      other_name: '',
+      address: '',
+      email: '',
+      phone_number: '',
+      age: '',
+      relationship_with_deceased: '',
+    };
+    setForm({ ...form, relative: [...form.relative, newRole] });
   }
 
   const removeRelativeRow = (i) => () => {
-    setForm({ ...form, relative: form.relative.filter((s, k) => k !== i)});
-  }
+    setForm({ ...form, relative: form.relative.filter((s, k) => k !== i) });
+  };
 
   const handleImageUpload = (name, files) => {
-    FuseUtils.toBase64(files[0]).then(data => {
+    FuseUtils.toBase64(files[0]).then((data) => {
       setForm(_.set({ ...form }, name, data));
-    })
-  }
+    });
+  };
 
   const deleteImage = (name) => (e) => {
-    setForm(_.set({ ...form }, name, ""));
-  }
+    setForm(_.set({ ...form }, name, ''));
+  };
 
-  const handleMultiChange = i => event => {
-    const { name, value } = event.target
-    const { service } = form
-    if(name === "service_id"){
-      const serv = services.find(s => s.id === value)
-      service[i][name] = serv.id
-      service[i].rate = serv.amount || ""
-      if(_.find(services, {id: service[i].service_id})?.service_type === "2"){
+  const handleMultiChange = (i) => (event) => {
+    const { name, value } = event.target;
+    const { service } = form;
+    if (name === 'service_id') {
+      const serv = services.find((s) => s.id === value);
+      service[i][name] = serv.id;
+      service[i].rate = serv.amount || '';
+      if (
+        _.find(services, { id: service[i].service_id })?.service_type === '2'
+      ) {
         service[i].qty = 1;
       }
-    }else{
-      service[i][name] = value
+    } else {
+      service[i][name] = value;
     }
     setForm({ ...form, service });
-  }
+  };
 
-  const handleRowChange = i => event => {
-    const { name, value } = event.target
-    const { relative } = form
-    relative[i][name] = value
+  const handleRowChange = (i) => (event) => {
+    const { name, value } = event.target;
+    const { relative } = form;
+    relative[i][name] = value;
     setForm({ ...form, relative });
-  }
+  };
 
   const handleDateChange = (name) => (date) => {
-    setForm(_.set({ ...form }, name, moment(date).format("YYYY-MM-DD")));
+    setForm(_.set({ ...form }, name, moment(date).format('YYYY-MM-DD')));
   };
 
   const handleTimeChange = (name) => (date) => {
-    setForm(_.set({ ...form }, name, moment(date).format("YYYY HH:mm:ss")));
+    setForm(_.set({ ...form }, name, moment(date).format('YYYY HH:mm:ss')));
   };
 
   const handleNext = () => {
-    if(tabValue < 5 && tabValue >= 0) 
-      setTabValue(state => state + 1)
-  }
+    if (tabValue < 5 && tabValue >= 0) setTabValue((state) => state + 1);
+  };
 
   const handlePrev = () => {
-    if(tabValue <= 5 && tabValue > 0) 
-      setTabValue(state => state - 1)
-  }
+    if (tabValue <= 5 && tabValue > 0) setTabValue((state) => state - 1);
+  };
 
   const handleSubmit = () => {
-    if(type === "returning" && customerId){
-      dispatch(Actions.createReturningCustomer(form, customerId))
-    }else{
-      if(validate()){
-        dispatch(Actions.createCustomer(form))
+    if (type === 'returning' && customerId) {
+      dispatch(Actions.createReturningCustomer(form, customerId));
+    } else {
+      if (validate()) {
+        dispatch(Actions.createCustomer(form));
       }
     }
-  }
+  };
 
-  console.log(form, "form create customer")
+  console.log(form, 'form create customer');
 
   return (
     <FusePageCarded
@@ -254,7 +285,9 @@ function CreateCustomer(props) {
       contentToolbar={
         <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-20 px-24'>
           <FuseAnimate animation='transition.slideRightIn' delay={300}>
-           <Typography variant="subtitle1" className="font-600">{slides[tabValue]}</Typography>
+            <Typography variant='subtitle1' className='font-600'>
+              {slides[tabValue]}
+            </Typography>
           </FuseAnimate>
         </div>
       }
@@ -290,11 +323,11 @@ function CreateCustomer(props) {
             />
           )}
           {tabValue === 2 && (
-            <CustomerImages 
-              form={form} 
+            <CustomerImages
+              form={form}
               deleteImage={deleteImage}
-              handleImageUpload={handleImageUpload} 
-              type={type} 
+              handleImageUpload={handleImageUpload}
+              type={type}
               handleNext={handleNext}
               handlePrev={handlePrev}
               tabValue={tabValue}
@@ -313,26 +346,26 @@ function CreateCustomer(props) {
             />
           )}
           {tabValue === 4 && (
-            <DeceasedImages 
-              form={form} 
+            <DeceasedImages
+              form={form}
               deleteImage={deleteImage}
-              handleImageUpload={handleImageUpload} 
-              type={type} 
+              handleImageUpload={handleImageUpload}
+              type={type}
               handleNext={handleNext}
               handlePrev={handlePrev}
               tabValue={tabValue}
             />
           )}
           {tabValue === 5 && (
-            <RelativesInfo 
-              form={form} 
+            <RelativesInfo
+              form={form}
               errors={errors}
               validate={validate}
               validateField={validateField}
               handleNext={handleNext}
               handlePrev={handlePrev}
               tabValue={tabValue}
-              handleRowChange={handleRowChange} 
+              handleRowChange={handleRowChange}
               addRelativeRow={addRelativeRow}
               removeRelativeRow={removeRelativeRow}
             />
@@ -344,12 +377,15 @@ function CreateCustomer(props) {
   );
 }
 
-const mapStateToProps = ({customerApp, ezone}) => {
+const mapStateToProps = ({ customerApp, ezone }) => {
   return {
     discounts: customerApp.discounts.discounts,
     services: customerApp.services.services.services,
-    branches: ezone.branches.branches
-  }
-}
+    branches: ezone.branches.branches,
+  };
+};
 
-export default withReducer('customerApp', reducer)(connect(mapStateToProps)(CreateCustomer));
+export default withReducer(
+  'customerApp',
+  reducer
+)(connect(mapStateToProps)(CreateCustomer));

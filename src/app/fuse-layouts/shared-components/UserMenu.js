@@ -18,6 +18,8 @@ function UserMenu(props) {
   const dispatch = useDispatch();
   const user = useSelector(({ auth }) => auth.user);
 
+  console.log(user, 'user');
+
   const [userMenu, setUserMenu] = useState(null);
 
   const userMenuClick = (event) => {
