@@ -172,12 +172,13 @@ function CreateCustomer(props) {
 
   function handleSelectChange(value, name, i) {
     const newService = [...form.service];
-    if (name === 'service_id') {
+    if(name === 'service_id') {
       newService[i][name] = value ? value.id : null;
       newService[i].rate = value ? value.amount : '';
-      if (value?.service_type === '2') {
-        newService[i].qty = 1;
-      }
+      // if (value?.service_type === '1' || value?.service_type === '2') {
+      //   newService[i].qty = 1;
+      // }
+      newService[i].qty = 1;
     } else {
       newService[i][name] = value;
     }
