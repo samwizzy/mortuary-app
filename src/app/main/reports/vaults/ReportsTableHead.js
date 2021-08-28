@@ -1,125 +1,62 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   TableHead,
   TableSortLabel,
   TableCell,
   TableRow,
-  Checkbox,
   Tooltip,
-  IconButton,
-  Icon,
-  Menu,
-  MenuList,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
 } from '@material-ui/core';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/styles';
 
 const rows = [
   {
-    id: 'date-received',
+    id: 'deceased',
     align: 'left',
     disablePadding: false,
-    label: 'Date Received',
+    label: 'Deceased',
     sort: true,
   },
   {
-    id: 'account-id',
+    id: 'vault-number',
     align: 'left',
     disablePadding: false,
-    label: 'Account ID',
+    label: 'Vault number',
     sort: true,
   },
   {
-    id: 'account-type',
+    id: 'vault-type',
     align: 'left',
     disablePadding: false,
-    label: 'Account Type',
+    label: 'Vault type',
     sort: true,
   },
   {
-    id: 'status',
-    align: 'right',
+    id: 'purchaser-one',
+    align: 'left',
     disablePadding: false,
-    label: 'Status',
+    label: 'Purchaser one',
+    sort: true,
+  },
+  {
+    id: 'purchaser-two',
+    align: 'left',
+    disablePadding: false,
+    label: 'Purchaser two',
     sort: true,
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
-  actionsButtonWrapper: {
-    background: theme.palette.background.paper,
-  },
-}));
-
 function CustomersTableHead(props) {
-  const classes = useStyles(props);
-  const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);
-
   const createSortHandler = (property) => (event) => {
     props.onRequestSort(event, property);
   };
 
-  function openSelectedProductsMenu(event) {
-    setSelectedProductsMenu(event.currentTarget);
-  }
-
-  function closeSelectedProductsMenu() {
-    setSelectedProductsMenu(null);
-  }
-
   return (
     <TableHead>
       <TableRow className='h-64'>
-        <TableCell padding='checkbox' className='relative pl-4 sm:pl-12'>
-          <Checkbox
-            indeterminate={
-              props.numSelected > 0 && props.numSelected < props.rowCount
-            }
-            checked={props.numSelected === props.rowCount}
-            onChange={props.onSelectAllClick}
-          />
-          {props.numSelected > 0 && (
-            <div
-              className={clsx(
-                'flex items-center justify-center absolute w-64 top-0 left-0 ml-68 h-64 z-10',
-                classes.actionsButtonWrapper
-              )}
-            >
-              <IconButton
-                aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
-                aria-haspopup='true'
-                onClick={openSelectedProductsMenu}
-              >
-                <Icon>more_horiz</Icon>
-              </IconButton>
-              <Menu
-                id='selectedProductsMenu'
-                anchorEl={selectedProductsMenu}
-                open={Boolean(selectedProductsMenu)}
-                onClose={closeSelectedProductsMenu}
-              >
-                <MenuList>
-                  <MenuItem
-                    onClick={() => {
-                      closeSelectedProductsMenu();
-                    }}
-                  >
-                    <ListItemIcon className='min-w-40'>
-                      <Icon>delete</Icon>
-                    </ListItemIcon>
-                    <ListItemText primary='Remove' />
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-            </div>
-          )}
-        </TableCell>
         {rows.map((row) => {
           return (
             <TableCell
+              className='whitespace-no-wrap'
               key={row.id}
               align={row.align}
               padding={row.disablePadding ? 'none' : 'default'}

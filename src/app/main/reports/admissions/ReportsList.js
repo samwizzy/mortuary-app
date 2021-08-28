@@ -11,13 +11,16 @@ import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
-// import * as Actions from '../store/actions';
 
 function ReportsList(props) {
   const searchText = '';
 
-  const admissionData = useSelector(({reportsApp}) => reportsApp.reports.admissions)
+  const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
+  const admissionData = useSelector(
+    ({ reportsApp }) => reportsApp.reports.admissions
+  );
   const admissions = admissionData.admissions;
   const totalItems = admissionData.totalItems;
   const currentPage = admissionData.currentPage;
@@ -89,7 +92,7 @@ function ReportsList(props) {
     setRowsPerPage(event.target.value);
   }
 
-  console.log(admissionData, "admissionData")
+  console.log(admissionData, 'admissionData');
 
   return (
     <div className='w-full flex flex-col'>
@@ -104,7 +107,10 @@ function ReportsList(props) {
             <h3 className='text-base leading-4 font-bold text-gray-900'>
               Daily Morgue Report
             </h3>
-            <p className='text-sm'>As of 20th Jul, 2020</p>
+            <p className='text-sm'>
+              {form.startDate &&
+                `As of ${moment(form.startDate).format('Do MMM, YYYY')}`}
+            </p>
           </div>
         </div>
       </FuseAnimate>
@@ -172,7 +178,7 @@ function ReportsList(props) {
                       {n.accountType}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
+                    <TableCell component='th' scope='row' align='left'>
                       {n.status}
                     </TableCell>
                   </TableRow>

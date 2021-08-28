@@ -2,30 +2,42 @@ import * as Actions from '../actions';
 
 const initialState = {
   loading: false,
-  searchText: "",
+  searchText: '',
+  form: {
+    branchId: '',
+    endDate: null,
+    orgKey: 1,
+    startDate: null,
+  },
   admissions: {
     totalItems: 0,
     admissions: [],
     totalPages: 0,
-    currentPage: 0
+    currentPage: 0,
   },
   cremations: {
     totalItems: 0,
     cremations: [],
     totalPages: 0,
-    currentPage: 0
+    currentPage: 0,
   },
   vaults: {
     totalItems: 0,
-    cremations: [],
+    vaults: [],
     totalPages: 0,
-    currentPage: 0
+    currentPage: 0,
   },
   vouchers: {
     totalItems: 0,
     voucherList: [],
     totalPages: 0,
-    currentPage: 0
+    currentPage: 0,
+  },
+  releases: {
+    totalItems: 0,
+    invoices: [],
+    totalPages: 0,
+    currentPage: 0,
   },
   message: null,
 };
@@ -60,6 +72,13 @@ const reportsReducer = function (state = initialState, action) {
         vouchers: action.payload,
       };
     }
+    case Actions.GET_RELEASE_REPORT: {
+      return {
+        ...state,
+        loading: false,
+        releases: action.payload,
+      };
+    }
     case Actions.FETCH_PROGRESS: {
       return {
         ...state,
@@ -76,6 +95,15 @@ const reportsReducer = function (state = initialState, action) {
       return {
         ...state,
         searchText: action.searchText,
+      };
+    }
+    case Actions.SET_FORM: {
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          [action.name]: action.value,
+        },
       };
     }
     default: {

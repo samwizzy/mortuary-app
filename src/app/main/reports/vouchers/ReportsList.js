@@ -5,24 +5,26 @@ import {
   TableCell,
   TablePagination,
   TableRow,
-  Checkbox,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
-// import * as Actions from '../store/actions';
 
 function ReportsList(props) {
   const searchText = '';
 
-  const voucherData = useSelector(({reportsApp}) => reportsApp.reports.vouchers)
+  const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
+  const voucherData = useSelector(
+    ({ reportsApp }) => reportsApp.reports.vouchers
+  );
   const vouchers = voucherData.voucherList;
   const totalItems = voucherData.totalItems;
   const currentPage = voucherData.currentPage;
 
-  console.log(voucherData, "voucherData")
+  console.log(voucherData, 'voucherData');
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(vouchers);
@@ -63,26 +65,6 @@ function ReportsList(props) {
     // props.history.push('/reports/vouchers/' + item.id);
   }
 
-  function handleCheck(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  }
-
   function handleChangePage(event, page) {
     setPage(page);
   }
@@ -104,7 +86,10 @@ function ReportsList(props) {
             <h3 className='text-base leading-4 font-bold text-gray-900'>
               Daily Morgue Report
             </h3>
-            <p className='text-sm'>As of 20th Jul, 2020</p>
+            <p className='text-sm'>
+              {form.startDate &&
+                `As of ${moment(form.startDate).format('Do MMM, YYYY')}`}
+            </p>
           </div>
         </div>
       </FuseAnimate>
@@ -149,31 +134,36 @@ function ReportsList(props) {
                     selected={isSelected}
                     onClick={(event) => handleClick(n)}
                   >
-                    <TableCell
-                      className='w-48 px-4 sm:px-12'
-                      padding='checkbox'
-                    >
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
-
                     <TableCell component='th' scope='row'>
-                      {n.dateReceived}
+                      {n.voucherNumber}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.accountId}
+                      {n.familyName}
+                    </TableCell>
+
+                    <TableCell className='truncate' component='th' scope='row'>
+                      {n.funeralCoordinator}
+                    </TableCell>
+
+                    <TableCell className='truncate' component='th' scope='row'>
+                      {n.funeralLocation}
+                    </TableCell>
+
+                    <TableCell className='truncate' component='th' scope='row'>
+                      {n.initiator}
+                    </TableCell>
+
+                    <TableCell className='truncate' component='th' scope='row'>
+                      {n.payee}
+                    </TableCell>
+
+                    <TableCell className='truncate' component='th' scope='row'>
+                      {moment(n.date).format('ll')}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.accountType}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.status}
+                      {n.duration}
                     </TableCell>
                   </TableRow>
                 );

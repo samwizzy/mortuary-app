@@ -5,24 +5,27 @@ import {
   TableCell,
   TablePagination,
   TableRow,
-  Checkbox,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
-// import * as Actions from '../store/actions';
 
 function ReportsList(props) {
   const searchText = '';
 
-  const cremationData = useSelector(({reportsApp}) => reportsApp.reports.cremations)
+  const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
+  const cremationData = useSelector(
+    ({ reportsApp }) => reportsApp.reports.cremations
+  );
+
   const cremations = cremationData.cremations;
   const totalItems = cremationData.totalItems;
   const currentPage = cremationData.currentPage;
 
-  console.log(cremationData, "cremationData")
+  console.log(cremationData, 'cremationData');
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(cremations);
@@ -35,7 +38,9 @@ function ReportsList(props) {
       searchText.length === 0
         ? cremations
         : _.filter(cremations, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.deceasedFullName
+              .toLowerCase()
+              .includes(searchText.toLowerCase())
           )
     );
   }, [cremations, searchText]);
@@ -63,26 +68,6 @@ function ReportsList(props) {
     props.history.push('/reports/cremations/' + item.id);
   }
 
-  function handleCheck(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  }
-
   function handleChangePage(event, page) {
     setPage(page);
   }
@@ -104,7 +89,10 @@ function ReportsList(props) {
             <h3 className='text-base leading-4 font-bold text-gray-900'>
               Daily Morgue Report
             </h3>
-            <p className='text-sm'>As of 20th Jul, 2020</p>
+            <p className='text-sm'>
+              {form.startDate &&
+                `As of ${moment(form.startDate).format('Do MMM, YYYY')}`}
+            </p>
           </div>
         </div>
       </FuseAnimate>
@@ -149,31 +137,20 @@ function ReportsList(props) {
                     selected={isSelected}
                     onClick={(event) => handleClick(n)}
                   >
-                    <TableCell
-                      className='w-48 px-4 sm:px-12'
-                      padding='checkbox'
-                    >
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
-
                     <TableCell component='th' scope='row'>
-                      {n.dateReceived}
+                      {n.deceasedFullName}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.accountId}
+                      {n.age}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.accountType}
+                      {moment(n.dateOfDeath).format('ll')}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.status}
+                    <TableCell component='th' scope='row' align='left'>
+                      {moment(n.dateOfCremation).format('ll')}
                     </TableCell>
                   </TableRow>
                 );

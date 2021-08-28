@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux"
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import withReducer from 'app/store/withReducer';
-import reducer from "./../store/reducers"
-import * as appActions  from "./../../../store/actions"
+import reducer from './../store/reducers';
+import * as appActions from './../../../store/actions';
+import * as Actions from './../store/actions';
 import { FusePageCarded } from '@fuse';
 import ReportsHeader from './ReportsHeader';
 import ReportsList from './ReportsList';
@@ -16,8 +17,9 @@ const styles = (theme) => ({
 });
 
 class ReportsApp extends Component {
-  componentDidMount(){
-    this.props.getBranches()
+  componentDidMount() {
+    this.props.getBranches();
+    this.props.getReleaseReports();
   }
 
   render() {
@@ -45,9 +47,20 @@ class ReportsApp extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    getBranches: appActions.getBranches
-  }, dispatch)
-}
+  return bindActionCreators(
+    {
+      getBranches: appActions.getBranches,
+      getReleaseReports: Actions.getReleaseReports,
+    },
+    dispatch
+  );
+};
 
-export default withReducer("reportsApp", reducer)(withStyles(styles, { withTheme: true })(connect(null, mapDispatchToProps)(ReportsApp)));
+export default withReducer(
+  'reportsApp',
+  reducer
+)(
+  withStyles(styles, { withTheme: true })(
+    connect(null, mapDispatchToProps)(ReportsApp)
+  )
+);

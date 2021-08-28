@@ -5,24 +5,24 @@ import {
   TableCell,
   TablePagination,
   TableRow,
-  Checkbox,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
-// import * as Actions from '../store/actions';
 
 function ReportsList(props) {
   const searchText = '';
 
-  const vaultData = useSelector(({reportsApp}) => reportsApp.reports.vaults)
-  const vaults = vaultData.cremations;
+  const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
+  const vaultData = useSelector(({ reportsApp }) => reportsApp.reports.vaults);
+  const vaults = vaultData.vaults;
   const totalItems = vaultData.totalItems;
   const currentPage = vaultData.currentPage;
 
-  console.log(vaultData, "vaultData")
+  console.log(vaultData, 'vaultData');
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(vaults);
@@ -35,7 +35,7 @@ function ReportsList(props) {
       searchText.length === 0
         ? vaults
         : _.filter(vaults, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.vault_number.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [vaults, searchText]);
@@ -63,26 +63,6 @@ function ReportsList(props) {
     props.history.push('/reports/vaults/' + item.id);
   }
 
-  function handleCheck(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  }
-
   function handleChangePage(event, page) {
     setPage(page);
   }
@@ -104,7 +84,10 @@ function ReportsList(props) {
             <h3 className='text-base leading-4 font-bold text-gray-900'>
               Daily Morgue Report
             </h3>
-            <p className='text-sm'>As of 20th Jul, 2020</p>
+            <p className='text-sm'>
+              {form.startDate &&
+                `As of ${moment(form.startDate).format('Do MMM, YYYY')}`}
+            </p>
           </div>
         </div>
       </FuseAnimate>
@@ -149,31 +132,24 @@ function ReportsList(props) {
                     selected={isSelected}
                     onClick={(event) => handleClick(n)}
                   >
-                    <TableCell
-                      className='w-48 px-4 sm:px-12'
-                      padding='checkbox'
-                    >
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
-
                     <TableCell component='th' scope='row'>
-                      {n.dateReceived}
+                      {n.deceased?.length}
                     </TableCell>
 
                     <TableCell className='truncate' component='th' scope='row'>
-                      {n.accountId}
+                      {n.vault_number}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {n.accountype}
+                      {n.vault_type}
                     </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.status}
+                    <TableCell component='th' scope='row' align='left'>
+                      {n.purchaser_one ? n.purchaser_one?.name : '—'}
+                    </TableCell>
+
+                    <TableCell component='th' scope='row' align='left'>
+                      {n.purchaser_two ? n.purchaser_two?.name : '—'}
                     </TableCell>
                   </TableRow>
                 );
