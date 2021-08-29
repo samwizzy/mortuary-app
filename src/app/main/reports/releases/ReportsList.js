@@ -12,7 +12,6 @@ import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
-// import * as Actions from '../store/actions';
 
 function ReportsList(props) {
   const dispatch = useDispatch();
@@ -64,9 +63,9 @@ function ReportsList(props) {
     setSelected([]);
   }
 
-  function handleClick(item) {
-    props.history.push('/reports/release/' + item.id);
-  }
+  // function handleClick(item) {
+  //   props.history.push('/reports/release/' + item.id);
+  // }
 
   function handleChangePage(event, page) {
     setPage(page);
@@ -89,7 +88,7 @@ function ReportsList(props) {
             <h3 className='text-base leading-4 font-bold text-gray-900'>
               Daily Morgue Report
             </h3>
-            <p className='text-sm'>As of 20th Jul, 2020</p>
+            {/* <p className='text-sm'>As of 20th Jul, 2020</p> */}
           </div>
         </div>
       </FuseAnimate>
@@ -132,7 +131,7 @@ function ReportsList(props) {
                     tabIndex={-1}
                     key={n.id}
                     selected={isSelected}
-                    onClick={(event) => handleClick(n)}
+                    // onClick={(event) => handleClick(n)}
                   >
                     <TableCell component='th' scope='row'>
                       {n.nameOfDeceased}
@@ -159,11 +158,13 @@ function ReportsList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {moment(n.dateAdmitted).format('ll')}
+                      {n.dateAdmitted
+                        ? moment(n.dateAdmitted).format('ll')
+                        : '—'}
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      {moment(n.discharged).format('ll')}
+                      {n.discharged ? moment(n.discharged).format('ll') : '—'}
                     </TableCell>
                   </TableRow>
                 );

@@ -441,7 +441,7 @@ function ReleaseForm(props) {
                   color='primary'
                   onClick={handleSubmit}
                   disabled={
-                    loading ? loading : deceased?.deceasedInvoiceStatus === 1
+                    loading ? loading : !deceased?.deceasedInvoiceStatus === 1
                   }
                   endIcon={loading && <CircularProgress size={16} />}
                 >
