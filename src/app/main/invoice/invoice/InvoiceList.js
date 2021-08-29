@@ -344,7 +344,7 @@ function InvoiceList(props) {
                               </TableCell>
                               <TableCell colSpan={2} align='right'>
                                 {FuseUtils.formatCurrency(
-                                  invoice?.amount_due || 0
+                                  invoice?.deficit || 0
                                 )}
                               </TableCell>
                             </TableRow>
