@@ -64,6 +64,13 @@ const rows = [
     label: 'Duration',
     sort: true,
   },
+  {
+    id: 'Branch',
+    align: 'left',
+    disablePadding: false,
+    label: 'Branch',
+    sort: true,
+  },
 ];
 
 function CustomersTableHead(props) {

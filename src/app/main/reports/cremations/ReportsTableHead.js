@@ -36,6 +36,13 @@ const rows = [
     label: 'Date of cremation',
     sort: true,
   },
+  {
+    id: 'branch',
+    align: 'left',
+    disablePadding: false,
+    label: 'Branch',
+    sort: true,
+  },
 ];
 
 function CustomersTableHead(props) {

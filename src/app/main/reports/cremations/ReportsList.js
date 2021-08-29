@@ -18,6 +18,7 @@ function ReportsList(props) {
   const ref = React.createRef();
   const searchText = '';
 
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
   const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
   const cremationData = useSelector(
     ({ reportsApp }) => reportsApp.reports.cremations
@@ -64,10 +65,6 @@ function ReportsList(props) {
       return;
     }
     setSelected([]);
-  }
-
-  function handleClick(item) {
-    props.history.push('/reports/cremations/' + item.id);
   }
 
   function handleChangePage(event, page) {
@@ -142,7 +139,6 @@ function ReportsList(props) {
                       tabIndex={-1}
                       key={n.id}
                       selected={isSelected}
-                      onClick={(event) => handleClick(n)}
                     >
                       <TableCell component='th' scope='row'>
                         {n.deceasedFullName}
@@ -165,6 +161,16 @@ function ReportsList(props) {
                       <TableCell component='th' scope='row' align='left'>
                         {n.dateOfCremation
                           ? moment(n.dateOfCremation).format('ll')
+                          : '—'}
+                      </TableCell>
+
+                      <TableCell
+                        className='truncate'
+                        component='th'
+                        scope='row'
+                      >
+                        {n.branchId
+                          ? branches.find((b) => b.id === n.branchId)?.name
                           : '—'}
                       </TableCell>
                     </TableRow>

@@ -18,6 +18,7 @@ function ReportsList(props) {
   const ref = React.createRef();
   const searchText = '';
 
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
   const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
   const voucherData = useSelector(
     ({ reportsApp }) => reportsApp.reports.vouchers
@@ -62,10 +63,6 @@ function ReportsList(props) {
     }
     setSelected([]);
   }
-
-  // function handleClick(item) {
-  //   // props.history.push('/reports/vouchers/' + item.id);
-  // }
 
   function handleChangePage(event, page) {
     setPage(page);
@@ -138,7 +135,6 @@ function ReportsList(props) {
                       tabIndex={-1}
                       key={n.id}
                       selected={isSelected}
-                      // onClick={(event) => handleClick(n)}
                     >
                       <TableCell component='th' scope='row'>
                         {n.voucherNumber}
@@ -194,6 +190,12 @@ function ReportsList(props) {
 
                       <TableCell component='th' scope='row' align='left'>
                         {n.duration}
+                      </TableCell>
+
+                      <TableCell component='th' scope='row' align='left'>
+                        {n.branchId
+                          ? branches.find((b) => b.id === n.branchId)?.name
+                          : '—'}
                       </TableCell>
                     </TableRow>
                   );

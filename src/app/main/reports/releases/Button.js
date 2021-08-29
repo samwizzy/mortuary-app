@@ -6,17 +6,17 @@ const Button = React.forwardRef((props, ref) => {
   const options = {
     orientation: 'portrait',
     unit: 'in',
-    format: [9, 14],
+    format: [10, 16],
   };
 
   return (
     <ReactToPdf
       targetRef={ref}
-      filename={`cremation.pdf`}
+      filename={`release-report.pdf`}
       options={options}
       x={0.1}
       y={0.1}
-      scale={0.94}
+      scale={0.8}
     >
       {({ toPdf }) => (
         <IconButton onClick={toPdf}>

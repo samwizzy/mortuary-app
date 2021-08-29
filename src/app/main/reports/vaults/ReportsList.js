@@ -27,6 +27,7 @@ function ReportsList(props) {
   const [open, setOpen] = useState('');
   const searchText = '';
 
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
   const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
   const vaultData = useSelector(({ reportsApp }) => reportsApp.reports.vaults);
   const vaults = vaultData.vaults;
@@ -69,10 +70,6 @@ function ReportsList(props) {
     }
     setSelected([]);
   }
-
-  // function handleClick(item) {
-  //   props.history.push('/reports/vaults/' + item.id);
-  // }
 
   function handleChangePage(event, page) {
     setPage(page);
@@ -149,7 +146,6 @@ function ReportsList(props) {
                         aria-checked={isSelected}
                         tabIndex={-1}
                         selected={isSelected}
-                        // onClick={(event) => handleClick(n)}
                       >
                         <TableCell component='th' scope='row'>
                           <span>
@@ -186,6 +182,12 @@ function ReportsList(props) {
 
                         <TableCell component='th' scope='row' align='left'>
                           {n.purchaser_two ? n.purchaser_two?.name : '—'}
+                        </TableCell>
+
+                        <TableCell component='th' scope='row' align='left'>
+                          {n.branch_id
+                            ? branches.find((b) => b.id === n.branch_id)?.name
+                            : '—'}
                         </TableCell>
                       </TableRow>
 

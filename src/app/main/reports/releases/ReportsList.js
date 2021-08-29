@@ -12,8 +12,10 @@ import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
 import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
+import PDFButton from './Button';
 
 function ReportsList(props) {
+  const ref = React.createRef();
   const dispatch = useDispatch();
   const searchText = '';
 
@@ -63,10 +65,6 @@ function ReportsList(props) {
     setSelected([]);
   }
 
-  // function handleClick(item) {
-  //   props.history.push('/reports/release/' + item.id);
-  // }
-
   function handleChangePage(event, page) {
     setPage(page);
   }
@@ -76,117 +74,121 @@ function ReportsList(props) {
   }
 
   return (
-    <div className='w-full flex flex-col'>
-      <FuseAnimate delay={100}>
-        <div className='flex justify-center flex-wrap mt-4 mb-16'>
-          <div className='px-4 pb-5 sm:px-6 text-center'>
-            <img
-              className='h-72'
-              src='/assets/images/profile/omega-homes.svg'
-              alt=''
-            />
-            <h3 className='text-base leading-4 font-bold text-gray-900'>
-              Daily Morgue Report
-            </h3>
-            {/* <p className='text-sm'>As of 20th Jul, 2020</p> */}
+    <div className='relative w-full'>
+      <div className='absolute right-0 top-0 bg-orange-lighter'>
+        <PDFButton ref={ref} />
+      </div>
+      <div className='w-full flex flex-col' ref={ref}>
+        <FuseAnimate delay={100}>
+          <div className='flex justify-center flex-wrap mt-4 mb-16'>
+            <div className='px-4 pb-5 sm:px-6 text-center'>
+              <img
+                className='h-72'
+                src='/assets/images/profile/omega-homes.svg'
+                alt=''
+              />
+              <h3 className='text-base leading-4 font-bold text-gray-900'>
+                Daily Morgue Report
+              </h3>
+              {/* <p className='text-sm'>As of 20th Jul, 2020</p> */}
+            </div>
           </div>
-        </div>
-      </FuseAnimate>
-      <FuseScrollbars className='flex-grow overflow-x-auto'>
-        <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <ReportsTableHead
-            numSelected={selected.length}
-            order={order}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={data.length}
-          />
+        </FuseAnimate>
+        <FuseScrollbars className='flex-grow overflow-x-auto'>
+          <Table className='min-w-xl' aria-labelledby='tableTitle'>
+            <ReportsTableHead
+              numSelected={selected.length}
+              order={order}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={data.length}
+            />
 
-          <TableBody>
-            {_.orderBy(
-              data,
-              [
-                (o) => {
-                  switch (order.id) {
-                    case 'categories': {
-                      return o.categories[0];
+            <TableBody>
+              {_.orderBy(
+                data,
+                [
+                  (o) => {
+                    switch (order.id) {
+                      case 'categories': {
+                        return o.categories[0];
+                      }
+                      default: {
+                        return o[order.id];
+                      }
                     }
-                    default: {
-                      return o[order.id];
-                    }
-                  }
-                },
-              ],
-              [order.direction]
-            )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
-                return (
-                  <TableRow
-                    className='h-64 cursor-pointer'
-                    hover
-                    role='checkbox'
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
-                    // onClick={(event) => handleClick(n)}
-                  >
-                    <TableCell component='th' scope='row'>
-                      {n.nameOfDeceased}
-                    </TableCell>
+                  },
+                ],
+                [order.direction]
+              )
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((n) => {
+                  const isSelected = selected.indexOf(n.id) !== -1;
+                  return (
+                    <TableRow
+                      className='h-64 cursor-pointer'
+                      hover
+                      role='checkbox'
+                      aria-checked={isSelected}
+                      tabIndex={-1}
+                      key={n.id}
+                      selected={isSelected}
+                    >
+                      <TableCell component='th' scope='row'>
+                        {n.nameOfDeceased}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.age}
-                    </TableCell>
+                      <TableCell component='th' scope='row'>
+                        {n.age}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.gender}
-                    </TableCell>
+                      <TableCell component='th' scope='row'>
+                        {n.gender}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.placeOfDeath}
-                    </TableCell>
+                      <TableCell component='th' scope='row'>
+                        {n.placeOfDeath}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.destinationOfCorpse}
-                    </TableCell>
+                      <TableCell component='th' scope='row'>
+                        {n.destinationOfCorpse}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.deathCertifiedBy}
-                    </TableCell>
+                      <TableCell component='th' scope='row'>
+                        {n.deathCertifiedBy}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.dateAdmitted
-                        ? moment(n.dateAdmitted).format('ll')
-                        : '—'}
-                    </TableCell>
+                      <TableCell component='th' scope='row' align='left'>
+                        {n.dateAdmitted
+                          ? moment(n.dateAdmitted).format('ll')
+                          : '—'}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.discharged ? moment(n.discharged).format('ll') : '—'}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </FuseScrollbars>
+                      <TableCell component='th' scope='row' align='left'>
+                        {n.discharged ? moment(n.discharged).format('ll') : '—'}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </FuseScrollbars>
 
-      <TablePagination
-        component='div'
-        count={totalItems}
-        rowsPerPage={rowsPerPage}
-        page={currentPage}
-        backIconButtonProps={{
-          'aria-label': 'Previous Page',
-        }}
-        nextIconButtonProps={{
-          'aria-label': 'Next Page',
-        }}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+        <TablePagination
+          component='div'
+          count={totalItems}
+          rowsPerPage={rowsPerPage}
+          page={currentPage}
+          backIconButtonProps={{
+            'aria-label': 'Previous Page',
+          }}
+          nextIconButtonProps={{
+            'aria-label': 'Next Page',
+          }}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </div>
     </div>
   );
 }

@@ -1,22 +1,21 @@
-import React, { useState } from 'react';
-import { Icon, IconButton, Button, Popover, MenuItem } from '@material-ui/core';
+import React from 'react';
+import { Icon, IconButton } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
 
 function ReportsToolbar(props) {
-  const [anchorEl, setAnchorEl] = useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
 
-  function handleClick(event) {
-    setAnchorEl(event.currentTarget);
-  }
+  // function handleClick(event) {
+  //   setAnchorEl(event.currentTarget);
+  // }
 
-  function handleClose() {
-    setAnchorEl(null);
-  }
+  // function handleClose() {
+  //   setAnchorEl(null);
+  // }
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : null;
+  // const open = Boolean(anchorEl);
+  // const id = open ? 'simple-popover' : null;
 
   return (
     <div className='flex flex-1 items-center justify-between overflow-hidden sm:px-16 py-2'>
@@ -28,7 +27,7 @@ function ReportsToolbar(props) {
             <Icon>print</Icon>
           </IconButton>
         </FuseAnimate>
-        <FuseAnimate animation='transition.expandIn' delay={100}>
+        {/* <FuseAnimate animation='transition.expandIn' delay={100}>
           <div className='ml-16'>
             <Button
               aria-describedby={id}
@@ -58,7 +57,7 @@ function ReportsToolbar(props) {
               <MenuItem>PNG</MenuItem>
             </Popover>
           </div>
-        </FuseAnimate>
+        </FuseAnimate> */}
       </div>
     </div>
   );

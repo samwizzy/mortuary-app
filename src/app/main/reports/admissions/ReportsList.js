@@ -5,7 +5,6 @@ import {
   TableCell,
   TablePagination,
   TableRow,
-  Checkbox,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
@@ -19,6 +18,7 @@ function ReportsList(props) {
   const ref = React.createRef();
   const searchText = '';
 
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
   const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
   const admissionData = useSelector(
     ({ reportsApp }) => reportsApp.reports.admissions
@@ -65,26 +65,6 @@ function ReportsList(props) {
   // function handleClick(item) {
   //   // props.history.push('/reports/admissions/' + item.id);
   // }
-
-  function handleCheck(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  }
 
   function handleChangePage(event, page) {
     setPage(page);
@@ -161,19 +141,8 @@ function ReportsList(props) {
                       selected={isSelected}
                       // onClick={(event) => handleClick(n)}
                     >
-                      <TableCell
-                        className='w-48 px-4 sm:px-12'
-                        padding='checkbox'
-                      >
-                        <Checkbox
-                          checked={isSelected}
-                          onClick={(event) => event.stopPropagation()}
-                          onChange={(event) => handleCheck(event, n.id)}
-                        />
-                      </TableCell>
-
                       <TableCell component='th' scope='row'>
-                        {n.dateReceived}
+                        {n.formNumber}
                       </TableCell>
 
                       <TableCell
@@ -181,15 +150,25 @@ function ReportsList(props) {
                         component='th'
                         scope='row'
                       >
-                        {n.accountId}
+                        {n.deceasedName}
                       </TableCell>
 
                       <TableCell component='th' scope='row' align='left'>
-                        {n.accountType}
+                        {n.deceasedAge}
                       </TableCell>
 
                       <TableCell component='th' scope='row' align='left'>
-                        {n.status}
+                        {n.deceasedGender}
+                      </TableCell>
+
+                      <TableCell component='th' scope='row' align='left'>
+                        {n.customerName}
+                      </TableCell>
+
+                      <TableCell component='th' scope='row' align='left'>
+                        {n.branchId
+                          ? branches.find((b) => b.id === n.branchId)?.name
+                          : '—'}
                       </TableCell>
                     </TableRow>
                   );

@@ -43,6 +43,13 @@ const rows = [
     label: 'Purchaser two',
     sort: true,
   },
+  {
+    id: 'branch',
+    align: 'left',
+    disablePadding: false,
+    label: 'Branch',
+    sort: true,
+  },
 ];
 
 function CustomersTableHead(props) {
