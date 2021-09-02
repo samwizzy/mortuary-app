@@ -1,30 +1,43 @@
 import axios from 'axios';
-import * as Actions from "./"
+import * as Actions from './';
 import { showMessage } from '../../../../../app/store/actions/fuse';
-import history from "../../../../../@history"
+import history from '../../../../../@history';
+
+export const SET_LOADING = '[INVOICES APP] SET LOADING';
 
 export const GET_INVOICES = '[INVOICES APP] GET INVOICES';
 export const GET_INVOICE_BY_ID = '[INVOICES APP] GET INVOICE BY ID';
 export const SET_SEARCH_TEXT = '[INVOICES APP] SET SEARCH TEXT';
 export const SEND_INVOICE = '[INVOICES APP] SEND INVOICE';
 
-export const INITIALIZE_INVOICE_PAYMENT = '[INVOICES APP] INITIALIZE INVOICE PAYMENT';
+export const INITIALIZE_INVOICE_PAYMENT =
+  '[INVOICES APP] INITIALIZE INVOICE PAYMENT';
 export const RECORD_INVOICE_PAYMENT = '[INVOICES APP] RECORD INVOICE PAYMENT';
 
 export const SELECT_ALL_INVOICES = '[INVOICES APP] SELECT ALL INVOICES';
 export const DESELECT_ALL_INVOICES = '[INVOICES APP] DESELECT ALL INVOICES';
-export const OPEN_INVOICE_PAYMENT_DIALOG = '[INVOICES APP] OPEN NEW INVOICE DIALOG';
-export const CLOSE_INVOICE_PAYMENT_DIALOG = '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
-export const OPEN_EDIT_INVOICE_DIALOG = '[INVOICES APP] OPEN EDIT INVOICE DIALOG';
-export const CLOSE_EDIT_INVOICE_DIALOG = '[INVOICES APP] CLOSE EDIT INVOICE DIALOG';
+export const OPEN_INVOICE_PAYMENT_DIALOG =
+  '[INVOICES APP] OPEN NEW INVOICE DIALOG';
+export const CLOSE_INVOICE_PAYMENT_DIALOG =
+  '[INVOICES APP] CLOSE NEW INVOICE DIALOG';
+export const OPEN_EDIT_INVOICE_DIALOG =
+  '[INVOICES APP] OPEN EDIT INVOICE DIALOG';
+export const CLOSE_EDIT_INVOICE_DIALOG =
+  '[INVOICES APP] CLOSE EDIT INVOICE DIALOG';
 
-export const OPEN_SEND_INVOICE_DIALOG = '[INVOICES APP] OPEN SEND INVOICE DIALOG';
-export const CLOSE_SEND_INVOICE_DIALOG = '[INVOICES APP] CLOSE SEND INVOICE DIALOG';
+export const OPEN_SEND_INVOICE_DIALOG =
+  '[INVOICES APP] OPEN SEND INVOICE DIALOG';
+export const CLOSE_SEND_INVOICE_DIALOG =
+  '[INVOICES APP] CLOSE SEND INVOICE DIALOG';
 
-export const OPEN_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] OPEN NEW RECORD PAYMENT DIALOG';
-export const CLOSE_NEW_RECORD_PAYMENT_DIALOG = '[INVOICES APP] CLOSE NEW RECORD PAYMENT DIALOG';
-export const OPEN_EDIT_RECORD_PAYMENT_DIALOG = '[INVOICES APP] OPEN EDIT RECORD PAYMENT DIALOG';
-export const CLOSE_EDIT_RECORD_PAYMENT_DIALOG = '[INVOICES APP] CLOSE EDIT RECORD PAYMENT DIALOG';
+export const OPEN_NEW_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] OPEN NEW RECORD PAYMENT DIALOG';
+export const CLOSE_NEW_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] CLOSE NEW RECORD PAYMENT DIALOG';
+export const OPEN_EDIT_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] OPEN EDIT RECORD PAYMENT DIALOG';
+export const CLOSE_EDIT_RECORD_PAYMENT_DIALOG =
+  '[INVOICES APP] CLOSE EDIT RECORD PAYMENT DIALOG';
 export const ADD_INVOICE = '[INVOICES APP] ADD INVOICE';
 export const UPDATE_INVOICE = '[INVOICES APP] UPDATE INVOICE';
 export const REMOVE_INVOICE = '[INVOICES APP] REMOVE INVOICE';
@@ -32,32 +45,39 @@ export const REMOVE_INVOICES = '[INVOICES APP] REMOVE INVOICES';
 export const GET_PAYMENT_ADVICE = '[INVOICES APP] GET PAYMENT ADVICE';
 
 export function addInvoice(data) {
-  const { customer_id: id } = data
-  const request = axios.post(`/api/v1/invoices/customer_id/${id}/add_invoice`, data);
+  const { customer_id: id } = data;
+  const request = axios.post(
+    `/api/v1/invoices/customer_id/${id}/add_invoice`,
+    data
+  );
   console.log(request, 'creating Invoice request');
 
   return (dispatch) => {
-    request.then((response) => {
-      dispatch(showMessage({ message: 'Invoice created successfully' }));
+    request
+      .then((response) => {
+        dispatch(showMessage({ message: 'Invoice created successfully' }));
 
-      Promise.all([
-        dispatch({
-          type: ADD_INVOICE,
-          payload: response.data,
-        }),
-      ]).then(() => {
-        dispatch(Actions.getInvoices());
-        history.push("/invoices")
+        Promise.all([
+          dispatch({
+            type: ADD_INVOICE,
+            payload: response.data,
+          }),
+        ]).then(() => {
+          dispatch(Actions.getInvoices());
+          history.push('/invoices');
+        });
+      })
+      .catch((err) => {
+        dispatch(showMessage({ message: 'Invoice creation failed' }));
       });
-    })
-    .catch(err => {
-      dispatch(showMessage({ message: 'Invoice creation failed' }));
-    });
   };
 }
 
 export function sendInvoice(data, id) {
-  const request = axios.post(`/api/v1/invoices/customer_id/${id}/send_invoice`, data);
+  const request = axios.post(
+    `/api/v1/invoices/customer_id/${id}/send_invoice`,
+    data
+  );
   console.log(request, 'sending Invoice request');
 
   return (dispatch) => {
@@ -71,7 +91,7 @@ export function sendInvoice(data, id) {
         }),
       ]).then(() => {
         dispatch(Actions.getInvoices());
-        history.push("/invoices")
+        history.push('/invoices');
       });
     });
   };
@@ -90,6 +110,11 @@ export function initializeInvoicePayment(id) {
       ]).then(() => {
         dispatch(Actions.openNewRecordPaymentDialog(response.data.data));
       });
+    })
+    .catch(err => {
+      if (err.response && err.response.data) {
+        dispatch(showMessage({ message: err.response.data.message }));
+      }
     });
   };
 }
@@ -99,37 +124,39 @@ export function recordInvoicePayment(data, id) {
   console.log(request, 'record Invoice payment request');
 
   return (dispatch) => {
-    request.then((response) => {
-      dispatch(showMessage({ message: 'Payment recorded successfully' }));
+    dispatch({ type: SET_LOADING })
 
-      Promise.all([
-        dispatch({
-          type: RECORD_INVOICE_PAYMENT,
-          payload: response.data,
-        }),
-      ]).then(() => {
-        dispatch(Actions.closeNewRecordPaymentDialog());
-        history.push(`/invoices/${id}`)
-        window.location.reload()
+    request
+      .then((response) => {
+        dispatch(showMessage({ message: 'Payment recorded successfully' }));
+
+        Promise.all([
+          dispatch({
+            type: RECORD_INVOICE_PAYMENT,
+            payload: response.data,
+          }),
+        ]).then(() => {
+          dispatch(Actions.closeNewRecordPaymentDialog());
+          history.push(`/receipts/${data?.receipt_id}`);
+          window.location.reload();
+        });
+      })
+      .catch((err) => {
+        if (err.response && err.response.data) {
+          dispatch(showMessage({ message: err.response.data.message }));
+        }
       });
-    })
-    .catch(err => {
-      console.log(err.response, "err response")
-      if(err.response && err.response.data){
-        dispatch(showMessage({ message: err.response.data.message }));
-      }
-    });
   };
 }
 
-export function getInvoices(page=0, size=10) {
+export function getInvoices(page = 0, size = 10) {
   const request = axios.get('/api/v1/invoices', { params: { page, size } });
 
   return (dispatch) =>
     request.then((response) =>
       dispatch({
         type: GET_INVOICES,
-        payload: response.data.data
+        payload: response.data.data,
       })
     );
 }
@@ -141,13 +168,15 @@ export function getInvoiceById(id) {
     request.then((response) =>
       dispatch({
         type: GET_INVOICE_BY_ID,
-        payload: response.data.data
+        payload: response.data.data,
       })
     );
 }
 
 export function getPaymentAdvice(id) {
-  const request = axios.get(`/api/v1/payments/customer_id/${id}/payment_advice`);
+  const request = axios.get(
+    `/api/v1/payments/customer_id/${id}/payment_advice`
+  );
 
   return (dispatch) =>
     request.then((response) =>
@@ -174,7 +203,7 @@ export function deSelectAllInvoices() {
 export function openInvoicePaymentDialog(payload) {
   return {
     type: OPEN_INVOICE_PAYMENT_DIALOG,
-    payload
+    payload,
   };
 }
 
@@ -187,7 +216,7 @@ export function closeInvoicePaymentDialog() {
 export function openSendInvoiceDialog(payload) {
   return {
     type: OPEN_SEND_INVOICE_DIALOG,
-    payload
+    payload,
   };
 }
 
@@ -213,7 +242,7 @@ export function closeEditInvoiceDialog() {
 export function openNewRecordPaymentDialog(payload) {
   return {
     type: OPEN_NEW_RECORD_PAYMENT_DIALOG,
-    payload
+    payload,
   };
 }
 

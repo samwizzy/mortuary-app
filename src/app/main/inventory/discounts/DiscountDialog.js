@@ -136,7 +136,7 @@ function DiscountDialog(props) {
               }}
               fullWidth
             >
-              {_.range(5, 100, 5).map(r => 
+              {_.range(5, 105, 5).map(r => 
                 <MenuItem key={r} value={r}>{r}</MenuItem>
               )}
             </TextField>  

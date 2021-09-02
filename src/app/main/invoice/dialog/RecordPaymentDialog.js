@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import {
+  CircularProgress,
   TextField,
   IconButton, Icon,
   Button,
@@ -29,7 +30,7 @@ const defaultFormState = {
   file: "",
   notes: "",
   org_key: "",
-  payment_date: moment().format('YYYY-MM-DD'),
+  payment_date: moment().format("YYYY-MM-DD"),
   payment_method: "CASH",
   receipt_number: ""
 };
@@ -41,6 +42,7 @@ const paymentMethods = ['CASH', 'CHECK', 'BANK_TRANSFER', 'CREDIT_DEBIT_CARD', '
 
 function RecordPaymentDialog(props) {
   const dispatch = useDispatch();
+  const loading = useSelector(({ invoicesApp }) => invoicesApp.invoices.loading);
   const recordPaymentDialog = useSelector(({ invoicesApp }) => invoicesApp.invoices.recordPaymentDialog);
 
   console.log(recordPaymentDialog, "recordPaymentDialog")
@@ -82,6 +84,7 @@ function RecordPaymentDialog(props) {
       form.customer_name.length > 0 &&
       form.amount_received.length > 0 &&
       form.payment_method.length > 0 &&
+      form.payment_date &&
       form.notes.length > 0
     );
   }
@@ -265,7 +268,8 @@ function RecordPaymentDialog(props) {
             color='primary'
             onClick={handleSubmit}
             type='submit'
-            disabled={!canBeSubmitted()}
+            disabled={loading ? loading : !canBeSubmitted()}
+            endIcon={loading && <CircularProgress />}
           >
             Save
           </Button>

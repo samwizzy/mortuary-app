@@ -98,7 +98,7 @@ function ReportsList(props) {
                 alt=''
               />
               <h3 className='text-base leading-4 font-bold text-gray-900'>
-                Daily Morgue Report
+                Daily Vault Report
               </h3>
               <p className='text-sm'>
                 {form.startDate &&

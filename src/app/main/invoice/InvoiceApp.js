@@ -5,6 +5,7 @@ import {connect} from "react-redux"
 import withReducer from 'app/store/withReducer';
 import reducers from './store/reducers';
 import * as Actions from './store/actions';
+import * as appActions from './../../store/actions';
 import { FusePageCarded } from '@fuse';
 import InvoicesHeader from './invoices/InvoicesHeader';
 import InvoiceHeader from './invoice/InvoiceHeader';
@@ -24,6 +25,7 @@ class InvoiceApp extends Component {
     this.props.getCustomers()
     this.props.getServices()
     this.props.getDiscounts()
+    this.props.getBranches()
   }
 
   render() {
@@ -67,6 +69,7 @@ const mapDispatchToProps = (dispatch) => {
     getCustomers: Actions.getCustomers,
     getServices: Actions.getServices,
     getDiscounts: Actions.getDiscounts,
+    getBranches: appActions.getBranches,
   }, dispatch)
 }
 

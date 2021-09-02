@@ -21,7 +21,7 @@ import converter from 'number-to-words';
 import ReactToPdf from 'react-to-pdf';
 
 function InvoiceList(props) {
-  const { invoice, user, services } = props;
+  const { invoice, user, services, branches } = props;
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const ref = React.createRef();
@@ -30,7 +30,6 @@ function InvoiceList(props) {
   const data = invoice ? invoice.service : [];
 
   console.log(invoice, 'invoice');
-  console.log(user, 'user');
 
   useEffect(() => {
     dispatch(Actions.getInvoiceById(match.params.id));
@@ -49,6 +48,8 @@ function InvoiceList(props) {
     unit: 'in',
     format: [9, 14],
   };
+
+  console.log(branches, "branches")
 
   return (
     <div className='flex flex-col p-24'>
@@ -79,7 +80,8 @@ function InvoiceList(props) {
               <h1>
                 <img
                   className='h-96'
-                  src='/assets/images/profile/omega-homes.svg'
+                  src={user?.organisation?.logo}
+                  // src='/assets/images/profile/omega-homes.svg'
                   alt=''
                 />
               </h1>
@@ -87,22 +89,26 @@ function InvoiceList(props) {
               <div>
                 <dl className='space-y-16 text-right text-xs'>
                   <div>
-                    <dt className='capitalize'>
+                    {/* <dt className='capitalize'>
                       {user.organisation?.city
                         ? `${user.organisation?.city} Location`
                         : ''}
-                    </dt>
+                    </dt> */}
                     <dt>{user.organisation?.companyName}</dt>
-                    <dt>{user.organisation?.address}</dt>
-                    <dt>
+                    <dt>{branches?.find(b => b.id === invoice?.branch_id)?.address}</dt>
+                    {/* <dt>
                       {user.organisation?.city}, {user.organisation?.state}
                     </dt>
-                    <dt>{user.organisation?.country}</dt>
+                    <dt>{user.organisation?.country}</dt> */}
                     <dt>
                       <div className='space-x-8'>
-                        <span>{user.organisation?.phoneNumber}</span>
-                        <span>{user.organisation?.contactPersonPhone}</span>
-                        <span>{user.organisation?.contactPersonTel}</span>
+                        <span>
+                          {[
+                            user.organisation?.phoneNumber, 
+                            user.organisation?.contactPersonTel,
+                            user.organisation?.contactPersonPhone
+                          ].filter(n => n).join(", ")}
+                        </span>
                       </div>
                     </dt>
                     <dt>{user.organisation?.emailAddress}</dt>
@@ -377,13 +383,14 @@ function InvoiceList(props) {
   );
 }
 
-const mapStateToProps = ({ invoicesApp, auth }) => {
+const mapStateToProps = ({ invoicesApp, auth, ezone }) => {
   const { invoices, services } = invoicesApp;
   return {
     searchText: invoices.searchText,
     invoice: invoices.invoice,
     services: services.services.services,
     user: auth.user.data,
+    branches: ezone.branches.branches,
   };
 };
 

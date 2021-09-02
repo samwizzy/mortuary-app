@@ -33,7 +33,7 @@ function UserMenu(props) {
   return (
     <React.Fragment>
       <Button className='h-64' onClick={userMenuClick}>
-        {user.data.organisation.logo ? (
+        {user.data?.organisation?.logo ? (
           <Avatar
             className=''
             alt='user photo'
