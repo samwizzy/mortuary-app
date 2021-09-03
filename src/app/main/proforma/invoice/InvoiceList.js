@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function InvoiceList(props) {
-  const { invoice, user } = props;
+  const { invoice, user, branches } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const match = useRouteMatch();
@@ -98,16 +98,27 @@ function InvoiceList(props) {
                       {user.organisation?.city} Location
                     </dt>
                     <dt>{user.organisation?.companyName}</dt>
-                    <dt>{user.organisation?.address}</dt>
                     <dt>
+                      {
+                        branches?.find((b) => b.id === invoice?.branch_id)
+                          ?.address
+                      }
+                    </dt>
+                    {/* <dt>
                       {user.organisation?.city}, {user.organisation?.state}
                     </dt>
-                    <dt>{user.organisation?.country}</dt>
+                    <dt>{user.organisation?.country}</dt> */}
                     <dt>
                       <div className='space-x-8'>
-                        <span>{user.organisation?.phoneNumber}</span>
-                        <span>{user.organisation?.contactPersonPhone}</span>
-                        <span>{user.organisation?.contactPersonTel}</span>
+                        <span>
+                          {[
+                            user.organisation?.phoneNumber,
+                            user.organisation?.contactPersonTel,
+                            user.organisation?.contactPersonPhone,
+                          ]
+                            .filter((n) => n)
+                            .join(', ')}
+                        </span>
                       </div>
                     </dt>
                     <dt>{user.organisation?.emailAddress}</dt>
