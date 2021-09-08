@@ -93,7 +93,7 @@ function ReportsHeader(props) {
                 <div className='flex flex-col'>
                   <KeyboardDatePicker
                     disableToolbar
-                    format='MM/dd/yyyy'
+                    format='dd/MM/yyyy'
                     id='start-date'
                     label='Start'
                     value={form.startDate}
