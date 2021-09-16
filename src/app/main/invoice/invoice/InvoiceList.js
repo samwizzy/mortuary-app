@@ -49,7 +49,9 @@ function InvoiceList(props) {
     format: [9, 14],
   };
 
-  console.log(branches, "branches")
+  console.log(branches, 'branches');
+
+  const selectedBranch = branches?.find((b) => b.id === invoice?.branch_id);
 
   return (
     <div className='flex flex-col p-24'>
@@ -78,36 +80,26 @@ function InvoiceList(props) {
           >
             <div className='flex justify-between px-4 py-0 sm:px-6'>
               <h1>
-                <img
-                  className='h-96'
-                  src={user?.organisation?.logo}
-                  // src='/assets/images/profile/omega-homes.svg'
-                  alt=''
-                />
+                <img className='h-96' src={user?.organisation?.logo} alt='' />
               </h1>
 
               <div>
                 <dl className='space-y-16 text-right text-xs'>
                   <div>
-                    {/* <dt className='capitalize'>
-                      {user.organisation?.city
-                        ? `${user.organisation?.city} Location`
-                        : ''}
-                    </dt> */}
                     <dt>{user.organisation?.companyName}</dt>
-                    <dt>{branches?.find(b => b.id === invoice?.branch_id)?.address}</dt>
-                    {/* <dt>
-                      {user.organisation?.city}, {user.organisation?.state}
-                    </dt>
-                    <dt>{user.organisation?.country}</dt> */}
+
+                    <dt>{selectedBranch?.address}</dt>
+
                     <dt>
                       <div className='space-x-8'>
                         <span>
                           {[
-                            user.organisation?.phoneNumber, 
+                            user.organisation?.phoneNumber,
                             user.organisation?.contactPersonTel,
-                            user.organisation?.contactPersonPhone
-                          ].filter(n => n).join(", ")}
+                            user.organisation?.contactPersonPhone,
+                          ]
+                            .filter((n) => n)
+                            .join(', ')}
                         </span>
                       </div>
                     </dt>
@@ -115,10 +107,11 @@ function InvoiceList(props) {
                     <dt>
                       <hr className='my-16 border-0 border-t border-grey-darkest' />
                     </dt>
+
                     <div className='text-red font-bold'>
-                      <dt>A/C NAME: OMEGA FUNERAL HOME</dt>
-                      <dt>GTBank 0174644878</dt>
-                      <dt>Polaris Bank 1771874077</dt>
+                      <dt>{selectedBranch?.accountName}</dt>
+                      <dt>{selectedBranch?.bankBankAccounts?.bank?.name}</dt>
+                      <dt>{selectedBranch?.bankBankAccounts?.accountNumber}</dt>
                     </div>
                   </div>
                   <div className='text-gray-600'>

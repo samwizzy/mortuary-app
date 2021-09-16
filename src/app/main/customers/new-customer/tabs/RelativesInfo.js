@@ -176,7 +176,6 @@ function RelativesInfo(props) {
                       <TextField
                         className='mt-8 mb-16'
                         required
-                        type='number'
                         label='Phone'
                         id='relative-phone'
                         name='phone_number'

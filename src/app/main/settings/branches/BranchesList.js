@@ -8,13 +8,16 @@ import {
   TablePagination,
   TableRow,
 } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FuseScrollbars } from '@fuse';
 import { withRouter } from 'react-router-dom';
+import * as Actions from '../store/actions';
 import _ from '@lodash';
 import BranchesTableHead from './BranchesTableHead';
+import BranchDialog from './BranchDialog';
 
 function BranchList(props) {
+  const dispatch = useDispatch();
   const searchText = '';
 
   const branches = useSelector(({ ezone }) => ezone.branches.branches);
@@ -123,7 +126,10 @@ function BranchList(props) {
                     </TableCell>
 
                     <TableCell component='th' scope='row' align='left'>
-                      <IconButton size='small'>
+                      <IconButton
+                        onClick={() => dispatch(Actions.openBranchDialog(n.id))}
+                        size='small'
+                      >
                         <Icon>edit</Icon>
                       </IconButton>
                     </TableCell>
@@ -148,6 +154,8 @@ function BranchList(props) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+
+      <BranchDialog />
     </div>
   );
 }

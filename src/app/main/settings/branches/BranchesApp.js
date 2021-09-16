@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import withReducer from 'app/store/withReducer';
 import reducer from '../store/reducers';
+import * as Actions from '../store/actions';
 import * as appActions from '../../../store/actions';
 import { FusePageCarded } from '@fuse';
 import BranchesHeader from './BranchesHeader';
 import BranchesList from './BranchesList';
 import BranchDetails from './BranchDetails';
-// import BranchesToolbar from './BranchesToolbar';
 import { bindActionCreators } from 'redux';
 
 const styles = (theme) => ({
@@ -18,6 +18,13 @@ const styles = (theme) => ({
 class BranchesApp extends Component {
   componentDidMount() {
     this.props.getBranches();
+    this.props.getBanks();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user) {
+      this.props.getBranches();
+    }
   }
 
   render() {
@@ -32,7 +39,7 @@ class BranchesApp extends Component {
         }}
         header={<BranchesHeader />}
         content={
-          <div className='w-full'>
+          <div className='w-full px-24'>
             {this.props.match.params.id ? <BranchDetails /> : <BranchesList />}
           </div>
         }
@@ -42,10 +49,17 @@ class BranchesApp extends Component {
   }
 }
 
+const mapStateToProps = ({ auth }) => {
+  return {
+    user: auth.user.data,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       getBranches: appActions.getBranches,
+      getBanks: Actions.getBanks,
     },
     dispatch
   );
@@ -56,6 +70,6 @@ export default withReducer(
   reducer
 )(
   withStyles(styles, { withTheme: true })(
-    connect(null, mapDispatchToProps)(BranchesApp)
+    connect(mapStateToProps, mapDispatchToProps)(BranchesApp)
   )
 );

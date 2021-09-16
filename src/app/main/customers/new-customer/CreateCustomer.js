@@ -172,7 +172,7 @@ function CreateCustomer(props) {
 
   function handleSelectChange(value, name, i) {
     const newService = [...form.service];
-    if(name === 'service_id') {
+    if (name === 'service_id') {
       newService[i][name] = value ? value.id : null;
       newService[i].rate = value ? value.amount : '';
       // if (value?.service_type === '1' || value?.service_type === '2') {
@@ -244,7 +244,11 @@ function CreateCustomer(props) {
   const handleRowChange = (i) => (event) => {
     const { name, value } = event.target;
     const { relative } = form;
-    relative[i][name] = value;
+    if (name === 'phone_number') {
+      relative[i][name] = value.replace(/^[^0-9]+$/, '');
+    } else {
+      relative[i][name] = value;
+    }
     setForm({ ...form, relative });
   };
 

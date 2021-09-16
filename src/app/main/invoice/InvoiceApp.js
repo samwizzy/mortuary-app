@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {bindActionCreators} from "redux"
-import {connect} from "react-redux"
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import withReducer from 'app/store/withReducer';
 import reducers from './store/reducers';
 import * as Actions from './store/actions';
@@ -22,10 +22,16 @@ const styles = (theme) => ({
 
 class InvoiceApp extends Component {
   componentDidMount() {
-    this.props.getCustomers()
-    this.props.getServices()
-    this.props.getDiscounts()
-    this.props.getBranches()
+    this.props.getCustomers();
+    this.props.getServices();
+    this.props.getDiscounts();
+    this.props.getBranches();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user) {
+      this.props.getBranches();
+    }
   }
 
   render() {
@@ -63,17 +69,30 @@ class InvoiceApp extends Component {
   }
 }
 
+const mapStateToProps = ({ auth }) => {
+  return {
+    user: auth.user.data,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    getInvoices: Actions.getInvoices,
-    getCustomers: Actions.getCustomers,
-    getServices: Actions.getServices,
-    getDiscounts: Actions.getDiscounts,
-    getBranches: appActions.getBranches,
-  }, dispatch)
-}
+  return bindActionCreators(
+    {
+      getInvoices: Actions.getInvoices,
+      getCustomers: Actions.getCustomers,
+      getServices: Actions.getServices,
+      getDiscounts: Actions.getDiscounts,
+      getBranches: appActions.getBranches,
+    },
+    dispatch
+  );
+};
 
 export default withReducer(
   'invoicesApp',
   reducers
-)(withStyles(styles, { withTheme: true })(connect(null, mapDispatchToProps)(InvoiceApp)));
+)(
+  withStyles(styles, { withTheme: true })(
+    connect(mapStateToProps, mapDispatchToProps)(InvoiceApp)
+  )
+);
