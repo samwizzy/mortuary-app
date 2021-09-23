@@ -61,10 +61,10 @@ const rows = [
     sort: true,
   },
   {
-    id: 'amount-due',
+    id: 'deficit',
     align: 'left',
     disablePadding: false,
-    label: 'Amount Due',
+    label: 'Deficit',
     sort: true,
   },
 ];

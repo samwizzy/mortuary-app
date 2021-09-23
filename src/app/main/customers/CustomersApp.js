@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import withReducer from 'app/store/withReducer';
-import reducer from "./store/reducers";
-import * as Actions from "./store/actions";
-import * as appActions from "app/store/actions";
+import reducer from './store/reducers';
+import * as Actions from './store/actions';
+import * as appActions from 'app/store/actions';
 import { FusePageCarded } from '@fuse';
 import CustomersHeader from './customers/CustomersHeader';
 import CustomerHeader from './customer/CustomerHeader';
@@ -19,10 +19,9 @@ const styles = (theme) => ({
 });
 
 class CustomerApp extends Component {
-
   componentDidMount() {
-    this.props.getCustomers()
-    this.props.getBranches()
+    this.props.getCustomers();
+    this.props.getBranches();
   }
 
   render() {
@@ -52,10 +51,20 @@ class CustomerApp extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    getCustomers: Actions.getCustomers,
-    getBranches: appActions.getBranches,
-  }, dispatch)
-}
+  return bindActionCreators(
+    {
+      getCustomers: Actions.getCustomers,
+      getBranches: appActions.getBranches,
+    },
+    dispatch
+  );
+};
 
-export default withReducer("customerApp", reducer)(withStyles(styles, { withTheme: true })(connect(null, mapDispatchToProps)(CustomerApp)));
+export default withReducer(
+  'customerApp',
+  reducer
+)(
+  withStyles(styles, { withTheme: true })(
+    connect(null, mapDispatchToProps)(CustomerApp)
+  )
+);

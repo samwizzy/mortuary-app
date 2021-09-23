@@ -36,7 +36,9 @@ const defaultFormState = {
 
 function VoucherDialog(props) {
   const dispatch = useDispatch();
-  const voucherDialog = useSelector(({ vouchersApp }) => vouchersApp.vouchers.voucherDialog);
+  const voucherDialog = useSelector(
+    ({ vouchersApp }) => vouchersApp.vouchers.voucherDialog
+  );
 
   const { form, handleChange, setForm } = useForm(defaultFormState);
 
@@ -80,7 +82,7 @@ function VoucherDialog(props) {
   }
 
   const handleDateChange = (name) => (date) => {
-    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DDTHH:mm:ss') })
+    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DDTHH:mm:ss') });
   };
 
   const handleChipChange = () => {};
@@ -109,9 +111,7 @@ function VoucherDialog(props) {
       <AppBar position='static' elevation={1}>
         <Toolbar className='flex w-full'>
           <Typography variant='subtitle1' color='inherit'>
-            {voucherDialog.type === 'new'
-              ? 'New Voucher'
-              : 'Edit Payment'}
+            {voucherDialog.type === 'new' ? 'New Voucher' : 'Edit Payment'}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -181,7 +181,7 @@ function VoucherDialog(props) {
                 disableToolbar
                 variant='inline'
                 inputVariant='outlined'
-                format='MM/dd/yyyy'
+                format='dd/MM/yyyy'
                 id='payment-date'
                 label='Payment Date'
                 fullWidth

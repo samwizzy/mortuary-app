@@ -25,10 +25,8 @@ function SelectServices(props) {
   const services = serviceReducer.services.services;
   const discounts = discountsReducer.discounts;
 
-  console.log(services, "services")
-
   function canBeSubmitted() {
-    return form.service.length > 0 && form.service[0].service_id
+    return form.service.length > 0 && form.service.every(s => (s.rate && s.qty))
   }
 
   return (
@@ -92,6 +90,7 @@ function SelectServices(props) {
                     <TextField
                       className='w-128'
                       required
+                      type="number"
                       label='Days/Qty'
                       id={`qty-${i}`}
                       name='qty'

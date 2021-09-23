@@ -1,13 +1,23 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Button, Grid, TextField, MenuItem, Typography, CircularProgress } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  TextField,
+  MenuItem,
+  Typography,
+  CircularProgress,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
 import { useSelector, useDispatch } from 'react-redux';
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import moment from 'moment';
-import _ from "lodash"
+import _ from 'lodash';
 import * as Actions from '../store/actions';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,20 +31,20 @@ const useStyles = makeStyles((theme) => ({
 
 function ReportsHeader(props) {
   const { match } = props;
-  const classes = useStyles()
+  const classes = useStyles();
   const dispatch = useDispatch();
-  const branches = useSelector(({ezone}) => ezone.branches.branches)
-  const loading = useSelector(({reportsApp}) => reportsApp.reports.loading)
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
+  const loading = useSelector(({ reportsApp }) => reportsApp.reports.loading);
 
   const [form, setForm] = useState({
-    branchId: "",
+    branchId: '',
     endDate: null,
     orgKey: 1,
-    startDate: null
+    startDate: null,
   });
 
   const handleDateChange = (name) => (date) => {
-    setForm({ ...form, [name]: moment(date).format("YYYY-MM-DDTHH:mm:ss") });
+    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DDTHH:mm:ss') });
   };
 
   const handleChange = (event) => {
@@ -42,20 +52,16 @@ function ReportsHeader(props) {
   };
 
   const handleSubmit = () => {
-    dispatch(Actions.getAdmissionReports(form))
-  }
+    dispatch(Actions.getAdmissionReports(form));
+  };
 
   const canSubmit = () => {
-    return (
-      form.startDate && 
-      form.endDate && 
-      form.branchId 
-    )
-  }
+    return form.startDate && form.endDate && form.branchId;
+  };
 
-  console.log(branches, "branches")
-  console.log(form, "form")
-  console.log(_.every(form, _.isEmpty), "_.every(form, !_.isEmpty)")
+  console.log(branches, 'branches');
+  console.log(form, 'form');
+  console.log(_.every(form, _.isEmpty), '_.every(form, !_.isEmpty)');
 
   return (
     <div className='flex flex-1 w-full items-center justify-between'>
@@ -76,32 +82,32 @@ function ReportsHeader(props) {
             value={form.branchId}
             onChange={handleChange}
             variant='outlined'
-            size="small"
+            size='small'
             InputLabelProps={{
               disabled: true,
             }}
           >
-            <MenuItem value="">Select branch</MenuItem>
-            {branches.map(b => 
+            <MenuItem value=''>Select branch</MenuItem>
+            {branches.map((b) => (
               <MenuItem key={b.id} value={b.id}>
                 {b.name}
               </MenuItem>
-            )}
-          </TextField>  
+            ))}
+          </TextField>
         </FuseAnimate>
 
-        <div className="flex items-start space-x-8">
+        <div className='flex items-start space-x-8'>
           <FuseAnimate animation='transition.slideDownIn' delay={300}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justify='flex-start' className={classes.root}>
-                <div className="flex flex-col">
+                <div className='flex flex-col'>
                   <KeyboardDatePicker
                     disableToolbar
-                    format='MM/dd/yyyy'
+                    format='dd/MM/yyyy'
                     id='start-date'
-                    label="Start"
+                    label='Start'
                     value={form.startDate}
-                    onChange={handleDateChange("startDate")}
+                    onChange={handleDateChange('startDate')}
                     InputProps={{
                       disableUnderline: true,
                     }}
@@ -113,14 +119,14 @@ function ReportsHeader(props) {
                     }}
                   />
                 </div>
-                <div className="flex flex-col">
+                <div className='flex flex-col'>
                   <KeyboardDatePicker
                     disableToolbar
-                    format='MM/dd/yyyy'
+                    format='dd/MM/yyyy'
                     id='end-date'
-                    label="End"
+                    label='End'
                     value={form.endDate}
-                    onChange={handleDateChange("endDate")}
+                    onChange={handleDateChange('endDate')}
                     InputProps={{
                       disableUnderline: true,
                     }}
@@ -136,8 +142,8 @@ function ReportsHeader(props) {
             </MuiPickersUtilsProvider>
           </FuseAnimate>
           <FuseAnimate animation='transition.slideDownIn' delay={300}>
-            <Button 
-              variant="contained"
+            <Button
+              variant='contained'
               disableElevation
               onClick={handleSubmit}
               endIcon={loading && <CircularProgress size={16} />}

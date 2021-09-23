@@ -40,6 +40,13 @@ const rows = [
     sort: true,
   },
   {
+    id: 'branch',
+    align: 'left',
+    disablePadding: false,
+    label: 'Branch',
+    sort: true,
+  },
+  {
     id: 'date-created',
     align: 'left',
     disablePadding: false,

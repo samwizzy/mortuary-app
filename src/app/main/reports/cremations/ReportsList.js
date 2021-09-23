@@ -5,24 +5,30 @@ import {
   TableCell,
   TablePagination,
   TableRow,
-  Checkbox,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
-// import * as Actions from '../store/actions';
+import PDFButton from './Button';
 
 function ReportsList(props) {
+  const ref = React.createRef();
   const searchText = '';
 
-  const cremationData = useSelector(({reportsApp}) => reportsApp.reports.cremations)
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
+  const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
+  const cremationData = useSelector(
+    ({ reportsApp }) => reportsApp.reports.cremations
+  );
+
   const cremations = cremationData.cremations;
   const totalItems = cremationData.totalItems;
   const currentPage = cremationData.currentPage;
 
-  console.log(cremationData, "cremationData")
+  console.log(cremationData, 'cremationData');
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(cremations);
@@ -35,7 +41,9 @@ function ReportsList(props) {
       searchText.length === 0
         ? cremations
         : _.filter(cremations, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.deceasedFullName
+              .toLowerCase()
+              .includes(searchText.toLowerCase())
           )
     );
   }, [cremations, searchText]);
@@ -59,30 +67,6 @@ function ReportsList(props) {
     setSelected([]);
   }
 
-  function handleClick(item) {
-    props.history.push('/reports/cremations/' + item.id);
-  }
-
-  function handleCheck(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  }
-
   function handleChangePage(event, page) {
     setPage(page);
   }
@@ -92,110 +76,125 @@ function ReportsList(props) {
   }
 
   return (
-    <div className='w-full flex flex-col'>
-      <FuseAnimate delay={100}>
-        <div className='flex justify-center flex-wrap mt-4 mb-16'>
-          <div className='px-4 pb-5 sm:px-6 text-center'>
-            <img
-              className='h-72'
-              src='/assets/images/profile/omega-homes.svg'
-              alt=''
-            />
-            <h3 className='text-base leading-4 font-bold text-gray-900'>
-              Daily Morgue Report
-            </h3>
-            <p className='text-sm'>As of 20th Jul, 2020</p>
+    <div className='relative w-full'>
+      <div className='absolute right-0 top-0 bg-orange-lighter'>
+        <PDFButton ref={ref} />
+      </div>
+
+      <div className='w-full flex flex-col' ref={ref}>
+        <FuseAnimate delay={100}>
+          <div className='flex justify-center flex-wrap mt-4 mb-16'>
+            <div className='px-4 pb-5 sm:px-6 text-center'>
+              <img
+                className='h-72'
+                src='/assets/images/profile/omega-homes.svg'
+                alt=''
+              />
+              <h3 className='text-base leading-4 font-bold text-gray-900'>
+                Daily Cremation Report
+              </h3>
+              <p className='text-sm'>
+                {form.startDate &&
+                  `As of ${moment(form.startDate).format('Do MMM, YYYY')}`}
+              </p>
+            </div>
           </div>
-        </div>
-      </FuseAnimate>
-      <FuseScrollbars className='flex-grow overflow-x-auto'>
-        <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <ReportsTableHead
-            numSelected={selected.length}
-            order={order}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={data.length}
-          />
+        </FuseAnimate>
+        <FuseScrollbars className='flex-grow overflow-x-auto'>
+          <Table className='min-w-xl' aria-labelledby='tableTitle'>
+            <ReportsTableHead
+              numSelected={selected.length}
+              order={order}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={data.length}
+            />
 
-          <TableBody>
-            {_.orderBy(
-              data,
-              [
-                (o) => {
-                  switch (order.id) {
-                    case 'categories': {
-                      return o.categories[0];
+            <TableBody>
+              {_.orderBy(
+                data,
+                [
+                  (o) => {
+                    switch (order.id) {
+                      case 'categories': {
+                        return o.categories[0];
+                      }
+                      default: {
+                        return o[order.id];
+                      }
                     }
-                    default: {
-                      return o[order.id];
-                    }
-                  }
-                },
-              ],
-              [order.direction]
-            )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
-                return (
-                  <TableRow
-                    className='h-64 cursor-pointer'
-                    hover
-                    role='checkbox'
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
-                    onClick={(event) => handleClick(n)}
-                  >
-                    <TableCell
-                      className='w-48 px-4 sm:px-12'
-                      padding='checkbox'
+                  },
+                ],
+                [order.direction]
+              )
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((n) => {
+                  const isSelected = selected.indexOf(n.id) !== -1;
+                  return (
+                    <TableRow
+                      className='h-64 cursor-pointer'
+                      hover
+                      role='checkbox'
+                      aria-checked={isSelected}
+                      tabIndex={-1}
+                      key={n.id}
+                      selected={isSelected}
                     >
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
+                      <TableCell component='th' scope='row'>
+                        {n.deceasedFullName}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.dateReceived}
-                    </TableCell>
+                      <TableCell
+                        className='truncate'
+                        component='th'
+                        scope='row'
+                      >
+                        {n.age}
+                      </TableCell>
 
-                    <TableCell className='truncate' component='th' scope='row'>
-                      {n.accountId}
-                    </TableCell>
+                      <TableCell component='th' scope='row' align='left'>
+                        {n.dateOfDeath
+                          ? moment(n.dateOfDeath).format('ll')
+                          : '—'}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.accountType}
-                    </TableCell>
+                      <TableCell component='th' scope='row' align='left'>
+                        {n.dateOfCremation
+                          ? moment(n.dateOfCremation).format('ll')
+                          : '—'}
+                      </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.status}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </FuseScrollbars>
+                      <TableCell
+                        className='truncate'
+                        component='th'
+                        scope='row'
+                      >
+                        {n.branchId
+                          ? branches.find((b) => b.id === n.branchId)?.name
+                          : '—'}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </FuseScrollbars>
 
-      <TablePagination
-        component='div'
-        count={totalItems}
-        rowsPerPage={rowsPerPage}
-        page={currentPage}
-        backIconButtonProps={{
-          'aria-label': 'Previous Page',
-        }}
-        nextIconButtonProps={{
-          'aria-label': 'Next Page',
-        }}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+        <TablePagination
+          component='div'
+          count={totalItems}
+          rowsPerPage={rowsPerPage}
+          page={currentPage}
+          backIconButtonProps={{
+            'aria-label': 'Previous Page',
+          }}
+          nextIconButtonProps={{
+            'aria-label': 'Next Page',
+          }}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </div>
     </div>
   );
 }

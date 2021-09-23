@@ -7,7 +7,7 @@ import VaultDetailsSkeleton from './VaultSkeleton';
 import VaultDialog from '../VaultDialog';
 
 function VaultDetails(props) {
-  const { match, vault } = props;
+  const { match, branches, vault } = props;
   const dispatch = useDispatch();
 
   console.log(vault, 'vault');
@@ -129,6 +129,14 @@ function VaultDetails(props) {
               </div>
             </div>
             <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+              <dt className='text-sm font-medium text-gray-600'>Branch</dt>
+              <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+                {vault?.branch_id
+                  ? branches.find((b) => b.id === vault.branch_id)?.name
+                  : '—'}
+              </dd>
+            </div>
+            <div className='bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
               <dt className='text-sm font-medium text-gray-600'>Address</dt>
               <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
                 {vault?.address}
@@ -145,10 +153,11 @@ function VaultDetails(props) {
   );
 }
 
-const mapStateToProps = ({ vaultsApp }) => {
+const mapStateToProps = ({ vaultsApp, ezone }) => {
   const { vaults } = vaultsApp;
   return {
     vault: vaults.vault,
+    branches: ezone.branches.branches,
   };
 };
 

@@ -1,49 +1,56 @@
 import React, { useEffect } from 'react';
-import {FuseAnimate, FuseScrollbars, FuseUtils} from "@fuse"
-import {useHistory} from "react-router-dom"
-import moment from "moment"
+import { FuseAnimate, FuseScrollbars, FuseUtils } from '@fuse';
+import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 import {
-  Icon, IconButton,
+  Icon,
+  IconButton,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  Table, TableHead, TableBody, TableRow, TableCell,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
   Typography,
   Toolbar,
   AppBar,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
-import ReactToPdf from "react-to-pdf"
+import ReactToPdf from 'react-to-pdf';
 
 function ProformaInvoiceDialog(props) {
   const dispatch = useDispatch();
-  const history = useHistory()
-  const ref = React.createRef()
-  const invoiceDialog = useSelector(({ proformaApp }) => proformaApp.invoices.proformainvoiceDialog);
+  const history = useHistory();
+  const ref = React.createRef();
+  const invoiceDialog = useSelector(
+    ({ proformaApp }) => proformaApp.invoices.proformainvoiceDialog
+  );
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
   const user = useSelector(({ auth }) => auth.user.data);
 
   const options = {
     orientation: 'portrait',
     unit: 'in',
-    format: [9,14]
+    format: [9, 14],
   };
 
-  console.log(invoiceDialog, "invoiceDialog")
+  console.log(invoiceDialog, 'invoiceDialog');
 
   useEffect(() => {
     /**
      * After Dialog Open
      */
     if (invoiceDialog.props.open) {
-   
     }
   }, [invoiceDialog.props.open]);
 
   function closeComposeDialog() {
-    dispatch(Actions.closeProformaInvoiceDialog())
-    history.push("/proforma")
+    dispatch(Actions.closeProformaInvoiceDialog());
+    history.push('/proforma');
   }
 
   return (
@@ -63,15 +70,26 @@ function ProformaInvoiceDialog(props) {
           </Typography>
           <div className='flex items-center' aria-label='Toggle star'>
             <FuseAnimate animation='transition.expandIn' delay={100}>
-              <IconButton color="inherit" onClick={() => {}}>
+              <IconButton color='inherit' onClick={() => {}}>
                 <Icon>mail</Icon>
               </IconButton>
             </FuseAnimate>
             <FuseAnimate animation='transition.expandIn' delay={100}>
-              <ReactToPdf targetRef={ref} filename={`${invoiceDialog.data?.proforma_invoice_number}.pdf`} options={options} x={.1} y={.1} scale={0.94}>
-                {({toPdf}) => (
-                  <IconButton color="inherit" disabled={!invoiceDialog.data} onClick={toPdf}>
-                    <Icon className="text-white">print</Icon>
+              <ReactToPdf
+                targetRef={ref}
+                filename={`${invoiceDialog.data?.proforma_invoice_number}.pdf`}
+                options={options}
+                x={0.1}
+                y={0.1}
+                scale={0.94}
+              >
+                {({ toPdf }) => (
+                  <IconButton
+                    color='inherit'
+                    disabled={!invoiceDialog.data}
+                    onClick={toPdf}
+                  >
+                    <Icon className='text-white'>print</Icon>
                   </IconButton>
                 )}
               </ReactToPdf>
@@ -79,7 +97,7 @@ function ProformaInvoiceDialog(props) {
           </div>
         </Toolbar>
       </AppBar>
-    
+
       <DialogContent classes={{ root: 'p-24' }}>
         <FuseAnimate delay={100}>
           <div className='flex flex-wrap mt-0 mb-24' ref={ref}>
@@ -93,38 +111,56 @@ function ProformaInvoiceDialog(props) {
                   />
                 </h1>
                 <div>
-                  <dl className="space-y-16 text-right text-xs">
+                  <dl className='space-y-16 text-right text-xs'>
                     <div>
-                      <dt className="capitalize">{user.organisation?.city} Location</dt>
+                      <dt className='capitalize'>
+                        {user.organisation?.city} Location
+                      </dt>
                       <dt>{user.organisation?.companyName}</dt>
-                      <dt>{user.organisation?.address}</dt>
-                      <dt>{user.organisation?.city}, {user.organisation?.state}</dt>
-                      <dt>{user.organisation?.country}</dt>
                       <dt>
-                        <div className="space-x-8">
-                        <span>{user.organisation?.phoneNumber}</span>
-                        <span>{user.organisation?.contactPersonPhone}</span>
-                        <span>{user.organisation?.contactPersonTel}</span>
+                        {
+                          branches?.find(
+                            (b) => b.id === invoiceDialog?.data?.branch_id
+                          )?.address
+                        }
+                      </dt>
+                      {/* <dt>{user.organisation?.city}, {user.organisation?.state}</dt>
+                      <dt>{user.organisation?.country}</dt> */}
+                      <dt>
+                        <div className='space-x-8'>
+                          <span>
+                            {[
+                              user.organisation?.phoneNumber,
+                              user.organisation?.contactPersonTel,
+                              user.organisation?.contactPersonPhone,
+                            ]
+                              .filter((n) => n)
+                              .join(', ')}
+                          </span>
                         </div>
                       </dt>
                       <dt>{user.organisation?.emailAddress}</dt>
-                      <dt><hr className="my-16 border-0 border-t border-solid border-grey-light" /></dt>
-                      <div className="text-red font-bold">
+                      <dt>
+                        <hr className='my-16 border-0 border-t border-solid border-grey-light' />
+                      </dt>
+                      <div className='text-red font-bold'>
                         <dt>A/C NAME: OMEGA FUNERAL HOMES</dt>
                         <dt>GTBank 0174644878</dt>
                         <dt>Polaris Bank 1771874077</dt>
                       </div>
                     </div>
-                    <div className="text-gray-600">
-                      <dt>{moment().format("dddd, MMMM Do, YYYY")}</dt>
+                    <div className='text-gray-600'>
+                      <dt>{moment().format('dddd, MMMM Do, YYYY')}</dt>
                       <dt>{invoiceDialog?.data?.proforma_invoice_number}</dt>
                     </div>
                   </dl>
                 </div>
               </div>
 
-              <div className="text-center">
-                <h2 className="uppercase text-lg italic text-gray-900">Proforma Invoice</h2>
+              <div className='text-center'>
+                <h2 className='uppercase text-lg italic text-gray-900'>
+                  Proforma Invoice
+                </h2>
               </div>
 
               <div className='p-24 border border-solid border-grey-light'>
@@ -162,9 +198,7 @@ function ProformaInvoiceDialog(props) {
                     </dd>
                   </div>
                   <div className='bg-gray-50 px-1 py-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-                    <dt className='text-sm font-bold text-gray-600'>
-                      Email :
-                    </dt>
+                    <dt className='text-sm font-bold text-gray-600'>Email :</dt>
                     <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
                       {invoiceDialog?.data?.email}
                     </dd>
@@ -172,7 +206,11 @@ function ProformaInvoiceDialog(props) {
                 </dl>
 
                 <FuseScrollbars className='flex-grow overflow-x-auto'>
-                  <Table className='mt-24' size="small" aria-labelledby='tableTitle'>
+                  <Table
+                    className='mt-24'
+                    size='small'
+                    aria-labelledby='tableTitle'
+                  >
                     <TableHead>
                       <TableRow className='h-48'>
                         <TableCell>S/N</TableCell>
@@ -184,56 +222,71 @@ function ProformaInvoiceDialog(props) {
                     </TableHead>
 
                     <TableBody>
-                      {invoiceDialog?.data?.service                       
-                        .map((s, i) => {
-                          return (
-                            <TableRow
-                              className='h-48 cursor-pointer'
-                              hover
-                              role='checkbox'
-                              tabIndex={-1}
-                              key={i}
+                      {invoiceDialog?.data?.service.map((s, i) => {
+                        return (
+                          <TableRow
+                            className='h-48 cursor-pointer'
+                            hover
+                            role='checkbox'
+                            tabIndex={-1}
+                            key={i}
+                          >
+                            <TableCell component='th' scope='row'>
+                              {i + 1}
+                            </TableCell>
+
+                            <TableCell
+                              className='truncate'
+                              component='th'
+                              scope='row'
                             >
-                              <TableCell component='th' scope='row'>
-                                {i+1}
-                              </TableCell>
+                              {s.service?.serviceName}
+                            </TableCell>
 
-                              <TableCell className='truncate' component='th' scope='row'>
-                                {s.service?.serviceName}
-                              </TableCell>
-                              
-                              <TableCell component='th' scope='row'>
-                                {FuseUtils.formatCurrency(s.rate)}
-                              </TableCell>
+                            <TableCell component='th' scope='row'>
+                              {FuseUtils.formatCurrency(s.rate)}
+                            </TableCell>
 
-                              <TableCell component='th' scope='row'>
-                                {s.qty}
-                              </TableCell>
+                            <TableCell component='th' scope='row'>
+                              {s.qty}
+                            </TableCell>
 
-                              <TableCell component='th' scope='row'>
-                                {FuseUtils.formatCurrency(s.rate * s.qty)}
-                              </TableCell>
-
-                            </TableRow>
-                          );
-                        })}
-                        <TableRow className='h-48'>
-                          <TableCell component='th' scope='row' align='left'>
-                            <strong>Grand Total</strong>
-                          </TableCell>
-                          <TableCell component='th' scope='row' align='right' colSpan={4}>
-                            {FuseUtils.formatCurrency(invoiceDialog?.data?.service.reduce((store, row) => store + (Number(row.rate) * Number(row.qty)), 0))}
-                          </TableCell>
-                       </TableRow>
-
+                            <TableCell component='th' scope='row'>
+                              {FuseUtils.formatCurrency(s.rate * s.qty)}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                      <TableRow className='h-48'>
+                        <TableCell component='th' scope='row' align='left'>
+                          <strong>Grand Total</strong>
+                        </TableCell>
+                        <TableCell
+                          component='th'
+                          scope='row'
+                          align='right'
+                          colSpan={4}
+                        >
+                          {FuseUtils.formatCurrency(
+                            invoiceDialog?.data?.service.reduce(
+                              (store, row) =>
+                                store + Number(row.rate) * Number(row.qty),
+                              0
+                            )
+                          )}
+                        </TableCell>
+                      </TableRow>
                     </TableBody>
                   </Table>
                 </FuseScrollbars>
               </div>
 
-              <div className="flex flex-col space-y-1 mt-16 text-red font-bold uppercase text-xs">
+              <div className='flex flex-col space-y-1 mt-16 text-red font-bold uppercase text-xs'>
                 <span>No cash payment accepted</span>
-                <span>We never accept payment for our products & services via our employees personal account numbers. </span>
+                <span>
+                  We never accept payment for our products & services via our
+                  employees personal account numbers.{' '}
+                </span>
                 <span>All payment must be made to Omega Funeral Home</span>
               </div>
             </div>
@@ -251,7 +304,6 @@ function ProformaInvoiceDialog(props) {
           Close
         </Button>
       </DialogActions>
-       
     </Dialog>
   );
 }

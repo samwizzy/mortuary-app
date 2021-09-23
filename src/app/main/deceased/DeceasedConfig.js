@@ -20,7 +20,9 @@ export const DeceasedConfig = {
     {
       path: '/deceased/:id/admission-form',
       exact: true,
-      component: React.lazy(() => import('./details/forms/admission/Admission')),
+      component: React.lazy(() =>
+        import('./details/forms/admission/Admission')
+      ),
     },
     {
       path: '/deceased/:id/release-form',
@@ -30,12 +32,16 @@ export const DeceasedConfig = {
     {
       path: '/deceased/:id/embalmment-certificate',
       exact: true,
-      component: React.lazy(() => import('./details/forms/embalmment/Embalmment')),
+      component: React.lazy(() =>
+        import('./details/forms/embalmment/Embalmment')
+      ),
     },
     {
       path: '/deceased/:id/cremation-certificate',
       exact: true,
-      component: React.lazy(() => import('./details/forms/cremation/Cremation')),
+      component: React.lazy(() =>
+        import('./details/forms/cremation/Cremation')
+      ),
     },
     {
       path: '/deceased/:id/relatives',

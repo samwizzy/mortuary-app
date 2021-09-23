@@ -12,6 +12,7 @@ import { ProformaInvoiceConfig } from 'app/main/proforma/ProformaInvoiceConfig';
 import { FuneralMgtConfig } from 'app/main/funeral_mgt/FuneralMgtConfig';
 import { ReceiptConfig } from 'app/main/receipt/ReceiptConfig';
 import { ReportsConfig } from 'app/main/reports/ReportsConfig';
+import { SettingsConfig } from 'app/main/settings/settingsConfig';
 import { AuthConfig } from 'app/main/auth/AuthConfig';
 
 const routeConfigs = [
@@ -26,6 +27,7 @@ const routeConfigs = [
   FuneralMgtConfig,
   ReceiptConfig,
   ReportsConfig,
+  SettingsConfig,
   DeceasedConfig,
 ];
 
