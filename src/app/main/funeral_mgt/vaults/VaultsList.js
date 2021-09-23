@@ -18,8 +18,9 @@ import * as Actions from '../store/actions';
 import VaultDialog from './VaultDialog';
 
 function VaultsList(props) {
-  const { loading, searchText, vaultsData } = props;
+  const { loading, branches, searchText, vaultsData } = props;
   const dispatch = useDispatch();
+
   const vaults = vaultsData.vaults;
   const count = vaultsData.count;
   const currentPage = vaultsData.currentPage;
@@ -160,6 +161,12 @@ function VaultsList(props) {
                   </TableCell>
 
                   <TableCell component='th' scope='row' align='left'>
+                    {n.branch_id
+                      ? branches.find((b) => b.id === n.branch_id)?.name
+                      : '—'}
+                  </TableCell>
+
+                  <TableCell component='th' scope='row' align='left'>
                     {moment(n.created_at).format('Do MMM, YYYY')}
                   </TableCell>
                 </TableRow>
@@ -200,12 +207,13 @@ function VaultsList(props) {
   );
 }
 
-const mapStateToProps = ({ vaultsApp }) => {
+const mapStateToProps = ({ vaultsApp, ezone }) => {
   const { vaults } = vaultsApp;
   return {
     loading: vaults.loading,
     searchText: vaults.searchText,
     vaultsData: vaults.vaults,
+    branches: ezone.branches.branches,
   };
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { connect, useSelector, useDispatch } from "react-redux"
-import moment from "moment";
+import { connect, useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
 import {
   Link,
   Table,
@@ -19,19 +19,21 @@ import * as Actions from '../store/actions';
 
 function InvoicesList(props) {
   const dispatch = useDispatch();
-  const { searchText, loading } = props
-  const invoicesReducer = useSelector(({invoicesApp}) => invoicesApp.invoices);
-  const invoiceData = invoicesReducer.invoices
-  const invoices = invoiceData.invoices
-  const totalItems = invoiceData.totalItems
-  const currentPage = invoiceData.currentPage
+  const { searchText, loading } = props;
+  const invoicesReducer = useSelector(
+    ({ invoicesApp }) => invoicesApp.invoices
+  );
+  const invoiceData = invoicesReducer.invoices;
+  const invoices = invoiceData.invoices;
+  const totalItems = invoiceData.totalItems;
+  const currentPage = invoiceData.currentPage;
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(invoices);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({ direction: 'asc', id: null });
 
-  console.log(invoices, "invoices")
+  console.log(invoices, 'invoices');
 
   useEffect(() => {
     dispatch(Actions.getInvoices());
@@ -71,7 +73,7 @@ function InvoicesList(props) {
   }
 
   function handleRoute(e, customer) {
-    e.stopPropagation()
+    e.stopPropagation();
     props.history.push('/customers/' + customer.id);
   }
 
@@ -96,12 +98,12 @@ function InvoicesList(props) {
   }
 
   function handleChangePage(event, page) {
-    dispatch(Actions.getInvoices(page))
+    dispatch(Actions.getInvoices(page));
   }
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
-    dispatch(Actions.getInvoices(0, event.target.value))
+    dispatch(Actions.getInvoices(0, event.target.value));
   }
 
   return (
@@ -132,71 +134,70 @@ function InvoicesList(props) {
                 },
               ],
               [order.direction]
-            )
-              .map((n) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
-                return (
-                  <TableRow
-                    className='h-64 cursor-pointer'
-                    hover
-                    role='checkbox'
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
-                    onClick={(event) => handleClick(n)}
-                  >
-                    <TableCell
-                      className='w-48 px-4 sm:px-12'
-                      padding='checkbox'
-                    >
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
+            ).map((n) => {
+              const isSelected = selected.indexOf(n.id) !== -1;
+              return (
+                <TableRow
+                  className='h-64 cursor-pointer'
+                  hover
+                  role='checkbox'
+                  aria-checked={isSelected}
+                  tabIndex={-1}
+                  key={n.id}
+                  selected={isSelected}
+                  onClick={(event) => handleClick(n)}
+                >
+                  <TableCell className='w-48 px-4 sm:px-12' padding='checkbox'>
+                    <Checkbox
+                      checked={isSelected}
+                      onClick={(event) => event.stopPropagation()}
+                      onChange={(event) => handleCheck(event, n.id)}
+                    />
+                  </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.invoice_number}
-                    </TableCell>
+                  <TableCell component='th' scope='row'>
+                    {n.invoice_number}
+                  </TableCell>
 
-                    <TableCell className='truncate' component='th' scope='row'>
-                      {n.service?.length}
-                    </TableCell>
+                  <TableCell className='truncate' component='th' scope='row'>
+                    {n.service?.length}
+                  </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {moment(n.invoice_date).format("Do MMMM, YYYY")}
-                    </TableCell>
+                  <TableCell component='th' scope='row' align='left'>
+                    {moment(n.invoice_date).format('Do MMMM, YYYY')}
+                  </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      <Link onClick={(e) => handleRoute(e, n.customer)}>{n.customer?.email}</Link>
-                    </TableCell>
+                  <TableCell component='th' scope='row' align='left'>
+                    <Link onClick={(e) => handleRoute(e, n.customer)}>
+                      {n.customer?.email}
+                    </Link>
+                  </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.status}
-                    </TableCell>
+                  <TableCell component='th' scope='row' align='left'>
+                    {n.status}
+                  </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {FuseUtils.formatCurrency(n.total_amount)}
-                    </TableCell>
+                  <TableCell component='th' scope='row' align='left'>
+                    {FuseUtils.formatCurrency(n.total_amount)}
+                  </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {FuseUtils.formatCurrency(n.amount_due)}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-
-              {loading &&
-                _.range(6).map(k => 
-                  <TableRowSkeleton key={k} />
-              )}
-              {data.length === 0 &&  
-                <TableRow>
-                  <TableCell colSpan={8}><p className="text-lg font-bold text-gray-600 text-center">No record found</p></TableCell>
+                  <TableCell component='th' scope='row' align='left'>
+                    {FuseUtils.formatCurrency(n.deficit)}
+                  </TableCell>
                 </TableRow>
-              }
+              );
+            })}
+
+            {loading && _.range(6).map((k) => <TableRowSkeleton key={k} />)}
+            {data.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <p className='text-lg font-bold text-gray-600 text-center'>
+                    No record found
+                  </p>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -219,12 +220,12 @@ function InvoicesList(props) {
   );
 }
 
-const mapStateToProps = ({invoicesApp}) => {
-  const { invoices } = invoicesApp
+const mapStateToProps = ({ invoicesApp }) => {
+  const { invoices } = invoicesApp;
   return {
     loading: invoices.loading,
     searchText: invoices.searchText,
-  }
-}
+  };
+};
 
 export default withRouter(connect(mapStateToProps)(InvoicesList));

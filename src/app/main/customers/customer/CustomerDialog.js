@@ -85,7 +85,6 @@ function CustomerDialog(props) {
     event.preventDefault();
 
     dispatch(Actions.updateCustomer(form.id, form));
-    closeComposeDialog();
   }
 
   console.log(form, "form")

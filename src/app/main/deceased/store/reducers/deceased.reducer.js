@@ -2,7 +2,7 @@ import * as Actions from '../actions';
 
 const initialState = {
   loading: false,
-  searchText: "",
+  searchText: '',
   allDeceased: {
     deceased: [],
     count: 0,
@@ -12,11 +12,23 @@ const initialState = {
   deceased: null,
   embalmmentCert: null,
   cremationCert: null,
+  releaseFormDialog: {
+    props: {
+      open: false,
+    },
+    data: null,
+  },
   message: null,
 };
 
 const deceasedReducer = function (state = initialState, action) {
   switch (action.type) {
+    case Actions.SET_PROGRESS: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
     case Actions.GET_ALL_DECEASED: {
       return {
         ...state,
@@ -44,6 +56,13 @@ const deceasedReducer = function (state = initialState, action) {
         message: action.payload,
       };
     }
+    case Actions.ADD_RELEASE_FORM: {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
+      };
+    }
     case Actions.PRINT_ADMISSION_FORM: {
       return {
         ...state,
@@ -63,6 +82,28 @@ const deceasedReducer = function (state = initialState, action) {
         ...state,
         loading: false,
         cremationCert: action.payload,
+      };
+    }
+    case Actions.OPEN_RELEASE_FORM_DIALOG: {
+      return {
+        ...state,
+        releaseFormDialog: {
+          props: {
+            open: true,
+          },
+          data: action.payload,
+        },
+      };
+    }
+    case Actions.CLOSE_RELEASE_FORM_DIALOG: {
+      return {
+        ...state,
+        releaseFormDialog: {
+          props: {
+            open: false,
+          },
+          data: null,
+        },
       };
     }
     case Actions.SET_SEARCH_TEXT: {

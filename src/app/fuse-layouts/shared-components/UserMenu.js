@@ -18,6 +18,8 @@ function UserMenu(props) {
   const dispatch = useDispatch();
   const user = useSelector(({ auth }) => auth.user);
 
+  console.log(user, 'user');
+
   const [userMenu, setUserMenu] = useState(null);
 
   const userMenuClick = (event) => {
@@ -31,7 +33,7 @@ function UserMenu(props) {
   return (
     <React.Fragment>
       <Button className='h-64' onClick={userMenuClick}>
-        {user.data.organisation.logo ? (
+        {user.data?.organisation?.logo ? (
           <Avatar
             className=''
             alt='user photo'

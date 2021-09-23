@@ -63,7 +63,7 @@ const navigationConfig = [
             icon: 'receipt',
             url: '/vaults',
           },
-        ]
+        ],
       },
       {
         id: 'payment-component',
@@ -92,7 +92,7 @@ const navigationConfig = [
             icon: 'receipt',
             url: '/receipts',
           },
-        ]
+        ],
       },
       {
         id: 'funeral-component',
@@ -107,7 +107,7 @@ const navigationConfig = [
             icon: 'receipt',
             url: '/vouchers',
           },
-        ]
+        ],
       },
       {
         id: 'reports-component',
@@ -150,7 +150,22 @@ const navigationConfig = [
             icon: 'receipt',
             url: '/reports/vouchers',
           },
-        ]
+        ],
+      },
+      {
+        id: 'settings-component',
+        title: 'Settings',
+        type: 'collapse',
+        icon: 'settings',
+        children: [
+          {
+            id: 'branches-component',
+            title: 'Branches',
+            type: 'item',
+            icon: 'business',
+            url: '/settings/branches',
+          },
+        ],
       },
     ],
   },

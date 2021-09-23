@@ -21,7 +21,7 @@ import converter from 'number-to-words';
 import ReactToPdf from 'react-to-pdf';
 
 function InvoiceList(props) {
-  const { invoice, user, services } = props;
+  const { invoice, user, services, branches } = props;
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const ref = React.createRef();
@@ -30,7 +30,6 @@ function InvoiceList(props) {
   const data = invoice ? invoice.service : [];
 
   console.log(invoice, 'invoice');
-  console.log(user, 'user');
 
   useEffect(() => {
     dispatch(Actions.getInvoiceById(match.params.id));
@@ -49,6 +48,10 @@ function InvoiceList(props) {
     unit: 'in',
     format: [9, 14],
   };
+
+  console.log(branches, 'branches');
+
+  const selectedBranch = branches?.find((b) => b.id === invoice?.branch_id);
 
   return (
     <div className='flex flex-col p-24'>
@@ -77,47 +80,47 @@ function InvoiceList(props) {
           >
             <div className='flex justify-between px-4 py-0 sm:px-6'>
               <h1>
-                <img
-                  className='h-96'
-                  src='/assets/images/profile/omega-homes.svg'
-                  alt=''
-                />
+                <img className='h-96' src={user?.organisation?.logo} alt='' />
               </h1>
 
               <div>
                 <dl className='space-y-16 text-right text-xs'>
                   <div>
-                    <dt className='capitalize'>
-                      {user.organisation?.city} Location
-                    </dt>
                     <dt>{user.organisation?.companyName}</dt>
-                    <dt>{user.organisation?.address}</dt>
-                    <dt>
-                      {user.organisation?.city}, {user.organisation?.state}
-                    </dt>
-                    <dt>{user.organisation?.country}</dt>
+
+                    <dt>{selectedBranch?.address}</dt>
+
                     <dt>
                       <div className='space-x-8'>
-                        <span>{user.organisation?.phoneNumber}</span>
-                        <span>{user.organisation?.contactPersonPhone}</span>
-                        <span>{user.organisation?.contactPersonTel}</span>
+                        <span>
+                          {[
+                            user.organisation?.phoneNumber,
+                            user.organisation?.contactPersonTel,
+                            user.organisation?.contactPersonPhone,
+                          ]
+                            .filter((n) => n)
+                            .join(', ')}
+                        </span>
                       </div>
                     </dt>
                     <dt>{user.organisation?.emailAddress}</dt>
                     <dt>
                       <hr className='my-16 border-0 border-t border-grey-darkest' />
                     </dt>
+
                     <div className='text-red font-bold'>
-                      <dt>A/C NAME: OMEGA FUNERAL HOME</dt>
-                      <dt>GTBank 0174644878</dt>
-                      <dt>Polaris Bank 1771874077</dt>
+                      <dt>{selectedBranch?.accountName}</dt>
+                      <dt>{selectedBranch?.bankBankAccounts?.bank?.name}</dt>
+                      <dt>{selectedBranch?.bankBankAccounts?.accountNumber}</dt>
                     </div>
                   </div>
                   <div className='text-gray-600'>
                     <dt>
-                      {moment(invoice?.invoice_date).format(
-                        'dddd, MMMM Do, YYYY'
-                      )}
+                      {invoice?.invoice_date
+                        ? moment(invoice?.invoice_date).format(
+                            'dddd, MMMM Do, YYYY'
+                          )
+                        : ''}
                     </dt>
                     <dt>{invoice?.invoice_number}</dt>
                   </div>
@@ -340,7 +343,7 @@ function InvoiceList(props) {
                               </TableCell>
                               <TableCell colSpan={2} align='right'>
                                 {FuseUtils.formatCurrency(
-                                  invoice?.amount_due || 0
+                                  invoice?.deficit || 0
                                 )}
                               </TableCell>
                             </TableRow>
@@ -373,13 +376,14 @@ function InvoiceList(props) {
   );
 }
 
-const mapStateToProps = ({ invoicesApp, auth }) => {
+const mapStateToProps = ({ invoicesApp, auth, ezone }) => {
   const { invoices, services } = invoicesApp;
   return {
     searchText: invoices.searchText,
     invoice: invoices.invoice,
     services: services.services.services,
     user: auth.user.data,
+    branches: ezone.branches.branches,
   };
 };
 

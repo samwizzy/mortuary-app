@@ -1,28 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Box,
+  Collapse,
+  IconButton,
+  Paper,
   Table,
+  TableContainer,
+  TableHead,
   TableBody,
   TableCell,
   TablePagination,
   TableRow,
-  Checkbox,
 } from '@material-ui/core';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { useSelector } from 'react-redux';
 import { FuseScrollbars, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import _ from '@lodash';
+import moment from 'moment';
 import ReportsTableHead from './ReportsTableHead';
-// import * as Actions from '../store/actions';
+import PDFButton from './Button';
 
 function ReportsList(props) {
+  const ref = React.createRef();
+  const [open, setOpen] = useState('');
   const searchText = '';
 
-  const vaultData = useSelector(({reportsApp}) => reportsApp.reports.vaults)
-  const vaults = vaultData.cremations;
+  const branches = useSelector(({ ezone }) => ezone.branches.branches);
+  const form = useSelector(({ reportsApp }) => reportsApp.reports.form);
+  const vaultData = useSelector(({ reportsApp }) => reportsApp.reports.vaults);
+  const vaults = vaultData.vaults;
   const totalItems = vaultData.totalItems;
   const currentPage = vaultData.currentPage;
 
-  console.log(vaultData, "vaultData")
+  console.log(vaultData, 'vaultData');
 
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(vaults);
@@ -35,7 +47,7 @@ function ReportsList(props) {
       searchText.length === 0
         ? vaults
         : _.filter(vaults, (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.vault_number.toLowerCase().includes(searchText.toLowerCase())
           )
     );
   }, [vaults, searchText]);
@@ -59,30 +71,6 @@ function ReportsList(props) {
     setSelected([]);
   }
 
-  function handleClick(item) {
-    props.history.push('/reports/vaults/' + item.id);
-  }
-
-  function handleCheck(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  }
-
   function handleChangePage(event, page) {
     setPage(page);
   }
@@ -91,111 +79,182 @@ function ReportsList(props) {
     setRowsPerPage(event.target.value);
   }
 
+  const handleOpen = (id) => {
+    open === id ? setOpen('') : setOpen(id);
+  };
+
   return (
-    <div className='w-full flex flex-col'>
-      <FuseAnimate delay={100}>
-        <div className='flex justify-center flex-wrap mt-4 mb-16'>
-          <div className='px-4 pb-5 sm:px-6 text-center'>
-            <img
-              className='h-72'
-              src='/assets/images/profile/omega-homes.svg'
-              alt=''
-            />
-            <h3 className='text-base leading-4 font-bold text-gray-900'>
-              Daily Morgue Report
-            </h3>
-            <p className='text-sm'>As of 20th Jul, 2020</p>
+    <div className='relative w-full'>
+      <div className='absolute right-0 top-0 bg-orange-lighter'>
+        <PDFButton ref={ref} />
+      </div>
+      <div className='w-full flex flex-col' ref={ref}>
+        <FuseAnimate delay={100}>
+          <div className='flex justify-center flex-wrap mt-4 mb-16'>
+            <div className='px-4 pb-5 sm:px-6 text-center'>
+              <img
+                className='h-72'
+                src='/assets/images/profile/omega-homes.svg'
+                alt=''
+              />
+              <h3 className='text-base leading-4 font-bold text-gray-900'>
+                Daily Vault Report
+              </h3>
+              <p className='text-sm'>
+                {form.startDate &&
+                  `As of ${moment(form.startDate).format('Do MMM, YYYY')}`}
+              </p>
+            </div>
           </div>
-        </div>
-      </FuseAnimate>
-      <FuseScrollbars className='flex-grow overflow-x-auto'>
-        <Table className='min-w-xl' aria-labelledby='tableTitle'>
-          <ReportsTableHead
-            numSelected={selected.length}
-            order={order}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={data.length}
-          />
+        </FuseAnimate>
+        <FuseScrollbars className='flex-grow overflow-x-auto'>
+          <Table className='min-w-xl' aria-labelledby='tableTitle'>
+            <ReportsTableHead
+              numSelected={selected.length}
+              order={order}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={data.length}
+            />
 
-          <TableBody>
-            {_.orderBy(
-              data,
-              [
-                (o) => {
-                  switch (order.id) {
-                    case 'categories': {
-                      return o.categories[0];
+            <TableBody>
+              {_.orderBy(
+                data,
+                [
+                  (o) => {
+                    switch (order.id) {
+                      case 'categories': {
+                        return o.categories[0];
+                      }
+                      default: {
+                        return o[order.id];
+                      }
                     }
-                    default: {
-                      return o[order.id];
-                    }
-                  }
-                },
-              ],
-              [order.direction]
-            )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
-                return (
-                  <TableRow
-                    className='h-64 cursor-pointer'
-                    hover
-                    role='checkbox'
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
-                    onClick={(event) => handleClick(n)}
-                  >
-                    <TableCell
-                      className='w-48 px-4 sm:px-12'
-                      padding='checkbox'
-                    >
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
+                  },
+                ],
+                [order.direction]
+              )
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((n) => {
+                  const isSelected = selected.indexOf(n.id) !== -1;
+                  return (
+                    <React.Fragment key={n.id}>
+                      <TableRow
+                        className='h-64 cursor-pointer'
+                        hover
+                        role='checkbox'
+                        aria-checked={isSelected}
+                        tabIndex={-1}
+                        selected={isSelected}
+                      >
+                        <TableCell component='th' scope='row'>
+                          <span>
+                            {n.deceased?.length}
+                            <IconButton
+                              aria-label='expand row'
+                              size='small'
+                              onClick={() => handleOpen(n.id)}
+                            >
+                              {open === n.id ? (
+                                <KeyboardArrowUpIcon />
+                              ) : (
+                                <KeyboardArrowDownIcon />
+                              )}
+                            </IconButton>
+                          </span>
+                        </TableCell>
 
-                    <TableCell component='th' scope='row'>
-                      {n.dateReceived}
-                    </TableCell>
+                        <TableCell
+                          className='truncate'
+                          component='th'
+                          scope='row'
+                        >
+                          {n.vault_number}
+                        </TableCell>
 
-                    <TableCell className='truncate' component='th' scope='row'>
-                      {n.accountId}
-                    </TableCell>
+                        <TableCell component='th' scope='row' align='left'>
+                          {n.vault_type}
+                        </TableCell>
 
-                    <TableCell component='th' scope='row' align='left'>
-                      {n.accountype}
-                    </TableCell>
+                        <TableCell component='th' scope='row' align='left'>
+                          {n.purchaser_one ? n.purchaser_one?.name : '—'}
+                        </TableCell>
 
-                    <TableCell component='th' scope='row' align='right'>
-                      {n.status}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </FuseScrollbars>
+                        <TableCell component='th' scope='row' align='left'>
+                          {n.purchaser_two ? n.purchaser_two?.name : '—'}
+                        </TableCell>
 
-      <TablePagination
-        component='div'
-        count={totalItems}
-        rowsPerPage={rowsPerPage}
-        page={currentPage}
-        backIconButtonProps={{
-          'aria-label': 'Previous Page',
-        }}
-        nextIconButtonProps={{
-          'aria-label': 'Next Page',
-        }}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+                        <TableCell component='th' scope='row' align='left'>
+                          {n.branch_id
+                            ? branches.find((b) => b.id === n.branch_id)?.name
+                            : '—'}
+                        </TableCell>
+                      </TableRow>
+
+                      <TableRow>
+                        <TableCell
+                          style={{ paddingBottom: 0, paddingTop: 0 }}
+                          colSpan={6}
+                        >
+                          <Collapse
+                            in={Boolean(open === n.id)}
+                            timeout='auto'
+                            unmountOnExit
+                          >
+                            <Box margin={1}>
+                              <h3 className='text-lg font-bold text-gray-800'>
+                                Deceased
+                              </h3>
+                              <TableContainer component={Paper}>
+                                <Table size='small' aria-label='purchases'>
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell>Name of deceased</TableCell>
+                                      <TableCell>Date buried</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {n.deceased?.map((d, key) => (
+                                      <TableRow key={key}>
+                                        <TableCell component='th' scope='row'>
+                                          {d.name_of_deceased}
+                                        </TableCell>
+                                        <TableCell>
+                                          {d.date_buried
+                                            ? moment(d.date_buried).format('ll')
+                                            : '—'}
+                                        </TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            </Box>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </FuseScrollbars>
+
+        <TablePagination
+          component='div'
+          count={totalItems}
+          rowsPerPage={rowsPerPage}
+          page={currentPage}
+          backIconButtonProps={{
+            'aria-label': 'Previous Page',
+          }}
+          nextIconButtonProps={{
+            'aria-label': 'Next Page',
+          }}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </div>
     </div>
   );
 }

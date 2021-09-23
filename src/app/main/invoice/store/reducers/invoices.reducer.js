@@ -1,6 +1,7 @@
 import * as Actions from '../actions';
 
 const initialState = {
+  loading: false,
   searchText: '',
   invoices: {
     totalItems: 0,
@@ -51,6 +52,12 @@ const invoicesReducer = function (state = initialState, action) {
       return {
         ...state,
         loading: false
+      };
+    }
+    case Actions.SET_LOADING: {
+      return {
+        ...state,
+        loading: true
       };
     }
     case Actions.INITIALIZE_INVOICE_PAYMENT: {
