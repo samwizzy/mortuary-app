@@ -2,7 +2,8 @@ import React, { useEffect, useCallback } from 'react';
 import {
   CircularProgress,
   TextField,
-  IconButton, Icon,
+  IconButton,
+  Icon,
   Button,
   Dialog,
   DialogActions,
@@ -14,7 +15,10 @@ import {
 import { useForm } from '@fuse/hooks';
 import { FuseChipSelect, FuseUtils } from '@fuse';
 import { useDispatch, useSelector } from 'react-redux';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import moment from 'moment';
 import _ from 'lodash';
@@ -23,29 +27,40 @@ import InvoiceUploadImage from './InvoiceUploadImage';
 import { MenuItem } from '@material-ui/core';
 
 const defaultFormState = {
-  account_to_deposit: "",
+  account_to_deposit: '',
   amount_received: 0,
-  bank_changes: "",
-  customer_name: "",
-  file: "",
-  notes: "",
-  org_key: "",
-  payment_date: moment().format("YYYY-MM-DD"),
-  payment_method: "CASH",
-  receipt_number: ""
+  bank_changes: '',
+  customer_name: '',
+  file: '',
+  notes: '',
+  org_key: '',
+  payment_date: moment().format('YYYY-MM-DD'),
+  payment_method: 'CASH',
+  receipt_number: '',
+  branch_id: '',
 };
 
-const paymentMethods = ['CASH', 'CHECK', 'BANK_TRANSFER', 'CREDIT_DEBIT_CARD', 'INTERNET_BANKING'].map((method) => ({
-  label: method.replaceAll("_", " "),
+const paymentMethods = [
+  'CASH',
+  'CHECK',
+  'BANK_TRANSFER',
+  'CREDIT_DEBIT_CARD',
+  'INTERNET_BANKING',
+].map((method) => ({
+  label: method.replaceAll('_', ' '),
   value: method,
-}))
+}));
 
 function RecordPaymentDialog(props) {
   const dispatch = useDispatch();
-  const loading = useSelector(({ invoicesApp }) => invoicesApp.invoices.loading);
-  const recordPaymentDialog = useSelector(({ invoicesApp }) => invoicesApp.invoices.recordPaymentDialog);
+  const loading = useSelector(
+    ({ invoicesApp }) => invoicesApp.invoices.loading
+  );
+  const recordPaymentDialog = useSelector(
+    ({ invoicesApp }) => invoicesApp.invoices.recordPaymentDialog
+  );
 
-  console.log(recordPaymentDialog, "recordPaymentDialog")
+  console.log(recordPaymentDialog, 'recordPaymentDialog');
 
   const { form, handleChange, setForm } = useForm(defaultFormState);
 
@@ -54,17 +69,19 @@ function RecordPaymentDialog(props) {
      * Dialog type: 'new'
      */
     if (recordPaymentDialog.data) {
-      const { customer, receipt_number, receipt_id } = recordPaymentDialog.data
+      const { customer, invoice, receipt_number, receipt_id } =
+        recordPaymentDialog.data;
       setForm({
         ...defaultFormState,
-        customer_name: customer?.firstName + " " + customer?.lastName,
+        customer_name: customer?.firstName + ' ' + customer?.lastName,
         receipt_id: receipt_id,
         receipt_number: receipt_number,
+        branch_id: invoice.branchId,
       });
     }
   }, [recordPaymentDialog.data, setForm]);
 
-  console.log(form, "form")
+  console.log(form, 'form');
 
   useEffect(() => {
     /**
@@ -90,28 +107,28 @@ function RecordPaymentDialog(props) {
   }
 
   const handleDateChange = (name) => (date) => {
-    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DD') })
+    setForm({ ...form, [name]: moment(date).format('YYYY-MM-DD') });
   };
 
   const handleChipChange = (value, name) => {
-    setForm({ ...form, [name]: value.value })
+    setForm({ ...form, [name]: value.value });
   };
 
   const handleFileCancel = () => {
-    setForm({ ...form, file: "" })
+    setForm({ ...form, file: '' });
   };
-  
+
   const handleImageUpload = (event) => {
     const files = event.target.files;
     const name = event.target.name;
-    FuseUtils.toBase64(files[0]).then(data => {
+    FuseUtils.toBase64(files[0]).then((data) => {
       setForm(_.set({ ...form }, name, data));
-    })
-  }
+    });
+  };
 
   function handleSubmit(event) {
     event.preventDefault();
-    const { invoice } = recordPaymentDialog.data
+    const { invoice } = recordPaymentDialog.data;
 
     dispatch(Actions.recordInvoicePayment(form, invoice.id));
     closeComposeDialog();
@@ -130,7 +147,8 @@ function RecordPaymentDialog(props) {
       <AppBar position='static' elevation={1}>
         <Toolbar className='flex'>
           <Typography variant='subtitle1' color='inherit'>
-            Payment for <em>{recordPaymentDialog.data?.invoice?.invoiceNumber}</em>
+            Payment for{' '}
+            <em>{recordPaymentDialog.data?.invoice?.invoiceNumber}</em>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -153,7 +171,7 @@ function RecordPaymentDialog(props) {
               variant='outlined'
               required
               fullWidth
-            /> 
+            />
 
             <TextField
               className='mb-24'
@@ -192,7 +210,7 @@ function RecordPaymentDialog(props) {
                 label='Payment Date'
                 fullWidth
                 value={form.payment_date}
-                onChange={handleDateChange("payment_date")}
+                onChange={handleDateChange('payment_date')}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
@@ -212,8 +230,8 @@ function RecordPaymentDialog(props) {
               required
               fullWidth
             >
-              <MenuItem value="">Select account receivable</MenuItem>  
-            </TextField>  
+              <MenuItem value=''>Select account receivable</MenuItem>
+            </TextField>
           </div>
           <div className='flex items-center'>
             <FuseChipSelect
@@ -251,14 +269,22 @@ function RecordPaymentDialog(props) {
           </div>
           <div className='flex'>
             <InvoiceUploadImage handleImageUpload={handleImageUpload} />
-            {form?.file && 
-              <div className="border border-solid border-grey-light rounded-lg p-1 mx-4 relative">
-                <IconButton onClick={handleFileCancel} className="absolute right-0" size="small">
+            {form?.file && (
+              <div className='border border-solid border-grey-light rounded-lg p-1 mx-4 relative'>
+                <IconButton
+                  onClick={handleFileCancel}
+                  className='absolute right-0'
+                  size='small'
+                >
                   <Icon>cancel</Icon>
                 </IconButton>
-                <img src={`data:image/jpg;base64,${form?.file}`} alt="" className="h-72 w-auto rounded-md" />
+                <img
+                  src={`data:image/jpg;base64,${form?.file}`}
+                  alt=''
+                  className='h-72 w-auto rounded-md'
+                />
               </div>
-            }
+            )}
           </div>
         </DialogContent>
 

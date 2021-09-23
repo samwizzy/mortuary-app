@@ -11,25 +11,28 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
-import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import { useForm } from '@fuse/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
 import moment from 'moment';
-import InvoiceUploadImage from "./InvoiceUploadImage"
+import InvoiceUploadImage from './InvoiceUploadImage';
 
 const defaultFormState = {
-  account_to_deposit: "",
+  account_to_deposit: '',
   amount_received: 0,
-  bank_changes: "",
-  customer_name: "",
-  file: "",
-  notes: "",
-  org_key: "",
-  payment_date: moment().format("YYYY-MM-DDTHH:mm:ss"),
-  payment_method: "Cash", // Bank
+  bank_changes: '',
+  customer_name: '',
+  file: '',
+  notes: '',
+  org_key: '',
+  payment_date: moment().format('YYYY-MM-DDTHH:mm:ss'),
+  payment_method: 'Cash', // Bank
   receipt_id: 0,
-  receipt_number: ""
+  receipt_number: '',
 };
 
 function PaymentDialog(props) {
@@ -62,7 +65,7 @@ function PaymentDialog(props) {
   }, [paymentDialog.props.open, initDialog]);
 
   function closeComposeDialog() {
-    dispatch(Actions.closeInvoicePaymentDialog())
+    dispatch(Actions.closeInvoicePaymentDialog());
   }
 
   function canBeSubmitted() {
@@ -144,12 +147,12 @@ function PaymentDialog(props) {
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
                 margin='normal'
-                format="dd/MM/yyyy"
+                format='dd/MM/yyyy'
                 inputVariant='outlined'
                 id='payment_date'
                 label='Payment Date'
                 value={form.payment_date}
-                onChange={handleDateChange("payment_date")}
+                onChange={handleDateChange('payment_date')}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
@@ -168,10 +171,12 @@ function PaymentDialog(props) {
               variant='outlined'
               fullWidth
             >
-              <MenuItem value="">Select payment method</MenuItem>
-              {["Cash", "Bank"].map(m => 
-                <MenuItem key={m} value={m}>{m}</MenuItem>
-              )}
+              <MenuItem value=''>Select payment method</MenuItem>
+              {['Cash', 'Bank'].map((m) => (
+                <MenuItem key={m} value={m}>
+                  {m}
+                </MenuItem>
+              ))}
             </TextField>
           </div>
 
